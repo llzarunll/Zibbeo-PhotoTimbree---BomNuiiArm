@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zibbeo.phototrimbree">
+
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity android:name=".ZPTHomeView">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Account.ZPTAccountView"
+            android:label="Account" />
+        <activity android:name=".BaseNavigationDrawer" />
+        <activity
+            android:name=".Account.ZPTAccountInfoView"
+            android:label="Account" />
+        <activity
+            android:name=".Account.ZPTAccountSubscriptionView"
+            android:label="Sign up" />
+        <activity
+            android:name=".PostCard.ZPTPostcardListView"
+            android:label="Postcards" />
+            <activity android:name=".PostCard.ZPTImageComposerView"></activity>
+            <activity android:name=".PostCard.ZPTStickerComposerView"></activity>
+        <activity
+            android:name=".Account.ZPTAccountConnectionWaitingView"
+            android:label="Account"
+            android:noHistory="true" />
+        <activity
+            android:name=".Account.ZPTAccountForgotView"
+            android:label="Password forgot" />
+        <activity
+            android:name=".Credit.ZPTCreditStateView"
+            android:label="My credits" />
+        <activity
+            android:name=".Cart.ZPTCartListView"
+            android:label="Cart" />
+        <activity
+            android:name=".Preferences.ZPTPreferencesView"
+            android:label="My preferences" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".Account.ZPTAccountModificationView"
+            android:noHistory="true" />
+        <activity android:name=".CreatePostcard.Massage.ZPTMessageComposerView" />
+        <activity android:name=".CreatePostcard.Sign.ZPTSignComposerView" />
+        <activity android:name=".CreatePostcard.Contact.ZPTContactComposerView" />
+        <activity android:name=".CreatePostcard.Preview.ZPTPreviewComposerView"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+    </application>
+
+</manifest>

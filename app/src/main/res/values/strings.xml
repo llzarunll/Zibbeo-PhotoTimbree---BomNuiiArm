@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">PhotoTrimbree</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="facebook_app_id">1493012864272690</string>
+
+    <string-array name="menuList">
+        <item>Home</item>
+        <item>My account</item>
+        <item>My postcard</item>
+        <item>My cart</item>
+        <item>My credits</item>
+        <item>Preferences</item>
+        <item>Informations</item>
+    </string-array>
+
+    <string-array name="fontSizeArray">
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+        <item>24</item>
+        <item>26</item>
+        <item>30</item>
+        <item>36</item>
+        <item>42</item>
+        <item>48</item>
+        <item>56</item>
+        <item>72</item>
+    </string-array>
+
+    <string-array name="countryArray">
+        <item>Thailand</item>
+        <item>France</item>
+    </string-array>
+
+    <string name="error_LOG01">login is empty</string>
+    <string name="error_LOG02">password is empty</string>
+    <string name="error_LOG03">login unknow in database</string>
+    <string name="error_LOG04">invalide password</string>
+    <string name="error_LOG05">facebook user</string>
+
+    <string name="error_REG01">no login</string>
+    <string name="error_REG07">email already in database</string>
+    <string name="error_REG012">password to short</string>
+    <string name="error_REG013">password to long</string>
+
+    <string name="error_REG0x">no email</string>
+
+    <string name="doSignIn">sign in</string>
+    <string name="doPasswordForgot">password forgot</string>
+    <string name="doSignUp">sign up</string>
+    <string name="doModify">modify</string>
+
+    <string name="statusNoConnect">no connect</string>
+    <string name="statusWaiting">waiting</string>
+    <string name="statusConnected">connected</string>
+    <string name="statusError">error</string>
+
+    <string name="typeLoginPasswordURL">url</string>
+    <string name="typeFacebook">facebook</string>
+
+    <string name="unknown">unknown</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
