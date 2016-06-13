@@ -35,88 +35,103 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
 
-    <HorizontalScrollView android:id="@+id/thumbnails_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:scrollbars="none"
-        android:background="#ca3e3e"
-        android:layout_below="@+id/FrameImageView"
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="210dp"
+        android:id="@+id/FramePic"
+        android:background="#d1d1d1"
+        android:layout_above="@+id/nextButton"
         android:layout_alignParentStart="true">
-        <LinearLayout
-            android:orientation="horizontal"
+
+        <RelativeLayout
+            android:layout_width="350dp"
+            android:layout_height="210dp"
+            android:id="@+id/FrameLayout"
+            android:background="#d1d1d1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+        <HorizontalScrollView android:id="@+id/thumbnails_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#d1d1d1">
-            <ImageButton
-                android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:scrollbars="none"
+            android:background="#ca3e3e"
+            android:layout_below="@+id/FrameImageView"
+            android:layout_alignParentStart="true">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@drawable/f1"
-                android:id="@+id/farme1"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="60dp" />
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/f2"
-                android:id="@+id/farme2"
-                />
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/f3"
-                android:id="@+id/farme3"
-                />
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/f4"
-                android:id="@+id/farme4"
-                />
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/f5"
-                android:id="@+id/farme5"
-                />
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/f6"
-                android:id="@+id/farme6"
-                />
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/f7"
-                android:id="@+id/farme7"
-                />
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/f8"
-                android:id="@+id/farme8"
-                />
+                android:background="#d1d1d1">
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f1"
+                    android:id="@+id/farme1"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="60dp" />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f2"
+                    android:id="@+id/farme2"
+                    />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f3"
+                    android:id="@+id/farme3"
+                    />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f4"
+                    android:id="@+id/farme4"
+                    />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f5"
+                    android:id="@+id/farme5"
+                    />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f6"
+                    android:id="@+id/farme6"
+                    />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f7"
+                    android:id="@+id/farme7"
+                    />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/f8"
+                    android:id="@+id/farme8"
+                    />
 
 
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/seekBarOuter"
-        android:layout_below="@+id/thumbnails_scroll_view"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:max="20" />
-
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/seekBar2"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/seekBarInner"
-        android:layout_alignParentStart="true"
-        android:max="10" />
+            </LinearLayout>
+        </HorizontalScrollView>
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarOuter"
+            android:layout_below="@+id/thumbnails_scroll_view"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:max="20" />
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarInner"
+            android:max="10"
+            android:layout_below="@+id/seekBarOuter"
+            android:layout_alignEnd="@+id/FrameImageView"
+            android:focusableInTouchMode="false" />
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

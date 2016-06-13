@@ -27,6 +27,7 @@ import java.util.ArrayList;
 public class MoveLineClass {
 
     Paint mPaint = new Paint();
+    Paint mPaintInner = new Paint();
     Paint mPaint2 = new Paint();
     Paint mPaint3,mPaint4,mPaint5,mPaint6;
     Context mContext;
@@ -67,6 +68,14 @@ public class MoveLineClass {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
 //        mPaint2.setStrokeWidth(10f);
 //        mPaint2.setColor(Color.BLACK);
+        mPaintInner = new Paint() {
+            {
+                setColor(Color.WHITE);
+                setStrokeWidth(mStroke);
+                setStyle(Paint.Style.STROKE);
+                setStrokeJoin(Paint.Join.ROUND);
+            }
+        };
         mPaint3 = new Paint() {
             {
                 setStyle(Style.FILL);
@@ -147,6 +156,7 @@ public class MoveLineClass {
 
             if(!touch_state)
             {
+                int Point = 10;
             Drawable myPic[] = {
                     getResources().getDrawable(R.drawable.boston),
                     getResources().getDrawable(R.drawable.carifornia),
@@ -164,6 +174,10 @@ public class MoveLineClass {
             };
             Bitmap roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
             canvas.drawBitmap(roundBitmap, 0, 0, null);
+            canvas.drawLine(mLeftPoint.x + Point,mTopPoint.y + Point,mTopPoint.x - Point, mTopPoint.y + Point,mPaintInner);
+            canvas.drawLine(mTopPoint.x - Point,mTopPoint.y - Point,mCenterPoint.x - Point, mCenterPoint.y - Point,mPaintInner);
+            canvas.drawLine(mCenterPoint.x - Point,mCenterPoint.y - Point,mLeftPoint.x + Point, mLeftPoint.y - Point,mPaintInner);
+            canvas.drawLine(mLeftPoint.x + Point,mLeftPoint.y - Point,mLeftPoint.x + Point, mTopPoint.y + Point,mPaintInner);
 
             b = ((BitmapDrawable) myPic[1]).getBitmap();
             bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
@@ -194,6 +208,8 @@ public class MoveLineClass {
 
             roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
             canvas.drawBitmap(roundBitmap, 0, 0, null);
+            //InnerBroder
+
         }
 
             //topleftarea

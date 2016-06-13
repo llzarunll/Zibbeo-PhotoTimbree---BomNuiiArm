@@ -129,10 +129,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mDatabaseClass = new databaseClass(contentView.getContext());
 
-
-
-
-
         /*Nuii*/
         //get data from previous page
         Bundle bundle = getIntent().getExtras();
@@ -240,9 +236,25 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         sOuter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float sizeF = (float)progress;
+                float sizeF = new Float(progress);
                 mMove.mPaint.setStrokeWidth(sizeF);
                 mMove.draw();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        sInner.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float sizeF = new Float(progress);
             }
 
             @Override
