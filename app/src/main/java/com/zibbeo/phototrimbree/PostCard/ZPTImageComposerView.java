@@ -58,7 +58,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     int FullHeight, FullWidth;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
-
+    //KITTI Add Control SeekbarOuter
+    SeekBar sOuter,sInner;
     RelativeLayout mLayout;
     LineClass mLineClass;
     MoveLineClass mMove;
@@ -128,25 +129,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mDatabaseClass = new databaseClass(contentView.getContext());
 
-        seekbar1 = (SeekBar) findViewById(R.id.seekBar);
 
-        seekbar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float sizeF = (float)progress;
-                mMove.mPaint.setStrokeWidth(sizeF);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
 
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
         /*Nuii*/
         //get data from previous page
@@ -251,6 +236,25 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     @Override
     protected void onResume() {
         super.onResume();
+
+        sOuter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float sizeF = (float)progress;
+                mMove.mPaint.setStrokeWidth(sizeF);
+                mMove.draw();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -547,11 +551,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     private void init() {
         nextButton = (Button) findViewById(R.id.nextButton);
         previousButton = (Button) findViewById(R.id.previousButton);
-        /*
-        ImgBlock1 = (ImageView) findViewById(R.id.ImageViewBlock1);
-        ImgBlock2 = (ImageView) findViewById(R.id.ImageViewBlock2);
-        ImgBlock3 = (ImageView) findViewById(R.id.ImageViewBlock3);
-        ImgBlock4 = (ImageView) findViewById(R.id.ImageViewBlock4);*/
+        //KITTI : Link Control
+        sOuter = (SeekBar) findViewById(R.id.seekBarOuter);
+        sInner = (SeekBar) findViewById(R.id.seekBarInner);
+
         farme1 = (ImageButton) findViewById(R.id.farme1);
         farme2 = (ImageButton) findViewById(R.id.farme2);
         farme3 = (ImageButton) findViewById(R.id.farme3);
