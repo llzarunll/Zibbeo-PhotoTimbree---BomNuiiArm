@@ -274,7 +274,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 cid = image_c;
                 did = image_d;
 
-                //Add Values
+                //Add Values 1
                 template = 1;
                 marge_one_stroke= 1.00f;
                 marge_one_color= "";
