@@ -274,6 +274,19 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 cid = image_c;
                 did = image_d;
 
+                //Add Values
+                template = 1;
+                marge_one_stroke= 1.00f;
+                marge_one_color= "";
+                marge_two_stroke= 1.00f;
+                marge_two_color= "";
+                top_value= 1.00f;
+                bottom_value= 1.00f;
+                right_value= 1.00f;
+                left_value= 1.00f;
+                center_x= 1.00f;
+                center_y= 1.00f;
+
                 /*Nuii*/
                 //Insert Image Template;
                 if (getImageTemplateID == null) {
