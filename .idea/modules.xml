@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Zibbeo-PhotoTimbree.iml" filepath="$PROJECT_DIR$/Zibbeo-PhotoTimbree.iml" />
       <module fileurl="file://$PROJECT_DIR$/Zibbeo-PhotoTimbree - BomNuiiArm.iml" filepath="$PROJECT_DIR$/Zibbeo-PhotoTimbree - BomNuiiArm.iml" />
       <module fileurl="file://$PROJECT_DIR$/Zibbeo-PhotoTimbree---BomNuiiArm.iml" filepath="$PROJECT_DIR$/Zibbeo-PhotoTimbree---BomNuiiArm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
