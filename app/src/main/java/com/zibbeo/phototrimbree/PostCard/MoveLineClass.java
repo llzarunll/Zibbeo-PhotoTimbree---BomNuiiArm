@@ -71,32 +71,28 @@ public class MoveLineClass {
             {
                 setStyle(Style.FILL);
                 setAntiAlias(true);
-                //setColor(Color.GREEN);
-                setAlpha(100);
+                setAlpha(0);
             }
         };
         mPaint4 = new Paint() {
             {
                 setStyle(Style.FILL);
                 setAntiAlias(true);
-                //setColor(Color.BLUE);
-                setAlpha(100);
+                setAlpha(0);
             }
         };
         mPaint5 = new Paint() {
             {
                 setStyle(Style.FILL);
                 setAntiAlias(true);
-                //setColor(Color.MAGENTA);
-                setAlpha(100);
+                setAlpha(0);
             }
         };
         mPaint6 = new Paint() {
             {
                 setStyle(Style.FILL);
                 setAntiAlias(true);
-                //setColor(Color.YELLOW);
-                setAlpha(100);
+                setAlpha(0);
             }
         };
 
