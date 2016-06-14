@@ -220,6 +220,10 @@ public class MoveLineClass {
             ImgA[3] = new Point(mBottomPoint.x, mBottomPoint.y);
 
             roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
+            canvas.drawLine(mCenterPoint.x + Point,mCenterPoint.y + Point,mRightPoint.x - Point, mRightPoint.y + Point,mPaintInner);
+            canvas.drawLine(mRightPoint.x - Point,mRightPoint.y - Point,mRightPoint.x - Point, mBottomPoint.y - Point,mPaintInner);
+            canvas.drawLine(mRightPoint.x - Point,mBottomPoint.y - Point,mBottomPoint.x + Point, mBottomPoint.y - Point,mPaintInner);
+            canvas.drawLine(mBottomPoint.x + Point,mBottomPoint.y - Point,mCenterPoint.x + Point, mCenterPoint.y + Point,mPaintInner);
             canvas.drawBitmap(roundBitmap, 0, 0, null);
             //InnerBroder
 
