@@ -255,6 +255,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float sizeF = new Float(progress);
+                mMove.mPaintInner.setStrokeWidth(sizeF);
+                mMove.draw();
             }
 
             @Override
@@ -273,7 +275,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             public void onClick(View view) {
                 Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
                 /*Convert Bitmap to Byte Array*/
-                FrameLayout savedImage = (FrameLayout) findViewById(R.id.FrameImageView);
+                RelativeLayout savedImage = (RelativeLayout) findViewById(R.id.FrameImageView);
                 savedImage.setDrawingCacheEnabled(true);
                 savedImage.buildDrawingCache();
                 Bitmap bmp = savedImage.getDrawingCache();

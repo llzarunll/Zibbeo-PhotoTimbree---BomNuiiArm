@@ -42,7 +42,8 @@ public class MoveLineClass {
 
     Point mCenterPoint,mLeftPoint,mRightPoint,mTopPoint,mBottomPoint;
 
-    float mStroke = 5f;
+    float mStroke = 1f;
+    float mStrokeInner = 6f;
     int mRadius = 30;
     
     public MoveLineClass(Context context,ViewGroup sViewGroup) {
@@ -71,7 +72,7 @@ public class MoveLineClass {
         mPaintInner = new Paint() {
             {
                 setColor(Color.WHITE);
-                setStrokeWidth(mStroke);
+                setStrokeWidth(mStrokeInner);
                 setStyle(Paint.Style.STROKE);
                 setStrokeJoin(Paint.Join.ROUND);
             }
@@ -156,7 +157,12 @@ public class MoveLineClass {
 
             if(!touch_state)
             {
-                int Point = 10;
+                int Point = 5;
+                if((int)(mPaint.getStrokeWidth()/2) > Point) {
+                    Point = (int) (mPaint.getStrokeWidth() / 2);
+                }else {
+                    Point = (int) (mPaintInner.getStrokeWidth()/ 2);
+                }
             Drawable myPic[] = {
                     getResources().getDrawable(R.drawable.boston),
                     getResources().getDrawable(R.drawable.carifornia),
@@ -188,16 +194,23 @@ public class MoveLineClass {
 
             roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
             canvas.drawBitmap(roundBitmap, 0, 0, null);
+            canvas.drawLine(mTopPoint.x + Point,mTopPoint.y + Point,mRightPoint.x - Point, mTopPoint.y + Point,mPaintInner);
+            canvas.drawLine(mRightPoint.x - Point,mTopPoint.y - Point,mRightPoint.x - Point, mRightPoint.y - Point,mPaintInner);
+            canvas.drawLine(mRightPoint.x - Point,mRightPoint.y - Point,mCenterPoint.x + Point, mCenterPoint.y - Point,mPaintInner);
+            canvas.drawLine(mCenterPoint.x + Point,mCenterPoint.y - Point,mTopPoint.x + Point, mTopPoint.y + Point,mPaintInner);
 
             b = ((BitmapDrawable) myPic[2]).getBitmap();
             bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
             ImgA[0] = new Point(mLeftPoint.x, mLeftPoint.y);
-            ImgA[1] = new Point(mLeftPoint.x, mBottomPoint.y);
+            ImgA[1] = new Point(mCenterPoint.x, mCenterPoint.y);
             ImgA[2] = new Point(mBottomPoint.x, mBottomPoint.y);
-            ImgA[3] = new Point(mCenterPoint.x, mCenterPoint.y);
-
+            ImgA[3] = new Point(mLeftPoint.x, mBottomPoint.y);
             roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
             canvas.drawBitmap(roundBitmap, 0, 0, null);
+            canvas.drawLine(mLeftPoint.x + Point,mLeftPoint.y + Point,mCenterPoint.x - Point, mCenterPoint.y + Point,mPaintInner);
+            canvas.drawLine(mCenterPoint.x - Point,mCenterPoint.y - Point,mBottomPoint.x - Point, mBottomPoint.y - Point,mPaintInner);
+            canvas.drawLine(mBottomPoint.x - Point,mBottomPoint.y - Point,mLeftPoint.x + Point, mBottomPoint.y - Point,mPaintInner);
+            canvas.drawLine(mLeftPoint.x + Point,mBottomPoint.y - Point,mLeftPoint.x + Point, mLeftPoint.y + Point,mPaintInner);
 
             b = ((BitmapDrawable) myPic[3]).getBitmap();
             bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
