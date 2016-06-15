@@ -45,13 +45,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         contentView = inflater.inflate(R.layout.zpt_sticker_composer_view, null, false);
         mDrawerLayout.addView(contentView, 0);
 
-        /*Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
 
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        image.setImageBitmap(bmp);*/
+        image.setImageBitmap(bmp);
         init();
         getSticker();
     }
