@@ -35,21 +35,15 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
 
-    <RelativeLayout
-        android:layout_width="350dp"
-        android:layout_height="210dp"
-        android:id="@+id/FramePic"
-        android:background="#d1d1d1"
-        android:layout_above="@+id/nextButton"
-        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:layout_width="350dp"
             android:layout_height="210dp"
             android:id="@+id/FrameLayout"
             android:background="#d1d1d1"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
+            android:layout_above="@+id/nextButton"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="true">
         <HorizontalScrollView android:id="@+id/thumbnails_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -132,6 +126,5 @@
             android:layout_below="@+id/seekBarOuter"
             android:layout_alignEnd="@+id/FrameImageView"
             android:focusableInTouchMode="false" />
-        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
