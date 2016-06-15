@@ -35,6 +35,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     Button nextButton, previousButton;
     FrameLayout canvas;
     LinearLayout StickerBar;
+    int stickerCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +45,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         contentView = inflater.inflate(R.layout.zpt_sticker_composer_view, null, false);
         mDrawerLayout.addView(contentView, 0);
 
-        Bundle extras = getIntent().getExtras();
+        /*Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
 
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        image.setImageBitmap(bmp);
+        image.setImageBitmap(bmp);*/
         init();
         getSticker();
     }
@@ -63,18 +64,18 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             @Override
             public void onClick(View view) {
             /*Convert Bitmap to Byte Array*/
-            FrameLayout savedImage = (FrameLayout) findViewById(R.id.canvasView);
-            savedImage.setDrawingCacheEnabled(true);
-            savedImage.buildDrawingCache();
-            Bitmap bmp = savedImage.getDrawingCache();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            savedImage.destroyDrawingCache();
+                FrameLayout savedImage = (FrameLayout) findViewById(R.id.canvasView);
+                savedImage.setDrawingCacheEnabled(true);
+                savedImage.buildDrawingCache();
+                Bitmap bmp = savedImage.getDrawingCache();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                savedImage.destroyDrawingCache();
 
-            Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(contentView.getContext(), ZPTMessageComposerView.class);
-            startActivity(intent);
+                Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(contentView.getContext(), ZPTMessageComposerView.class);
+                startActivity(intent);
             }
         });
 
@@ -94,19 +95,20 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     }
 
     private void getSticker() {
+        /*Get Sticker from Drawable*/
         final Drawable Stickers[] =
-        {
-                getResources().getDrawable(R.drawable.cloud),
-                getResources().getDrawable(R.drawable.idea),
-                getResources().getDrawable(R.drawable.star),
-                getResources().getDrawable(R.drawable.camera),
-                getResources().getDrawable(R.drawable.photos),
-                getResources().getDrawable(R.drawable.alarm),
-                getResources().getDrawable(R.drawable.hourglass),
-                getResources().getDrawable(R.drawable.like),
-                getResources().getDrawable(R.drawable.noimage)
-        };
-
+                {
+                        getResources().getDrawable(R.drawable.cloud),
+                        getResources().getDrawable(R.drawable.idea),
+                        getResources().getDrawable(R.drawable.star),
+                        getResources().getDrawable(R.drawable.camera),
+                        getResources().getDrawable(R.drawable.photos),
+                        getResources().getDrawable(R.drawable.alarm),
+                        getResources().getDrawable(R.drawable.hourglass),
+                        getResources().getDrawable(R.drawable.like),
+                        getResources().getDrawable(R.drawable.noimage)
+                };
+        /*Add Stickers to Sticker Bar*/
         for (int i = 0; i < Stickers.length; i++) {
             ImageView ib_view = new ImageView(this);
             ib_view.setId(i);
@@ -119,23 +121,28 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             ib_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StickerImageView iv_sticker = new StickerImageView(ZPTStickerComposerView.this);
-                    iv_sticker.setImageDrawable(Stickers[v.getId()]);
-                    iv_sticker.iv_delete.setOnClickListener (new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                    canvas.addView(iv_sticker);
-
-
-
+                    if (stickerCount < 4) {
+                        final StickerImageView iv_sticker = new StickerImageView(ZPTStickerComposerView.this);
+                        iv_sticker.setImageDrawable(Stickers[v.getId()]);
+                        iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if ((stickerCount - 1) < 0)
+                                    stickerCount = 0;
+                                else
+                                    stickerCount--;
+                                canvas.removeView(iv_sticker);
+                            }
+                        });
+                        canvas.addView(iv_sticker);
+                        stickerCount++;
+                    }
+                    else {
+                        Toast.makeText(contentView.getContext(), "Maximum of stickers is 4", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
             StickerBar.addView(ib_view);
         }
     }
 }
-
-
