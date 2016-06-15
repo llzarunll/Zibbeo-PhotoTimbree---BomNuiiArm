@@ -51,6 +51,24 @@ public class MoveLineClass {
     float mStrokeInner = 6f;
     int mRadius = 20;
 
+
+    /*Nuii*/
+    //Image Template
+    ArrayList imageTemplate;
+   /* (template, image_a, image_b, image_c, image_d
+    , marge_one_stroke, marge_one_color, marge_two_stroke, marge_two_color
+    , top_value, bottom_value, right_value, left_value, center_x, center_y )*/
+
+    //Image Model A - D
+    ArrayList imageA,imageB,imageC,imageD;
+    //อาเรย์แต่ละรูปรับค่าเรียงตามนี้นะ
+    /*( url, offset_x, offset_x_enable, offset_x_original, offset_x_max, offset_x_min
+    , offset_y, offset_y_enable, offset_y_original, offset_y_max, offset_y_min
+    , scale, scale_enable, scale_original, scale_max, scale_min
+    , rotate, rotate_enable, rotate_original, rotate_max, rotate_min
+    , filter_enable, filter )*/
+
+
     public MoveLineClass(Context context,ViewGroup sViewGroup) {
 
         mContext = context;
@@ -370,8 +388,152 @@ public class MoveLineClass {
                 touch_state = false;
             }
 
+            /*Nuii*/
+            //Get Image values
+            setImageTemplate();
+            setImageA();
+            setImageB();
+            setImageC();
+            setImageD();
             return true;
         }
+
+
+        //region Nuii : set value function
+        /*Nuii*/
+           /*Nuii*/
+        //set Image Tamplate
+        public ArrayList setImageTemplate() {
+            imageTemplate = new ArrayList();
+            imageTemplate.add(0,"template");//Integer : จำนวนเทมเพลต
+            imageTemplate.add(1,"marge_one_stroke");//Float : marge one stroke in purcent
+            imageTemplate.add(2,"marge_one_color");//String : color in hex
+            imageTemplate.add(3,"marge_two_stroke");//Float : marge two stroke in purcent
+            imageTemplate.add(4,"marge_two_color");//String : color in hex
+            imageTemplate.add(5,"top_value");//Float : position of value top for the line
+            imageTemplate.add(6,"bottom_value");//Float : position of value bottom for the line
+            imageTemplate.add(7,"right_value");//Float : position of value right for the line
+            imageTemplate.add(8,"left_value");//Float : position of value left for the line
+            imageTemplate.add(9,"center_x");//Float : position of value x for the line
+            imageTemplate.add(10,"center_y");//Float : position of value y for the line
+            return (imageTemplate);
+        }
+        //Image Model A
+        public ArrayList setImageA() {
+            imageA = new ArrayList();
+            imageA.add(0,"url");//String : url of image (delete when object is delete)
+            imageA.add(1,"offset_x");//Float : offset X of image
+            imageA.add(2,"offset_x_enable");//Boolean : enable offset X of image
+            imageA.add(3,"offset_x_original");//Float : original offset X of image
+            imageA.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+            imageA.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+            imageA.add(6,"offset_y");//Float : offset Y of image
+            imageA.add(7,"offset_y_enable");//Boolean : enable offset X of image
+            imageA.add(8,"offset_y_original");//Float : original offset Y of image
+            imageA.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+            imageA.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+            imageA.add(11,"scale");//Float : scale of image
+            imageA.add(12,"scale_enable");//Float : Boolean : enable scale of image
+            imageA.add(13,"scale_original");//Float : original scale of image
+            imageA.add(14,"scale_max");//Float : maximum authorized scale of image
+            imageA.add(15,"scale_min");//Float : minimum authorized scale of image
+            imageA.add(16,"rotate");//Float : rotate of image
+            imageA.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+            imageA.add(18,"rotate_original");//Float : original rotation of image
+            imageA.add(19,"rotate_max");//Float : maximum authorized rotate of image
+            imageA.add(20,"rotate_min");//Float : minimum authorized rotate of image
+            imageA.add(21,"filter_enable");//Boolean : enable filter for this image
+            imageA.add(22,"filter");//Float : Integer : enum filter for this image
+            return (imageA);
+        }
+
+        //Image Model B
+        public ArrayList setImageB() {
+            imageB = new ArrayList();
+            imageB.add(0,"url");//String : url of image (delete when object is delete)
+            imageB.add(1,"offset_x");//Float : offset X of image
+            imageB.add(2,"offset_x_enable");//Boolean : enable offset X of image
+            imageB.add(3,"offset_x_original");//Float : original offset X of image
+            imageB.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+            imageB.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+            imageB.add(6,"offset_y");//Float : offset Y of image
+            imageB.add(7,"offset_y_enable");//Boolean : enable offset X of image
+            imageB.add(8,"offset_y_original");//Float : original offset Y of image
+            imageB.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+            imageB.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+            imageB.add(11,"scale");//Float : scale of image
+            imageB.add(12,"scale_enable");//Float : Boolean : enable scale of image
+            imageB.add(13,"scale_original");//Float : original scale of image
+            imageB.add(14,"scale_max");//Float : maximum authorized scale of image
+            imageB.add(15,"scale_min");//Float : minimum authorized scale of image
+            imageB.add(16,"rotate");//Float : rotate of image
+            imageB.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+            imageB.add(18,"rotate_original");//Float : original rotation of image
+            imageB.add(19,"rotate_max");//Float : maximum authorized rotate of image
+            imageB.add(20,"rotate_min");//Float : minimum authorized rotate of image
+            imageB.add(21,"filter_enable");//Boolean : enable filter for this image
+            imageB.add(22,"filter");//Float : Integer : enum filter for this image
+            return (imageB);
+        }
+
+        //Image Model C
+        public ArrayList setImageC() {
+            imageC = new ArrayList();
+            imageC.add(0,"url");//String : url of image (delete when object is delete)
+            imageC.add(1,"offset_x");//Float : offset X of image
+            imageC.add(2,"offset_x_enable");//Boolean : enable offset X of image
+            imageC.add(3,"offset_x_original");//Float : original offset X of image
+            imageC.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+            imageC.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+            imageC.add(6,"offset_y");//Float : offset Y of image
+            imageC.add(7,"offset_y_enable");//Boolean : enable offset X of image
+            imageC.add(8,"offset_y_original");//Float : original offset Y of image
+            imageC.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+            imageC.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+            imageC.add(11,"scale");//Float : scale of image
+            imageC.add(12,"scale_enable");//Float : Boolean : enable scale of image
+            imageC.add(13,"scale_original");//Float : original scale of image
+            imageC.add(14,"scale_max");//Float : maximum authorized scale of image
+            imageC.add(15,"scale_min");//Float : minimum authorized scale of image
+            imageC.add(16,"rotate");//Float : rotate of image
+            imageC.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+            imageC.add(18,"rotate_original");//Float : original rotation of image
+            imageC.add(19,"rotate_max");//Float : maximum authorized rotate of image
+            imageC.add(20,"rotate_min");//Float : minimum authorized rotate of image
+            imageC.add(21,"filter_enable");//Boolean : enable filter for this image
+            imageC.add(22,"filter");//Float : Integer : enum filter for this image
+            return (imageC);
+        }
+
+        //Image Model D
+        public ArrayList setImageD() {
+            imageD = new ArrayList();
+            imageD.add(0,"url");//String : url of image (delete when object is delete)
+            imageD.add(1,"offset_x");//Float : offset X of image
+            imageD.add(2,"offset_x_enable");//Boolean : enable offset X of image
+            imageD.add(3,"offset_x_original");//Float : original offset X of image
+            imageD.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+            imageD.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+            imageD.add(6,"offset_y");//Float : offset Y of image
+            imageD.add(7,"offset_y_enable");//Boolean : enable offset X of image
+            imageD.add(8,"offset_y_original");//Float : original offset Y of image
+            imageD.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+            imageD.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+            imageD.add(11,"scale");//Float : scale of image
+            imageD.add(12,"scale_enable");//Float : Boolean : enable scale of image
+            imageD.add(13,"scale_original");//Float : original scale of image
+            imageD.add(14,"scale_max");//Float : maximum authorized scale of image
+            imageD.add(15,"scale_min");//Float : minimum authorized scale of image
+            imageD.add(16,"rotate");//Float : rotate of image
+            imageD.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+            imageD.add(18,"rotate_original");//Float : original rotation of image
+            imageD.add(19,"rotate_max");//Float : maximum authorized rotate of image
+            imageD.add(20,"rotate_min");//Float : minimum authorized rotate of image
+            imageD.add(21,"filter_enable");//Boolean : enable filter for this image
+            imageD.add(22,"filter");//Float : Integer : enum filter for this image
+            return (imageD);
+        }
+        //endregion : function
 
         private void FindImage(int x, int y) {
 
