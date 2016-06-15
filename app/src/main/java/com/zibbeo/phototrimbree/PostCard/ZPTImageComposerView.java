@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by ZARUN on 28/5/2559.
@@ -67,12 +68,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     //LineClass mLineClass;
     MoveLineClass mMove;
 
-    /*Nuii*/
-
     databaseClass mDatabaseClass;
-    String getTpID, tpID, getImageTemplateID, imageTemplate, stickerTemplate;
+    String getTpID, tpID, getImageTemplateID, imageTemplateID, stickerTemplateID;
     //Image
-    String imageTemplateID, image_a, image_b, image_c, image_d, marge_one_color, marge_two_color;
+    String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
+    /*marge_one_color, marge_two_color;
     Float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
     Integer template;
     //Sticker
@@ -104,7 +104,17 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     Float doffset_y_min, dscale, dscale_original, dscale_max, dscale_min, drotate, drotate_original, drotate_max, drotate_min;
     Boolean doffset_x_enable, doffset_y_enable, dscale_enable, drotate_enable, dfilter_enable;
     Integer dfilter;
-    byte[] durl;
+    byte[] durl;*/
+    /*Nuii*/
+   //Image Template
+   ArrayList imageTemplate;
+    //Image Model A - D
+    ArrayList imageA,imageB,imageC,imageD;
+
+    /*Nuii*/
+    ArrayList getTemplate;
+    ArrayList getModel;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -143,9 +153,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
         } );
 
-        mMove = new MoveLineClass( this, mLayout );
-
-        //mFrameLayout.setVisibility(View.INVISIBLE);
 
         mDatabaseClass = new databaseClass( contentView.getContext() );
 
@@ -156,17 +163,17 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             getImageTemplateID = bundle.getString( "imageID" );
         }
         if (getImageTemplateID != null) {
-            imageTemplate = mDatabaseClass.getImageComposer( getImageTemplateID ).getTemplate();
-            stickerTemplate = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker();
+            imageTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getTemplate();
+            stickerTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker();
         }
         //Get Image Template
         /*imageTemplate = "123456789";*/
         if (imageTemplate != null) {
-            int i = mDatabaseClass.getImageTemplate( imageTemplate ).getTemplate();
-            GetImageTemplate( imageTemplate );
+            // i = mDatabaseClass.getImageTemplate(imageTemplateID).getTemplate();
+            GetImageTemplate(imageTemplateID);
         }
         //Get Sticker
-        if (stickerTemplate != null) {
+        if (stickerTemplateID != null) {
             // imageTemplate = mDatabaseClass.getImageComposer(getImageTemplateID).getTemplate();
             // stickerTemplate = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker();
         }
@@ -198,7 +205,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     /*Nuii*/
     //Get Image Tamplate
     public ArrayList GetImageTemplate(String imageTemplate) {
-        ArrayList getTemplate = new ArrayList();
+        getTemplate = new ArrayList();
         getTemplate.add( mDatabaseClass.getImageTemplate( imageTemplate ).getImageTemplate_id() );
         getTemplate.add( 1, mDatabaseClass.getImageTemplate( imageTemplate ).getTemplate() );
         getTemplate.add( 2, mDatabaseClass.getImageTemplate( imageTemplate ).getImage_a() );
@@ -217,13 +224,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         getTemplate.add( 15, mDatabaseClass.getImageTemplate( imageTemplate ).getTop_value() );
         getTemplate.add( 16, mDatabaseClass.getImageTemplate( imageTemplate ).getBottom_value() );
         return (getTemplate);
-
     }
 
     /*Nuii*/
     //Get Image Model
     public ArrayList GetImageModel(String ImageID) {
-        ArrayList getModel = new ArrayList();
+        getModel = new ArrayList();
         getModel.add( 0, mDatabaseClass.getImage( ImageID ).getUrl() );
         getModel.add( 1, mDatabaseClass.getImage( ImageID ).getUrl() );
         getModel.add( 2, mDatabaseClass.getImage( ImageID ).getX() );
@@ -298,8 +304,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         nextButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText( contentView.getContext(), "Complete", Toast.LENGTH_LONG ).show();
+              //  Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
                 /*Convert Bitmap to Byte Array*/
+                /*
                 RelativeLayout savedImage = (RelativeLayout) findViewById( R.id.FrameImageView );
                 savedImage.setDrawingCacheEnabled( true );
                 savedImage.buildDrawingCache();
@@ -310,7 +317,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 savedImage.destroyDrawingCache();
                 Intent intent = new Intent( contentView.getContext(), ZPTStickerComposerView.class );
                 intent.putExtra( "picture", byteArray );
-                startActivity( intent );
+                startActivity( intent );*/
                 /*Nuii*/
                 aid = image_a;
                 bid = image_b;
@@ -318,7 +325,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 did = image_d;
 
                 //Add Values 1
-                template = 1;
+                /*template = 1;
                 marge_one_stroke = 1.00f;
                 marge_one_color = "";
                 marge_two_stroke = 1.00f;
@@ -328,7 +335,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 right_value = 1.00f;
                 left_value = 1.00f;
                 center_x = 1.00f;
-                center_y = 1.00f;
+                center_y = 1.00f;*/
+
+
+                /*Nuii : Call values from MoveLineClass*/
+                imageTemplate = mMove.imageTemplate;
+
+                //mFrameLayout.setVisibility(View.INVISIBLE);
 
                 /*Nuii*/
                 //Insert Image Template;
@@ -341,25 +354,33 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     /*while (mDatabaseClass.checkUniqueID(tID, "image")) {
                         tID = mDatabaseClass.createID();
                     }*/
-                    ImageTemplate tImageTemplate = new ImageTemplate( getTpID, template, image_a, image_b, image_c, image_d
+                    //imageTemplate
+                    ImageTemplate tImageTemplate = new ImageTemplate(getTpID, Integer.parseInt(imageTemplate.get(0).toString()), image_a, image_b, image_c, image_d
+                            , Float.parseFloat(imageTemplate.get(1).toString()), imageTemplate.get(2).toString(), Float.parseFloat(imageTemplate.get(3).toString())
+                            , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
+                            , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
+                            , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
+                   /* ImageTemplate tImageTemplate = new ImageTemplate( getTpID, template, image_a, image_b, image_c, image_d
                             , marge_one_stroke, marge_one_color, marge_two_stroke, marge_two_color
-                            , top_value, bottom_value, right_value, left_value, center_x, center_y );
-                    /*
-                    ImageTemplate tImageTemplate = new ImageTemplate(tpID,null,null,null,null,null
-                    ,0.00f,null,0.00f,null,0.00f,0.00f,0.00f,0.00f,0.00f,0.00f);
-                    */
-                    mDatabaseClass.insertImageTemplate( tImageTemplate );
+                            , top_value, bottom_value, right_value, left_value, center_x, center_y );*/
+
+                    mDatabaseClass.insertImageTemplate(tImageTemplate);
 
                 } else {
                     getTpID = imageTemplateID;
-                    ImageTemplate tImageTemplate = new ImageTemplate( template, image_a, image_b, image_c, image_d
+                    ImageTemplate tImageTemplate = new ImageTemplate(Integer.parseInt(imageTemplate.get(0).toString()), image_a, image_b, image_c, image_d
+                            , Float.parseFloat(imageTemplate.get(1).toString()), imageTemplate.get(2).toString(), Float.parseFloat(imageTemplate.get(3).toString())
+                            , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
+                            , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
+                            , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
+                    /*ImageTemplate tImageTemplate = new ImageTemplate( template, image_a, image_b, image_c, image_d
                             , marge_one_stroke, marge_one_color, marge_two_stroke, marge_two_color
-                            , top_value, bottom_value, right_value, left_value, center_x, center_y );
-                    mDatabaseClass.updateImageTemplate( tImageTemplate );
+                            , top_value, bottom_value, right_value, left_value, center_x, center_y );*/
+                    mDatabaseClass.updateImageTemplate(tImageTemplate);
                 }
                 /*Nuii*/
                 //Get value of image A
-                aurl = null;
+                /*aurl = null;
                 aoffset_x = 0.00f;
                 aoffset_x_enable = false;
                 aoffset_x_original = 0.00f;
@@ -381,166 +402,141 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 arotate_max = 0.00f;
                 arotate_min = 0.00f;
                 afilter_enable = false;
-                afilter = 1;
-                if (template >= 1) {
+                afilter = 1;*/
+                 /*Nuii : Call values from MoveLineClass*/
+                imageA = mMove.imageA;
+
+                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 1) {
                     if (aid == null) {
                         aid = mDatabaseClass.createID();
 
-                        Image ImageA = new Image( aid, aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
+                       /* Image ImageA = new Image( aid, aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
                                 , aoffset_y, aoffset_y_enable, aoffset_y_original, aoffset_y_max, aoffset_y_min
                                 , ascale, ascale_enable, ascale_original, ascale_max, ascale_min
                                 , arotate, arotate_enable, arotate_original, arotate_max, arotate_min
-                                , afilter_enable, afilter );
+                                , afilter_enable, afilter );*/
 
-                        mDatabaseClass.insertImage( ImageA );
+                        Image ImageA = new Image(aid, imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
+                                , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
+                                , Float.parseFloat(imageA.get(8).toString()), Float.parseFloat(imageA.get(9).toString()), Float.parseFloat(imageA.get(10).toString()), Float.parseFloat(imageA.get(11).toString()), Boolean.parseBoolean(imageA.get(12).toString())
+                                , Float.parseFloat(imageA.get(13).toString()), Float.parseFloat(imageA.get(14).toString()), Float.parseFloat(imageA.get(15).toString()), Float.parseFloat(imageA.get(16).toString()), Boolean.parseBoolean(imageA.get(17).toString())
+                                , Float.parseFloat(imageA.get(18).toString()), Float.parseFloat(imageA.get(19).toString()), Float.parseFloat(imageA.get(20).toString()), Boolean.parseBoolean(imageA.get(21).toString()), Integer.parseInt(imageA.get(22).toString()));
+
+                    /*    imageA.add(0,"url");//String : url of image (delete when object is delete)
+                        imageA.add(1,"offset_x");//Float : offset X of image
+                        imageA.add(2,"offset_x_enable");//Boolean : enable offset X of image
+                        imageA.add(3,"offset_x_original");//Float : original offset X of image
+                        imageA.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+                        imageA.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+                        imageA.add(6,"offset_y");//Float : offset Y of image
+                        imageA.add(7,"offset_y_enable");//Boolean : enable offset X of image
+                        imageA.add(8,"offset_y_original");//Float : original offset Y of image
+                        imageA.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+                        imageA.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+                        imageA.add(11,"scale");//Float : scale of image
+                        imageA.add(12,"scale_enable");//Float : Boolean : enable scale of image
+                        imageA.add(13,"scale_original");//Float : original scale of image
+                        imageA.add(14,"scale_max");//Float : maximum authorized scale of image
+                        imageA.add(15,"scale_min");//Float : minimum authorized scale of image
+                        imageA.add(16,"rotate");//Float : rotate of image
+                        imageA.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+                        imageA.add(18,"rotate_original");//Float : original rotation of image
+                        imageA.add(19,"rotate_max");//Float : maximum authorized rotate of image
+                        imageA.add(20,"rotate_min");//Float : minimum authorized rotate of image
+                        imageA.add(21,"filter_enable");//Boolean : enable filter for this image
+                        imageA.add(22,"filter");//Float : Integer : enum filter for this image
+                        return (imageA);*/
+
+                        mDatabaseClass.insertImage(ImageA);
                     } else {
-                        Image ImageA = new Image( aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
+                       /* Image ImageA = new Image( aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
                                 , aoffset_y, aoffset_y_enable, aoffset_y_original, aoffset_y_max, aoffset_y_min
                                 , ascale, ascale_enable, ascale_original, ascale_max, ascale_min
                                 , arotate, arotate_enable, arotate_original, arotate_max, arotate_min
-                                , afilter_enable, afilter );
-
-                        mDatabaseClass.updateImage( ImageA );
+                                , afilter_enable, afilter );*/
+                        Image ImageA = new Image(imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
+                                , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
+                                , Float.parseFloat(imageA.get(8).toString()), Float.parseFloat(imageA.get(9).toString()), Float.parseFloat(imageA.get(10).toString()), Float.parseFloat(imageA.get(11).toString()), Boolean.parseBoolean(imageA.get(12).toString())
+                                , Float.parseFloat(imageA.get(13).toString()), Float.parseFloat(imageA.get(14).toString()), Float.parseFloat(imageA.get(15).toString()), Float.parseFloat(imageA.get(16).toString()), Boolean.parseBoolean(imageA.get(17).toString())
+                                , Float.parseFloat(imageA.get(18).toString()), Float.parseFloat(imageA.get(19).toString()), Float.parseFloat(imageA.get(20).toString()), Boolean.parseBoolean(imageA.get(21).toString()), Integer.parseInt(imageA.get(22).toString()));
+                        mDatabaseClass.updateImage(ImageA);
                     }
                 }
-                if (template >= 2) {
+                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 2) {
                     /*Nuii*/
                     //Get value of image B
-                    burl = null;
-                    boffset_x = 0.00f;
-                    boffset_x_enable = false;
-                    boffset_x_original = 0.00f;
-                    boffset_x_max = 0.00f;
-                    boffset_x_min = 0.00f;
-                    boffset_y = 0.00f;
-                    boffset_y_enable = false;
-                    boffset_y_original = 0.00f;
-                    boffset_y_max = 0.00f;
-                    boffset_y_min = 0.00f;
-                    bscale = 0.00f;
-                    bscale_enable = false;
-                    bscale_original = 0.00f;
-                    bscale_max = 0.00f;
-                    bscale_min = 0.00f;
-                    brotate = 0.00f;
-                    brotate_enable = false;
-                    brotate_original = 0.00f;
-                    brotate_max = 0.00f;
-                    brotate_min = 0.00f;
-                    bfilter_enable = false;
-                    bfilter = 1;
-
+                    imageB = mMove.imageB;
                     if (bid == null) {
                         bid = mDatabaseClass.createID();
 
-                        Image ImageB = new Image( bid, burl, boffset_x, boffset_x_enable, boffset_x_original, boffset_x_max, boffset_x_min
-                                , boffset_y, boffset_y_enable, boffset_y_original, boffset_y_max, boffset_y_min
-                                , bscale, bscale_enable, bscale_original, bscale_max, bscale_min
-                                , brotate, brotate_enable, brotate_original, brotate_max, brotate_min
-                                , bfilter_enable, bfilter );
-
-                        mDatabaseClass.insertImage( ImageB );
+                        Image ImageB = new Image(bid, imageB.get(0).toString().getBytes(), Float.parseFloat(imageB.get(1).toString()), Boolean.parseBoolean(imageB.get(2).toString())
+                                , Float.parseFloat(imageB.get(3).toString()), Float.parseFloat(imageB.get(4).toString()), Float.parseFloat(imageB.get(5).toString()), Float.parseFloat(imageB.get(6).toString()), Boolean.parseBoolean(imageB.get(7).toString())
+                                , Float.parseFloat(imageB.get(8).toString()), Float.parseFloat(imageB.get(9).toString()), Float.parseFloat(imageB.get(10).toString()), Float.parseFloat(imageB.get(11).toString()), Boolean.parseBoolean(imageB.get(12).toString())
+                                , Float.parseFloat(imageB.get(13).toString()), Float.parseFloat(imageB.get(14).toString()), Float.parseFloat(imageB.get(15).toString()), Float.parseFloat(imageB.get(16).toString()), Boolean.parseBoolean(imageB.get(17).toString())
+                                , Float.parseFloat(imageB.get(18).toString()), Float.parseFloat(imageB.get(19).toString()), Float.parseFloat(imageB.get(20).toString()), Boolean.parseBoolean(imageB.get(21).toString()), Integer.parseInt(imageB.get(22).toString()));
+                        mDatabaseClass.insertImage(ImageB);
                     } else {
-                        Image ImageB = new Image( burl, boffset_x, boffset_x_enable, boffset_x_original, boffset_x_max, boffset_x_min
-                                , boffset_y, boffset_y_enable, boffset_y_original, boffset_y_max, boffset_y_min
-                                , bscale, bscale_enable, bscale_original, bscale_max, bscale_min
-                                , brotate, brotate_enable, brotate_original, brotate_max, brotate_min
-                                , bfilter_enable, bfilter );
+                        Image ImageB = new Image(imageB.get(0).toString().getBytes(), Float.parseFloat(imageB.get(1).toString()), Boolean.parseBoolean(imageB.get(2).toString())
+                                , Float.parseFloat(imageB.get(3).toString()), Float.parseFloat(imageB.get(4).toString()), Float.parseFloat(imageB.get(5).toString()), Float.parseFloat(imageB.get(6).toString()), Boolean.parseBoolean(imageB.get(7).toString())
+                                , Float.parseFloat(imageB.get(8).toString()), Float.parseFloat(imageB.get(9).toString()), Float.parseFloat(imageB.get(10).toString()), Float.parseFloat(imageB.get(11).toString()), Boolean.parseBoolean(imageB.get(12).toString())
+                                , Float.parseFloat(imageB.get(13).toString()), Float.parseFloat(imageB.get(14).toString()), Float.parseFloat(imageB.get(15).toString()), Float.parseFloat(imageB.get(16).toString()), Boolean.parseBoolean(imageB.get(17).toString())
+                                , Float.parseFloat(imageB.get(18).toString()), Float.parseFloat(imageB.get(19).toString()), Float.parseFloat(imageB.get(20).toString()), Boolean.parseBoolean(imageB.get(21).toString()), Integer.parseInt(imageB.get(22).toString()));
 
-                        mDatabaseClass.updateImage( ImageB );
+                        mDatabaseClass.updateImage(ImageB);
                     }
                 }
-                if (template >= 3) {
+                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 3) {
                     /*Nuii*/
                     //Get value of image C
-                    curl = null;
-                    coffset_x = 0.00f;
-                    coffset_x_enable = false;
-                    coffset_x_original = 0.00f;
-                    coffset_x_max = 0.00f;
-                    coffset_x_min = 0.00f;
-                    coffset_y = 0.00f;
-                    coffset_y_enable = false;
-                    coffset_y_original = 0.00f;
-                    coffset_y_max = 0.00f;
-                    coffset_y_min = 0.00f;
-                    cscale = 0.00f;
-                    cscale_enable = false;
-                    cscale_original = 0.00f;
-                    cscale_max = 0.00f;
-                    cscale_min = 0.00f;
-                    crotate = 0.00f;
-                    crotate_enable = false;
-                    crotate_original = 0.00f;
-                    crotate_max = 0.00f;
-                    crotate_min = 0.00f;
-                    cfilter_enable = false;
-                    cfilter = 1;
+                    imageC = mMove.imageC;
                     if (cid == null) {
                         cid = mDatabaseClass.createID();
-                        Image ImageC = new Image( cid, curl, coffset_x, coffset_x_enable, coffset_x_original, coffset_x_max, coffset_x_min
-                                , coffset_y, coffset_y_enable, coffset_y_original, coffset_y_max, coffset_y_min
-                                , cscale, cscale_enable, cscale_original, cscale_max, cscale_min
-                                , crotate, crotate_enable, crotate_original, crotate_max, crotate_min
-                                , cfilter_enable, cfilter );
 
-                        mDatabaseClass.insertImage( ImageC );
+                        Image ImageC = new Image(cid, imageC.get(0).toString().getBytes(), Float.parseFloat(imageC.get(1).toString()), Boolean.parseBoolean(imageC.get(2).toString())
+                                , Float.parseFloat(imageC.get(3).toString()), Float.parseFloat(imageC.get(4).toString()), Float.parseFloat(imageC.get(5).toString()), Float.parseFloat(imageC.get(6).toString()), Boolean.parseBoolean(imageC.get(7).toString())
+                                , Float.parseFloat(imageC.get(8).toString()), Float.parseFloat(imageC.get(9).toString()), Float.parseFloat(imageC.get(10).toString()), Float.parseFloat(imageC.get(11).toString()), Boolean.parseBoolean(imageC.get(12).toString())
+                                , Float.parseFloat(imageC.get(13).toString()), Float.parseFloat(imageC.get(14).toString()), Float.parseFloat(imageC.get(15).toString()), Float.parseFloat(imageC.get(16).toString()), Boolean.parseBoolean(imageC.get(17).toString())
+                                , Float.parseFloat(imageC.get(18).toString()), Float.parseFloat(imageC.get(19).toString()), Float.parseFloat(imageC.get(20).toString()), Boolean.parseBoolean(imageC.get(21).toString()), Integer.parseInt(imageC.get(22).toString()));
+                        mDatabaseClass.insertImage(ImageC);
                     } else {
-                        Image ImageC = new Image( curl, coffset_x, coffset_x_enable, coffset_x_original, coffset_x_max, coffset_x_min
-                                , coffset_y, coffset_y_enable, coffset_y_original, coffset_y_max, coffset_y_min
-                                , cscale, cscale_enable, cscale_original, cscale_max, cscale_min
-                                , crotate, crotate_enable, crotate_original, crotate_max, crotate_min
-                                , cfilter_enable, cfilter );
+                        Image ImageC = new Image(imageC.get(0).toString().getBytes(), Float.parseFloat(imageC.get(1).toString()), Boolean.parseBoolean(imageC.get(2).toString())
+                                , Float.parseFloat(imageC.get(3).toString()), Float.parseFloat(imageC.get(4).toString()), Float.parseFloat(imageC.get(5).toString()), Float.parseFloat(imageC.get(6).toString()), Boolean.parseBoolean(imageC.get(7).toString())
+                                , Float.parseFloat(imageC.get(8).toString()), Float.parseFloat(imageC.get(9).toString()), Float.parseFloat(imageC.get(10).toString()), Float.parseFloat(imageC.get(11).toString()), Boolean.parseBoolean(imageC.get(12).toString())
+                                , Float.parseFloat(imageC.get(13).toString()), Float.parseFloat(imageC.get(14).toString()), Float.parseFloat(imageC.get(15).toString()), Float.parseFloat(imageC.get(16).toString()), Boolean.parseBoolean(imageC.get(17).toString())
+                                , Float.parseFloat(imageC.get(18).toString()), Float.parseFloat(imageC.get(19).toString()), Float.parseFloat(imageC.get(20).toString()), Boolean.parseBoolean(imageC.get(21).toString()), Integer.parseInt(imageC.get(22).toString()));
 
-                        mDatabaseClass.updateImage( ImageC );
+                        mDatabaseClass.updateImage(ImageC);
                     }
                 }
-                if (template >= 4) {
+                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 4) {
                     /*Nuii*/
                     //Get value of image D
-                    durl = null;
-                    doffset_x = 0.00f;
-                    doffset_x_enable = false;
-                    doffset_x_original = 0.00f;
-                    doffset_x_max = 0.00f;
-                    doffset_x_min = 0.00f;
-                    doffset_y = 0.00f;
-                    doffset_y_enable = false;
-                    doffset_y_original = 0.00f;
-                    doffset_y_max = 0.00f;
-                    doffset_y_min = 0.00f;
-                    dscale = 0.00f;
-                    dscale_enable = false;
-                    dscale_original = 0.00f;
-                    dscale_max = 0.00f;
-                    dscale_min = 0.00f;
-                    drotate = 0.00f;
-                    drotate_enable = false;
-                    drotate_original = 0.00f;
-                    drotate_max = 0.00f;
-                    drotate_min = 0.00f;
-                    dfilter_enable = false;
-                    dfilter = 1;
+                    imageD = mMove.imageD;
                     if (did == null) {
                         did = mDatabaseClass.createID();
-                        Image ImageD = new Image( did, durl, doffset_x, doffset_x_enable, doffset_x_original, doffset_x_max, doffset_x_min
-                                , doffset_y, doffset_y_enable, doffset_y_original, doffset_y_max, doffset_y_min
-                                , dscale, dscale_enable, dscale_original, dscale_max, dscale_min
-                                , drotate, drotate_enable, drotate_original, drotate_max, drotate_min
-                                , dfilter_enable, dfilter );
 
-                        mDatabaseClass.insertImage( ImageD );
+                        Image ImageD = new Image(did, imageD.get(0).toString().getBytes(), Float.parseFloat(imageD.get(1).toString()), Boolean.parseBoolean(imageD.get(2).toString())
+                                , Float.parseFloat(imageD.get(3).toString()), Float.parseFloat(imageD.get(4).toString()), Float.parseFloat(imageD.get(5).toString()), Float.parseFloat(imageD.get(6).toString()), Boolean.parseBoolean(imageD.get(7).toString())
+                                , Float.parseFloat(imageD.get(8).toString()), Float.parseFloat(imageD.get(9).toString()), Float.parseFloat(imageD.get(10).toString()), Float.parseFloat(imageD.get(11).toString()), Boolean.parseBoolean(imageD.get(12).toString())
+                                , Float.parseFloat(imageD.get(13).toString()), Float.parseFloat(imageD.get(14).toString()), Float.parseFloat(imageD.get(15).toString()), Float.parseFloat(imageD.get(16).toString()), Boolean.parseBoolean(imageD.get(17).toString())
+                                , Float.parseFloat(imageD.get(18).toString()), Float.parseFloat(imageD.get(19).toString()), Float.parseFloat(imageD.get(20).toString()), Boolean.parseBoolean(imageD.get(21).toString()), Integer.parseInt(imageD.get(22).toString()));
+                        mDatabaseClass.insertImage(ImageD);
                     } else {
-                        Image ImageD = new Image( durl, doffset_x, doffset_x_enable, doffset_x_original, doffset_x_max, doffset_x_min
-                                , doffset_y, doffset_y_enable, doffset_y_original, doffset_y_max, doffset_y_min
-                                , dscale, dscale_enable, dscale_original, dscale_max, dscale_min
-                                , drotate, drotate_enable, drotate_original, drotate_max, drotate_min
-                                , dfilter_enable, dfilter );
+                        Image ImageD = new Image(imageD.get(0).toString().getBytes(), Float.parseFloat(imageD.get(1).toString()), Boolean.parseBoolean(imageD.get(2).toString())
+                                , Float.parseFloat(imageD.get(3).toString()), Float.parseFloat(imageD.get(4).toString()), Float.parseFloat(imageD.get(5).toString()), Float.parseFloat(imageD.get(6).toString()), Boolean.parseBoolean(imageD.get(7).toString())
+                                , Float.parseFloat(imageD.get(8).toString()), Float.parseFloat(imageD.get(9).toString()), Float.parseFloat(imageD.get(10).toString()), Float.parseFloat(imageD.get(11).toString()), Boolean.parseBoolean(imageD.get(12).toString())
+                                , Float.parseFloat(imageD.get(13).toString()), Float.parseFloat(imageD.get(14).toString()), Float.parseFloat(imageD.get(15).toString()), Float.parseFloat(imageD.get(16).toString()), Boolean.parseBoolean(imageD.get(17).toString())
+                                , Float.parseFloat(imageD.get(18).toString()), Float.parseFloat(imageD.get(19).toString()), Float.parseFloat(imageD.get(20).toString()), Boolean.parseBoolean(imageD.get(21).toString()), Integer.parseInt(imageD.get(22).toString()));
 
-                        mDatabaseClass.updateImage( ImageD );
+                        mDatabaseClass.updateImage(ImageD);
                     }
                 }
+
+                Intent intent = new Intent( contentView.getContext(), ZPTStickerComposerView.class );
+                intent.putExtra( "imageTemplateID", getTpID );
+                startActivity( intent );
             }
+
         } );
 
         previousButton.setOnClickListener( new View.OnClickListener() {
