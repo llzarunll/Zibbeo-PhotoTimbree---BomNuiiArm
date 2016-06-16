@@ -69,7 +69,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     FrameLayout FrameImg;
     SeekBar seekbar1;
     int FullHeight, FullWidth;
-    public  int mIndex = 0;
+    public int mIndex = 0;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
     public Bitmap ImageSelect;
@@ -82,39 +82,45 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     databaseClass mDatabaseClass;
     String getTpID, tpID, getImageTemplateID, imageTemplateID, stickerTemplateID;
     //Image
-    String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
+    String TemplateID, image_a, image_b, image_c, image_d, aid, bid, cid, did;
 
 
     /*Nuii*/
     //Image Template
     ArrayList valueImageTemplate;
     //Image Model A - D
-    ArrayList valueImageA,valueImageB,valueImageC,valueImageD;
+    ArrayList valueImageA, valueImageB, valueImageC, valueImageD;
 
     /*Nuii*/
     ArrayList getTemplate;
     ArrayList getModel;
-    ArrayList imageTemplate;  ArrayList imageA,imageB,imageC,imageD;
+    ArrayList imageTemplate;
+    ArrayList imageA, imageB, imageC, imageD;
 
-    /*** KITTI */
-     DrawCanvas mDraw;
+    /***
+     * KITTI
+     */
+    DrawCanvas mDraw;
 
-     Paint mPaint = new Paint();
-     Paint mPaintInner = new Paint();
-     Paint mPaint2 = new Paint();
-     Paint mPaint3,mPaint4,mPaint5,mPaint6;
-     Context mContext;
-     ViewGroup mLayout;
-     RelativeLayout mImageselect,mFrameLayout;
-     ViewGroup.LayoutParams mLayoutParams;
-     boolean touch_state = false;
-     boolean mFirstTimeCheck = true;
-    TouchImageView mImage;
-     ArrayList<Point> mTopLeftArea,mTopRightArea,mBottomLeftArea,mBottomRightArea;
-     Point mCenterPoint,mLeftPoint,mRightPoint,mTopPoint,mBottomPoint;
-     float mStroke = 5f;
-     float mStrokeInner = 6f;
-     int mRadius = 30;
+    Paint mPaint = new Paint();
+    Paint mPaintInner = new Paint();
+    Paint mPaint2 = new Paint();
+    Paint mPaint3, mPaint4, mPaint5, mPaint6;
+    Context mContext;
+    ViewGroup mLayout;
+    RelativeLayout mImageselect, mFrameLayout;
+    ViewGroup.LayoutParams mLayoutParams;
+    boolean touch_state = false;
+    boolean mFirstTimeCheck = true;
+    RotateZoomImageView mImage;
+    ArrayList<Point> mTopLeftArea, mTopRightArea, mBottomLeftArea, mBottomRightArea;
+    Point mCenterPoint, mLeftPoint, mRightPoint, mTopPoint, mBottomPoint;
+    float mStroke = 5f;
+    float mStrokeInner = 6f;
+    int mRadius = 30;
+
+    Matrix tmpMatrix = new Matrix();
+    Bitmap originalPic[] = new Bitmap[4];
 
 
     /**
@@ -127,6 +133,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client2;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client3;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -142,20 +153,21 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         contentView = inflater.inflate( R.layout.zpt_image_composer_view, null, false );
         mDrawerLayout.addView( contentView, 0 );
 
-        mDraw = new DrawCanvas(this);
+        //startActivity(new Intent(this, MultitouchActivity.class));
+
+        mDraw = new DrawCanvas( this );
         init();
 
         //mFrameLayout.setVisibility(View.VISIBLE);
         //mImageselect.setVisibility(View.INVISIBLE);
 
-        mLayout.setOnTouchListener(new View.OnTouchListener() {
+        mLayout.setOnTouchListener( new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 draw();
                 return false;
             }
-        });
-
+        } );
 
 
         mDatabaseClass = new databaseClass( contentView.getContext() );
@@ -167,14 +179,14 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             getImageTemplateID = bundle.getString( "imageID" );
         }
         if (getImageTemplateID != null) {
-            imageTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getTemplate();
-            stickerTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker();
+//            imageTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getTemplate();
+//            stickerTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker();
         }
         //Get Image Template
         /*imageTemplate = "123456789";*/
         if (imageTemplate != null) {
             // i = mDatabaseClass.getImageTemplate(imageTemplateID).getTemplate();
-            GetImageTemplate(imageTemplateID);
+            GetImageTemplate( imageTemplateID );
         }
         //Get Sticker
         if (stickerTemplateID != null) {
@@ -201,36 +213,87 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             GetImageModel( image_d );
         }
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//         ATTENTION: This was auto-generated to implement the App Indexing API.
+//         See https://g.co/AppIndexing/AndroidStudio for more information.
         client2 = new GoogleApiClient.Builder( this ).addApi( AppIndex.API ).build();
+//         ATTENTION: This was auto-generated to implement the App Indexing API.
+//         See https://g.co/AppIndexing/AndroidStudio for more information.
+        client3 = new GoogleApiClient.Builder( this ).addApi( AppIndex.API ).build();
     }
 
+    /*@Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client3.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse( "http://host/path" ),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
+        );
+        AppIndex.AppIndexApi.start( client3, viewAction );
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse( "http://host/path" ),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
+        );
+        AppIndex.AppIndexApi.end( client3, viewAction );
+        client3.disconnect();
+    }*/
+
     //KITTI
-    private class DrawCanvas extends View implements View.OnTouchListener{
+    private class DrawCanvas extends View implements View.OnTouchListener {
 
-        int tMaxLeft,tMaxRight,tMaxTop,tMaxBottom;
+        int tMaxLeft, tMaxRight, tMaxTop, tMaxBottom;
         float mDistanceCenter, mDistanceLeft, mDistanceRight, mDistanceTop, mDistanceBottom;
-        Rect mTopLeftAreaRect,mTopRightAreaRect,mBottomLeftAreaRect,mBottomRightAreaRect;
+        Rect mTopLeftAreaRect, mTopRightAreaRect, mBottomLeftAreaRect, mBottomRightAreaRect;
 
-        public Drawable myPic[] = {
-                getResources().getDrawable(R.drawable.boston),
-                getResources().getDrawable(R.drawable.carifornia),
-                getResources().getDrawable(R.drawable.dubai),
-                getResources().getDrawable(R.drawable.paris)
+        public Bitmap myPic[] = {
+
+                BitmapFactory.decodeResource( getResources(), R.drawable.boston ),
+                BitmapFactory.decodeResource( getResources(), R.drawable.carifornia),
+                BitmapFactory.decodeResource( getResources(), R.drawable.dubai),
+                BitmapFactory.decodeResource( getResources(), R.drawable.paris)
         };
 
+        public Matrix matrix[] = new Matrix[4];
+
+
         private DrawCanvas(Context mContext) {
-            super(mContext);
-            this.setOnTouchListener(this);
+            super( mContext );
+            this.setOnTouchListener( this );
 
         }
 
         @Override
         public void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
+            super.onDraw( canvas );
 //            Log.i("PARAM",""+mLayoutParams.height+" "+getHeight());
 
+            int width = myPic[0].getWidth();
+            int height = myPic[0].getHeight();
+            int newWidth = width;
+            int newHeight = height;
 
             if (mFirstTimeCheck) {
                 tMaxLeft = mRadius;
@@ -260,64 +323,66 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 } else {
                     Point = (int) (mPaintInner.getStrokeWidth() / 2);
                 }
-                mPaintInner.setStrokeWidth(mPaint.getStrokeWidth() + 5);
+                mPaintInner.setStrokeWidth( mPaint.getStrokeWidth() + 5 );
 
-                Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
-                Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+                Bitmap b = myPic[0];
+                Bitmap bitmap = Bitmap.createBitmap(b, 0, 0,
+                        width, height, matrix[0], true);
+
                 int w = getWidth(), h = getHeight();
                 Point ImgA[] = {
-                        new Point(mLeftPoint.x, mTopPoint.y),
-                        new Point(mTopPoint.x, mTopPoint.y),
-                        new Point(mCenterPoint.x, mCenterPoint.y),
-                        new Point(mLeftPoint.x, mLeftPoint.y)
+                        new Point( mLeftPoint.x, mTopPoint.y ),
+                        new Point( mTopPoint.x, mTopPoint.y ),
+                        new Point( mCenterPoint.x, mCenterPoint.y ),
+                        new Point( mLeftPoint.x, mLeftPoint.y )
                 };
-                Bitmap roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mLeftPoint.x + Point, mTopPoint.y + Point, mTopPoint.x - Point, mTopPoint.y + Point, mPaintInner);
-                canvas.drawLine(mTopPoint.x - Point, mTopPoint.y - Point, mCenterPoint.x - Point, mCenterPoint.y - Point, mPaintInner);
-                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y - Point, mPaintInner);
-                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y - Point, mLeftPoint.x + Point, mTopPoint.y + Point, mPaintInner);
+                Bitmap roundBitmap = getRoundedCroppedBitmap( bitmap, w, ImgA );
+                canvas.drawBitmap( roundBitmap, 0, 0, null );
+                canvas.drawLine( mLeftPoint.x + Point, mTopPoint.y + Point, mTopPoint.x - Point, mTopPoint.y + Point, mPaintInner );
+                canvas.drawLine( mTopPoint.x - Point, mTopPoint.y - Point, mCenterPoint.x - Point, mCenterPoint.y - Point, mPaintInner );
+                canvas.drawLine( mCenterPoint.x - Point, mCenterPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y - Point, mPaintInner );
+                canvas.drawLine( mLeftPoint.x + Point, mLeftPoint.y - Point, mLeftPoint.x + Point, mTopPoint.y + Point, mPaintInner );
 
-                b = ((BitmapDrawable) myPic[1]).getBitmap();
-                bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                ImgA[0] = new Point(mTopPoint.x, mTopPoint.y);
-                ImgA[1] = new Point(mRightPoint.x, mTopPoint.y);
-                ImgA[2] = new Point(mRightPoint.x, mRightPoint.y);
-                ImgA[3] = new Point(mCenterPoint.x, mCenterPoint.y);
+                b =  myPic[1];
+                bitmap = b.copy( Bitmap.Config.ARGB_8888, true );
+                ImgA[0] = new Point( mTopPoint.x, mTopPoint.y );
+                ImgA[1] = new Point( mRightPoint.x, mTopPoint.y );
+                ImgA[2] = new Point( mRightPoint.x, mRightPoint.y );
+                ImgA[3] = new Point( mCenterPoint.x, mCenterPoint.y );
 
-                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mTopPoint.x + Point, mTopPoint.y + Point, mRightPoint.x - Point, mTopPoint.y + Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mTopPoint.y - Point, mRightPoint.x - Point, mRightPoint.y - Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y - Point, mPaintInner);
-                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y - Point, mTopPoint.x + Point, mTopPoint.y + Point, mPaintInner);
+                roundBitmap = getRoundedCroppedBitmap( bitmap, w, ImgA );
+                canvas.drawBitmap( roundBitmap, 0, 0, null );
+                canvas.drawLine( mTopPoint.x + Point, mTopPoint.y + Point, mRightPoint.x - Point, mTopPoint.y + Point, mPaintInner );
+                canvas.drawLine( mRightPoint.x - Point, mTopPoint.y - Point, mRightPoint.x - Point, mRightPoint.y - Point, mPaintInner );
+                canvas.drawLine( mRightPoint.x - Point, mRightPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y - Point, mPaintInner );
+                canvas.drawLine( mCenterPoint.x + Point, mCenterPoint.y - Point, mTopPoint.x + Point, mTopPoint.y + Point, mPaintInner );
 
-                b = ((BitmapDrawable) myPic[2]).getBitmap();
-                bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                ImgA[0] = new Point(mLeftPoint.x, mLeftPoint.y);
-                ImgA[1] = new Point(mCenterPoint.x, mCenterPoint.y);
-                ImgA[2] = new Point(mBottomPoint.x, mBottomPoint.y);
-                ImgA[3] = new Point(mLeftPoint.x, mBottomPoint.y);
-                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y + Point, mCenterPoint.x - Point, mCenterPoint.y + Point, mPaintInner);
-                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mBottomPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mBottomPoint.x - Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mLeftPoint.x + Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y + Point, mPaintInner);
+                b = myPic[2];
+                bitmap = b.copy( Bitmap.Config.ARGB_8888, true );
+                ImgA[0] = new Point( mLeftPoint.x, mLeftPoint.y );
+                ImgA[1] = new Point( mCenterPoint.x, mCenterPoint.y );
+                ImgA[2] = new Point( mBottomPoint.x, mBottomPoint.y );
+                ImgA[3] = new Point( mLeftPoint.x, mBottomPoint.y );
+                roundBitmap = getRoundedCroppedBitmap( bitmap, w, ImgA );
+                canvas.drawBitmap( roundBitmap, 0, 0, null );
+                canvas.drawLine( mLeftPoint.x + Point, mLeftPoint.y + Point, mCenterPoint.x - Point, mCenterPoint.y + Point, mPaintInner );
+                canvas.drawLine( mCenterPoint.x - Point, mCenterPoint.y - Point, mBottomPoint.x - Point, mBottomPoint.y - Point, mPaintInner );
+                canvas.drawLine( mBottomPoint.x - Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mBottomPoint.y - Point, mPaintInner );
+                canvas.drawLine( mLeftPoint.x + Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y + Point, mPaintInner );
 
-                b = ((BitmapDrawable) myPic[3]).getBitmap();
-                bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                ImgA[0] = new Point(mCenterPoint.x, mCenterPoint.y);
-                ImgA[1] = new Point(mRightPoint.x, mRightPoint.y);
-                ImgA[2] = new Point(mRightPoint.x, mBottomPoint.y);
-                ImgA[3] = new Point(mBottomPoint.x, mBottomPoint.y);
+                b = myPic[3];
+                bitmap = b;
+                ImgA[0] = new Point( mCenterPoint.x, mCenterPoint.y );
+                ImgA[1] = new Point( mRightPoint.x, mRightPoint.y );
+                ImgA[2] = new Point( mRightPoint.x, mBottomPoint.y );
+                ImgA[3] = new Point( mBottomPoint.x, mBottomPoint.y );
 
-                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y + Point, mRightPoint.x - Point, mRightPoint.y + Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mRightPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mBottomPoint.y - Point, mBottomPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mBottomPoint.x + Point, mBottomPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y + Point, mPaintInner);
+                roundBitmap = getRoundedCroppedBitmap( bitmap, w, ImgA );
+                canvas.drawBitmap( roundBitmap, 0, 0, null );
+                canvas.drawLine( mCenterPoint.x + Point, mCenterPoint.y + Point, mRightPoint.x - Point, mRightPoint.y + Point, mPaintInner );
+                canvas.drawLine( mRightPoint.x - Point, mRightPoint.y - Point, mRightPoint.x - Point, mBottomPoint.y - Point, mPaintInner );
+                canvas.drawLine( mRightPoint.x - Point, mBottomPoint.y - Point, mBottomPoint.x + Point, mBottomPoint.y - Point, mPaintInner );
+                canvas.drawLine( mBottomPoint.x + Point, mBottomPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y + Point, mPaintInner );
             }
 
             //topleftarea
@@ -353,9 +418,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            int tXPoint,tYPoint;
-            tXPoint = (int)motionEvent.getX();
-            tYPoint = (int)motionEvent.getY();
+            int tXPoint, tYPoint;
+            tXPoint = (int) motionEvent.getX();
+            tYPoint = (int) motionEvent.getY();
 
             if (tXPoint > tMaxRight)
                 tXPoint = tMaxRight;
@@ -366,96 +431,95 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             else if (tYPoint < tMaxTop)
                 tYPoint = tMaxTop;
 
-            mDistanceCenter = (float) Math.sqrt(Math.pow(mCenterPoint.x-tXPoint, 2) + Math.pow(mCenterPoint.y-tYPoint, 2));
-            mDistanceLeft = (float) Math.sqrt(Math.pow(mLeftPoint.x-tXPoint, 2) + Math.pow(mLeftPoint.y-tYPoint, 2));
-            mDistanceRight = (float) Math.sqrt(Math.pow(mRightPoint.x-tXPoint, 2) + Math.pow(mRightPoint.y-tYPoint, 2));
-            mDistanceTop = (float) Math.sqrt(Math.pow(mTopPoint.x-tXPoint, 2) + Math.pow(mTopPoint.y-tYPoint, 2));
-            mDistanceBottom = (float) Math.sqrt(Math.pow(mBottomPoint.x-tXPoint, 2) + Math.pow(mBottomPoint.y-tYPoint, 2));
+            mDistanceCenter = (float) Math.sqrt( Math.pow( mCenterPoint.x - tXPoint, 2 ) + Math.pow( mCenterPoint.y - tYPoint, 2 ) );
+            mDistanceLeft = (float) Math.sqrt( Math.pow( mLeftPoint.x - tXPoint, 2 ) + Math.pow( mLeftPoint.y - tYPoint, 2 ) );
+            mDistanceRight = (float) Math.sqrt( Math.pow( mRightPoint.x - tXPoint, 2 ) + Math.pow( mRightPoint.y - tYPoint, 2 ) );
+            mDistanceTop = (float) Math.sqrt( Math.pow( mTopPoint.x - tXPoint, 2 ) + Math.pow( mTopPoint.y - tYPoint, 2 ) );
+            mDistanceBottom = (float) Math.sqrt( Math.pow( mBottomPoint.x - tXPoint, 2 ) + Math.pow( mBottomPoint.y - tYPoint, 2 ) );
             //Log.d("PARAM4", "" + tXPoint + " " + tYPoint +" D1 "+mDistanceCenter
             //        +" D2 "+mDistanceLeft+" D3 "+mDistanceRight+" D4 "+mDistanceTop+" D5 "+mDistanceBottom);
 
-            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                if (mDistanceCenter <= mRadius){
-                    mCenterPoint.set(tXPoint,tYPoint);
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                if (mDistanceCenter <= mRadius) {
+                    mCenterPoint.set( tXPoint, tYPoint );
                     //Log.i("PARAM1",""+tXPoint+" "+tYPoint+" D1 "+mDistanceCenter);
                     invalidate();
 //                draw();
                     touch_state = true;
-                } else if (mDistanceLeft <= mRadius){
-                    mLeftPoint.set(tMaxLeft,tYPoint);
+                } else if (mDistanceLeft <= mRadius) {
+                    mLeftPoint.set( tMaxLeft, tYPoint );
                     //Log.i("PARAMLEFT",""+tXPoint+" "+tYPoint+" D2 "+mDistanceLeft);
                     invalidate();
 //                draw();
                     touch_state = true;
-                } else if (mDistanceRight <= mRadius){
-                    mRightPoint.set(tMaxRight,tYPoint);
+                } else if (mDistanceRight <= mRadius) {
+                    mRightPoint.set( tMaxRight, tYPoint );
                     //Log.i("PARAMRIGHT",""+tXPoint+" "+tYPoint+" D3 "+mDistanceRight);
                     invalidate();
 //                draw();
                     touch_state = true;
-                } else if (mDistanceTop <= mRadius){
-                    mTopPoint.set(tXPoint,tMaxTop);
+                } else if (mDistanceTop <= mRadius) {
+                    mTopPoint.set( tXPoint, tMaxTop );
                     //Log.i("PARAMTOP",""+tXPoint+" "+tYPoint+" D4 "+mDistanceTop);
                     invalidate();
 //                draw();
                     touch_state = true;
-                } else if (mDistanceBottom <= mRadius){
-                    mBottomPoint.set(tXPoint,tMaxBottom);
+                } else if (mDistanceBottom <= mRadius) {
+                    mBottomPoint.set( tXPoint, tMaxBottom );
                     //Log.i("PARAMBOTTOM",""+tXPoint+" "+tYPoint+" D5 "+mDistanceBottom);
                     invalidate();
                     touch_state = true;
-                }
-                else {
-                    FindImage((int) motionEvent.getX(), (int) motionEvent.getY() );
+                } else {
+                    FindImage( (int) motionEvent.getX(), (int) motionEvent.getY() );
                 }
                 setPointAreaArrayList();
 
-            } else if(motionEvent.getAction() == MotionEvent.ACTION_MOVE && touch_state) {
-                if (mDistanceCenter <= mRadius){
-                    mCenterPoint.set(tXPoint,tYPoint);
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE && touch_state) {
+                if (mDistanceCenter <= mRadius) {
+                    mCenterPoint.set( tXPoint, tYPoint );
 //                    Log.i("PARAM1",""+tXPoint+" "+tYPoint+" D1 "+mDistanceCenter);
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceLeft <= mRadius){
-                    mLeftPoint.set(tMaxLeft,tYPoint);
+                } else if (mDistanceLeft <= mRadius) {
+                    mLeftPoint.set( tMaxLeft, tYPoint );
 //                    Log.i("PARAMLEFT",""+tXPoint+" "+tYPoint+" D2 "+mDistanceLeft);
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceRight <= mRadius){
-                    mRightPoint.set(tMaxRight,tYPoint);
+                } else if (mDistanceRight <= mRadius) {
+                    mRightPoint.set( tMaxRight, tYPoint );
 //                    Log.i("PARAMRIGHT",""+tXPoint+" "+tYPoint+" D3 "+mDistanceRight);
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceTop <= mRadius){
-                    mTopPoint.set(tXPoint,tMaxTop);
+                } else if (mDistanceTop <= mRadius) {
+                    mTopPoint.set( tXPoint, tMaxTop );
 //                    Log.i("PARAMTOP",""+tXPoint+" "+tYPoint+" D4 "+mDistanceTop);
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceBottom <= mRadius){
-                    mBottomPoint.set(tXPoint,tMaxBottom);
+                } else if (mDistanceBottom <= mRadius) {
+                    mBottomPoint.set( tXPoint, tMaxBottom );
 //                    Log.i("PARAMBOTTOM",""+tXPoint+" "+tYPoint+" D5 "+mDistanceBottom);
                     invalidate();
                     touch_state = true;
                 }
                 setPointAreaArrayList();
 
-            } else if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 touch_state = false;
             }
             /*Nuii*/
             //Get Image values
             setImageTemplate();
-            setImageA();
-            setImageB();
-            setImageC();
-            setImageD();
+//            setImageA();
+//            setImageB();
+//            setImageC();
+//            setImageD();
 
             return true;
         }
 
-        private void setPointAreaArrayList(){
+        private void setPointAreaArrayList() {
 
-            int tNewXTL,tNewYTL,tNewXTR,tNewYTR,tNewXBL,tNewYBL,tNewXBR,tNewYBR;
+            int tNewXTL, tNewYTL, tNewXTR, tNewYTR, tNewXBL, tNewYBL, tNewXBR, tNewYBR;
 
             if (mCenterPoint.x > mTopPoint.x) tNewXTL = mCenterPoint.x;
             else tNewXTL = mTopPoint.x;
@@ -481,42 +545,42 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             if (mCenterPoint.y > mRightPoint.y) tNewYBR = mRightPoint.y;
             else tNewYBR = mCenterPoint.y;
 
-            mTopLeftAreaRect.set(tMaxLeft,tMaxTop,tNewXTL,tNewYTL);
-            mTopRightAreaRect.set(tNewXTR,mTopPoint.y,mRightPoint.x,tNewYTR);
-            mBottomLeftAreaRect.set(mLeftPoint.x,tNewYBL,tNewXBL,mBottomPoint.y);
-            mBottomRightAreaRect.set(tNewXBR,tNewYBR,tMaxRight,tMaxBottom);
+            mTopLeftAreaRect.set( tMaxLeft, tMaxTop, tNewXTL, tNewYTL );
+            mTopRightAreaRect.set( tNewXTR, mTopPoint.y, mRightPoint.x, tNewYTR );
+            mBottomLeftAreaRect.set( mLeftPoint.x, tNewYBL, tNewXBL, mBottomPoint.y );
+            mBottomRightAreaRect.set( tNewXBR, tNewYBR, tMaxRight, tMaxBottom );
         }
 
-        public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius , Point point_draw[]) {
+        public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius, Point point_draw[]) {
             Bitmap finalBitmap;
-            if(bitmap.getWidth() != radius || bitmap.getHeight() != radius)
-                finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
+            if (bitmap.getWidth() != radius || bitmap.getHeight() != radius)
+                finalBitmap = Bitmap.createScaledBitmap( bitmap, radius, radius, false );
             else
                 finalBitmap = bitmap;
-            Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
-                    finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(output);
+            Bitmap output = Bitmap.createBitmap( finalBitmap.getWidth(),
+                    finalBitmap.getHeight(), Bitmap.Config.ARGB_8888 );
+            Canvas canvas = new Canvas( output );
 
             Paint paint = new Paint();
-            final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
+            final Rect rect = new Rect( 0, 0, finalBitmap.getWidth(), finalBitmap.getHeight() );
 
-            Point point1_draw = new Point(mLeftPoint.x,mTopPoint.y);
-            Point point2_draw = new Point(mTopPoint.x,mTopPoint.y);
-            Point point3_draw = new Point(mCenterPoint.x,mCenterPoint.y);
-            Point point4_draw = new Point(mLeftPoint.x,mLeftPoint.y);
+            Point point1_draw = new Point( mLeftPoint.x, mTopPoint.y );
+            Point point2_draw = new Point( mTopPoint.x, mTopPoint.y );
+            Point point3_draw = new Point( mCenterPoint.x, mCenterPoint.y );
+            Point point4_draw = new Point( mLeftPoint.x, mLeftPoint.y );
 
             Path path = new Path();
-            path.moveTo(point_draw[0].x,point_draw[0].y);
-            path.lineTo(point_draw[1].x,point_draw[1].y);
-            path.lineTo(point_draw[2].x,point_draw[2].y);
-            path.lineTo(point_draw[3].x,point_draw[3].y);
-            path.lineTo(point_draw[0].x,point_draw[0].y);
+            path.moveTo( point_draw[0].x, point_draw[0].y );
+            path.lineTo( point_draw[1].x, point_draw[1].y );
+            path.lineTo( point_draw[2].x, point_draw[2].y );
+            path.lineTo( point_draw[3].x, point_draw[3].y );
+            path.lineTo( point_draw[0].x, point_draw[0].y );
             path.close();
-            canvas.drawARGB(0, 0, 0, 0);
-            paint.setColor(Color.parseColor("#BAB399"));
-            canvas.drawPath(path, paint);
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(finalBitmap, rect, rect, paint);
+            canvas.drawARGB( 0, 0, 0, 0 );
+            paint.setColor( Color.parseColor( "#BAB399" ) );
+            canvas.drawPath( path, paint );
+            paint.setXfermode( new PorterDuffXfermode( PorterDuff.Mode.SRC_IN ) );
+            canvas.drawBitmap( finalBitmap, rect, rect, paint );
             return output;
         }
 
@@ -548,11 +612,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
         }
     }
+
     public void draw() {
         try {
-            mLayout.removeView(mDraw);
-        } catch (Exception e) { }
-        mLayout.addView(mDraw);
+            mLayout.removeView( mDraw );
+        } catch (Exception e) {
+        }
+        mLayout.addView( mDraw );
     }
 
     /*Nuii*/
@@ -615,7 +681,20 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     protected void onResume() {
         super.onResume();
 
-
+        mImage.setOnTouchListener( new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    tmpMatrix.reset();
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP){
+                    tmpMatrix = mImage.getMatrix();
+                }
+                mDraw.matrix[mIndex] = tmpMatrix;
+                draw();
+                return false;
+            }
+        } );
 
         sOuter.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -657,7 +736,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         nextButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //  Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
+                //  Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
                 /*Convert Bitmap to Byte Array*/
                 /*
                 RelativeLayout savedImage = (RelativeLayout) findViewById( R.id.FrameImageView );
@@ -693,117 +772,117 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                         tID = mDatabaseClass.createID();
                     }*/
                     //imageTemplate
-                    ImageTemplate tImageTemplate = new ImageTemplate(getTpID, Integer.parseInt(imageTemplate.get(0).toString()), image_a, image_b, image_c, image_d
-                            , Float.parseFloat(imageTemplate.get(1).toString()), imageTemplate.get(2).toString(), Float.parseFloat(imageTemplate.get(3).toString())
-                            , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
-                            , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
-                            , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
+                    ImageTemplate tImageTemplate = new ImageTemplate( getTpID, Integer.parseInt( imageTemplate.get( 0 ).toString() ), image_a, image_b, image_c, image_d
+                            , Float.parseFloat( imageTemplate.get( 1 ).toString() ), imageTemplate.get( 2 ).toString(), Float.parseFloat( imageTemplate.get( 3 ).toString() )
+                            , imageTemplate.get( 4 ).toString(), Float.parseFloat( imageTemplate.get( 5 ).toString() ), Float.parseFloat( imageTemplate.get( 6 ).toString() )
+                            , Float.parseFloat( imageTemplate.get( 7 ).toString() ), Float.parseFloat( imageTemplate.get( 8 ).toString() )
+                            , Float.parseFloat( imageTemplate.get( 9 ).toString() ), Float.parseFloat( imageTemplate.get( 10 ).toString() ) );
 
-                    mDatabaseClass.insertImageTemplate(tImageTemplate);
+                    mDatabaseClass.insertImageTemplate( tImageTemplate );
 
                 } else {
                     getTpID = imageTemplateID;
-                    ImageTemplate tImageTemplate = new ImageTemplate(Integer.parseInt(imageTemplate.get(0).toString()), image_a, image_b, image_c, image_d
-                            , Float.parseFloat(imageTemplate.get(1).toString()), imageTemplate.get(2).toString(), Float.parseFloat(imageTemplate.get(3).toString())
-                            , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
-                            , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
-                            , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
+                    ImageTemplate tImageTemplate = new ImageTemplate( Integer.parseInt( imageTemplate.get( 0 ).toString() ), image_a, image_b, image_c, image_d
+                            , Float.parseFloat( imageTemplate.get( 1 ).toString() ), imageTemplate.get( 2 ).toString(), Float.parseFloat( imageTemplate.get( 3 ).toString() )
+                            , imageTemplate.get( 4 ).toString(), Float.parseFloat( imageTemplate.get( 5 ).toString() ), Float.parseFloat( imageTemplate.get( 6 ).toString() )
+                            , Float.parseFloat( imageTemplate.get( 7 ).toString() ), Float.parseFloat( imageTemplate.get( 8 ).toString() )
+                            , Float.parseFloat( imageTemplate.get( 9 ).toString() ), Float.parseFloat( imageTemplate.get( 10 ).toString() ) );
 
-                    mDatabaseClass.updateImageTemplate(tImageTemplate);
+                    mDatabaseClass.updateImageTemplate( tImageTemplate );
                 }
 
                  /*Nuii : Call values from MoveLineClass*/
                 imageA = setImageA();
 
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 1) {
+                if (Integer.parseInt( imageTemplate.get( 0 ).toString() ) >= 1) {
                     if (aid == null) {
                         aid = mDatabaseClass.createID();
 
-                        Image ImageA = new Image(aid, imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
-                                , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
-                                , Float.parseFloat(imageA.get(8).toString()), Float.parseFloat(imageA.get(9).toString()), Float.parseFloat(imageA.get(10).toString()), Float.parseFloat(imageA.get(11).toString()), Boolean.parseBoolean(imageA.get(12).toString())
-                                , Float.parseFloat(imageA.get(13).toString()), Float.parseFloat(imageA.get(14).toString()), Float.parseFloat(imageA.get(15).toString()), Float.parseFloat(imageA.get(16).toString()), Boolean.parseBoolean(imageA.get(17).toString())
-                                , Float.parseFloat(imageA.get(18).toString()), Float.parseFloat(imageA.get(19).toString()), Float.parseFloat(imageA.get(20).toString()), Boolean.parseBoolean(imageA.get(21).toString()), Integer.parseInt(imageA.get(22).toString()));
+                        Image ImageA = new Image( aid, imageA.get( 0 ).toString().getBytes(), Float.parseFloat( imageA.get( 1 ).toString() ), Boolean.parseBoolean( imageA.get( 2 ).toString() )
+                                , Float.parseFloat( imageA.get( 3 ).toString() ), Float.parseFloat( imageA.get( 4 ).toString() ), Float.parseFloat( imageA.get( 5 ).toString() ), Float.parseFloat( imageA.get( 6 ).toString() ), Boolean.parseBoolean( imageA.get( 7 ).toString() )
+                                , Float.parseFloat( imageA.get( 8 ).toString() ), Float.parseFloat( imageA.get( 9 ).toString() ), Float.parseFloat( imageA.get( 10 ).toString() ), Float.parseFloat( imageA.get( 11 ).toString() ), Boolean.parseBoolean( imageA.get( 12 ).toString() )
+                                , Float.parseFloat( imageA.get( 13 ).toString() ), Float.parseFloat( imageA.get( 14 ).toString() ), Float.parseFloat( imageA.get( 15 ).toString() ), Float.parseFloat( imageA.get( 16 ).toString() ), Boolean.parseBoolean( imageA.get( 17 ).toString() )
+                                , Float.parseFloat( imageA.get( 18 ).toString() ), Float.parseFloat( imageA.get( 19 ).toString() ), Float.parseFloat( imageA.get( 20 ).toString() ), Boolean.parseBoolean( imageA.get( 21 ).toString() ), Integer.parseInt( imageA.get( 22 ).toString() ) );
 
 
-                        mDatabaseClass.insertImage(ImageA);
+                        mDatabaseClass.insertImage( ImageA );
                     } else {
 
-                        Image ImageA = new Image(imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
-                                , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
-                                , Float.parseFloat(imageA.get(8).toString()), Float.parseFloat(imageA.get(9).toString()), Float.parseFloat(imageA.get(10).toString()), Float.parseFloat(imageA.get(11).toString()), Boolean.parseBoolean(imageA.get(12).toString())
-                                , Float.parseFloat(imageA.get(13).toString()), Float.parseFloat(imageA.get(14).toString()), Float.parseFloat(imageA.get(15).toString()), Float.parseFloat(imageA.get(16).toString()), Boolean.parseBoolean(imageA.get(17).toString())
-                                , Float.parseFloat(imageA.get(18).toString()), Float.parseFloat(imageA.get(19).toString()), Float.parseFloat(imageA.get(20).toString()), Boolean.parseBoolean(imageA.get(21).toString()), Integer.parseInt(imageA.get(22).toString()));
-                        mDatabaseClass.updateImage(ImageA);
+                        Image ImageA = new Image( imageA.get( 0 ).toString().getBytes(), Float.parseFloat( imageA.get( 1 ).toString() ), Boolean.parseBoolean( imageA.get( 2 ).toString() )
+                                , Float.parseFloat( imageA.get( 3 ).toString() ), Float.parseFloat( imageA.get( 4 ).toString() ), Float.parseFloat( imageA.get( 5 ).toString() ), Float.parseFloat( imageA.get( 6 ).toString() ), Boolean.parseBoolean( imageA.get( 7 ).toString() )
+                                , Float.parseFloat( imageA.get( 8 ).toString() ), Float.parseFloat( imageA.get( 9 ).toString() ), Float.parseFloat( imageA.get( 10 ).toString() ), Float.parseFloat( imageA.get( 11 ).toString() ), Boolean.parseBoolean( imageA.get( 12 ).toString() )
+                                , Float.parseFloat( imageA.get( 13 ).toString() ), Float.parseFloat( imageA.get( 14 ).toString() ), Float.parseFloat( imageA.get( 15 ).toString() ), Float.parseFloat( imageA.get( 16 ).toString() ), Boolean.parseBoolean( imageA.get( 17 ).toString() )
+                                , Float.parseFloat( imageA.get( 18 ).toString() ), Float.parseFloat( imageA.get( 19 ).toString() ), Float.parseFloat( imageA.get( 20 ).toString() ), Boolean.parseBoolean( imageA.get( 21 ).toString() ), Integer.parseInt( imageA.get( 22 ).toString() ) );
+                        mDatabaseClass.updateImage( ImageA );
                     }
                 }
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 2) {
+                if (Integer.parseInt( imageTemplate.get( 0 ).toString() ) >= 2) {
                     /*Nuii*/
                     //Get value of image B
                     imageB = setImageB();
                     if (bid == null) {
                         bid = mDatabaseClass.createID();
 
-                        Image ImageB = new Image(bid, imageB.get(0).toString().getBytes(), Float.parseFloat(imageB.get(1).toString()), Boolean.parseBoolean(imageB.get(2).toString())
-                                , Float.parseFloat(imageB.get(3).toString()), Float.parseFloat(imageB.get(4).toString()), Float.parseFloat(imageB.get(5).toString()), Float.parseFloat(imageB.get(6).toString()), Boolean.parseBoolean(imageB.get(7).toString())
-                                , Float.parseFloat(imageB.get(8).toString()), Float.parseFloat(imageB.get(9).toString()), Float.parseFloat(imageB.get(10).toString()), Float.parseFloat(imageB.get(11).toString()), Boolean.parseBoolean(imageB.get(12).toString())
-                                , Float.parseFloat(imageB.get(13).toString()), Float.parseFloat(imageB.get(14).toString()), Float.parseFloat(imageB.get(15).toString()), Float.parseFloat(imageB.get(16).toString()), Boolean.parseBoolean(imageB.get(17).toString())
-                                , Float.parseFloat(imageB.get(18).toString()), Float.parseFloat(imageB.get(19).toString()), Float.parseFloat(imageB.get(20).toString()), Boolean.parseBoolean(imageB.get(21).toString()), Integer.parseInt(imageB.get(22).toString()));
-                        mDatabaseClass.insertImage(ImageB);
+                        Image ImageB = new Image( bid, imageB.get( 0 ).toString().getBytes(), Float.parseFloat( imageB.get( 1 ).toString() ), Boolean.parseBoolean( imageB.get( 2 ).toString() )
+                                , Float.parseFloat( imageB.get( 3 ).toString() ), Float.parseFloat( imageB.get( 4 ).toString() ), Float.parseFloat( imageB.get( 5 ).toString() ), Float.parseFloat( imageB.get( 6 ).toString() ), Boolean.parseBoolean( imageB.get( 7 ).toString() )
+                                , Float.parseFloat( imageB.get( 8 ).toString() ), Float.parseFloat( imageB.get( 9 ).toString() ), Float.parseFloat( imageB.get( 10 ).toString() ), Float.parseFloat( imageB.get( 11 ).toString() ), Boolean.parseBoolean( imageB.get( 12 ).toString() )
+                                , Float.parseFloat( imageB.get( 13 ).toString() ), Float.parseFloat( imageB.get( 14 ).toString() ), Float.parseFloat( imageB.get( 15 ).toString() ), Float.parseFloat( imageB.get( 16 ).toString() ), Boolean.parseBoolean( imageB.get( 17 ).toString() )
+                                , Float.parseFloat( imageB.get( 18 ).toString() ), Float.parseFloat( imageB.get( 19 ).toString() ), Float.parseFloat( imageB.get( 20 ).toString() ), Boolean.parseBoolean( imageB.get( 21 ).toString() ), Integer.parseInt( imageB.get( 22 ).toString() ) );
+                        mDatabaseClass.insertImage( ImageB );
                     } else {
-                        Image ImageB = new Image(imageB.get(0).toString().getBytes(), Float.parseFloat(imageB.get(1).toString()), Boolean.parseBoolean(imageB.get(2).toString())
-                                , Float.parseFloat(imageB.get(3).toString()), Float.parseFloat(imageB.get(4).toString()), Float.parseFloat(imageB.get(5).toString()), Float.parseFloat(imageB.get(6).toString()), Boolean.parseBoolean(imageB.get(7).toString())
-                                , Float.parseFloat(imageB.get(8).toString()), Float.parseFloat(imageB.get(9).toString()), Float.parseFloat(imageB.get(10).toString()), Float.parseFloat(imageB.get(11).toString()), Boolean.parseBoolean(imageB.get(12).toString())
-                                , Float.parseFloat(imageB.get(13).toString()), Float.parseFloat(imageB.get(14).toString()), Float.parseFloat(imageB.get(15).toString()), Float.parseFloat(imageB.get(16).toString()), Boolean.parseBoolean(imageB.get(17).toString())
-                                , Float.parseFloat(imageB.get(18).toString()), Float.parseFloat(imageB.get(19).toString()), Float.parseFloat(imageB.get(20).toString()), Boolean.parseBoolean(imageB.get(21).toString()), Integer.parseInt(imageB.get(22).toString()));
+                        Image ImageB = new Image( imageB.get( 0 ).toString().getBytes(), Float.parseFloat( imageB.get( 1 ).toString() ), Boolean.parseBoolean( imageB.get( 2 ).toString() )
+                                , Float.parseFloat( imageB.get( 3 ).toString() ), Float.parseFloat( imageB.get( 4 ).toString() ), Float.parseFloat( imageB.get( 5 ).toString() ), Float.parseFloat( imageB.get( 6 ).toString() ), Boolean.parseBoolean( imageB.get( 7 ).toString() )
+                                , Float.parseFloat( imageB.get( 8 ).toString() ), Float.parseFloat( imageB.get( 9 ).toString() ), Float.parseFloat( imageB.get( 10 ).toString() ), Float.parseFloat( imageB.get( 11 ).toString() ), Boolean.parseBoolean( imageB.get( 12 ).toString() )
+                                , Float.parseFloat( imageB.get( 13 ).toString() ), Float.parseFloat( imageB.get( 14 ).toString() ), Float.parseFloat( imageB.get( 15 ).toString() ), Float.parseFloat( imageB.get( 16 ).toString() ), Boolean.parseBoolean( imageB.get( 17 ).toString() )
+                                , Float.parseFloat( imageB.get( 18 ).toString() ), Float.parseFloat( imageB.get( 19 ).toString() ), Float.parseFloat( imageB.get( 20 ).toString() ), Boolean.parseBoolean( imageB.get( 21 ).toString() ), Integer.parseInt( imageB.get( 22 ).toString() ) );
 
-                        mDatabaseClass.updateImage(ImageB);
+                        mDatabaseClass.updateImage( ImageB );
                     }
                 }
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 3) {
+                if (Integer.parseInt( imageTemplate.get( 0 ).toString() ) >= 3) {
                     /*Nuii*/
                     //Get value of image C
-                    imageC =setImageC();
+                    imageC = setImageC();
                     if (cid == null) {
                         cid = mDatabaseClass.createID();
 
-                        Image ImageC = new Image(cid, imageC.get(0).toString().getBytes(), Float.parseFloat(imageC.get(1).toString()), Boolean.parseBoolean(imageC.get(2).toString())
-                                , Float.parseFloat(imageC.get(3).toString()), Float.parseFloat(imageC.get(4).toString()), Float.parseFloat(imageC.get(5).toString()), Float.parseFloat(imageC.get(6).toString()), Boolean.parseBoolean(imageC.get(7).toString())
-                                , Float.parseFloat(imageC.get(8).toString()), Float.parseFloat(imageC.get(9).toString()), Float.parseFloat(imageC.get(10).toString()), Float.parseFloat(imageC.get(11).toString()), Boolean.parseBoolean(imageC.get(12).toString())
-                                , Float.parseFloat(imageC.get(13).toString()), Float.parseFloat(imageC.get(14).toString()), Float.parseFloat(imageC.get(15).toString()), Float.parseFloat(imageC.get(16).toString()), Boolean.parseBoolean(imageC.get(17).toString())
-                                , Float.parseFloat(imageC.get(18).toString()), Float.parseFloat(imageC.get(19).toString()), Float.parseFloat(imageC.get(20).toString()), Boolean.parseBoolean(imageC.get(21).toString()), Integer.parseInt(imageC.get(22).toString()));
-                        mDatabaseClass.insertImage(ImageC);
+                        Image ImageC = new Image( cid, imageC.get( 0 ).toString().getBytes(), Float.parseFloat( imageC.get( 1 ).toString() ), Boolean.parseBoolean( imageC.get( 2 ).toString() )
+                                , Float.parseFloat( imageC.get( 3 ).toString() ), Float.parseFloat( imageC.get( 4 ).toString() ), Float.parseFloat( imageC.get( 5 ).toString() ), Float.parseFloat( imageC.get( 6 ).toString() ), Boolean.parseBoolean( imageC.get( 7 ).toString() )
+                                , Float.parseFloat( imageC.get( 8 ).toString() ), Float.parseFloat( imageC.get( 9 ).toString() ), Float.parseFloat( imageC.get( 10 ).toString() ), Float.parseFloat( imageC.get( 11 ).toString() ), Boolean.parseBoolean( imageC.get( 12 ).toString() )
+                                , Float.parseFloat( imageC.get( 13 ).toString() ), Float.parseFloat( imageC.get( 14 ).toString() ), Float.parseFloat( imageC.get( 15 ).toString() ), Float.parseFloat( imageC.get( 16 ).toString() ), Boolean.parseBoolean( imageC.get( 17 ).toString() )
+                                , Float.parseFloat( imageC.get( 18 ).toString() ), Float.parseFloat( imageC.get( 19 ).toString() ), Float.parseFloat( imageC.get( 20 ).toString() ), Boolean.parseBoolean( imageC.get( 21 ).toString() ), Integer.parseInt( imageC.get( 22 ).toString() ) );
+                        mDatabaseClass.insertImage( ImageC );
                     } else {
-                        Image ImageC = new Image(imageC.get(0).toString().getBytes(), Float.parseFloat(imageC.get(1).toString()), Boolean.parseBoolean(imageC.get(2).toString())
-                                , Float.parseFloat(imageC.get(3).toString()), Float.parseFloat(imageC.get(4).toString()), Float.parseFloat(imageC.get(5).toString()), Float.parseFloat(imageC.get(6).toString()), Boolean.parseBoolean(imageC.get(7).toString())
-                                , Float.parseFloat(imageC.get(8).toString()), Float.parseFloat(imageC.get(9).toString()), Float.parseFloat(imageC.get(10).toString()), Float.parseFloat(imageC.get(11).toString()), Boolean.parseBoolean(imageC.get(12).toString())
-                                , Float.parseFloat(imageC.get(13).toString()), Float.parseFloat(imageC.get(14).toString()), Float.parseFloat(imageC.get(15).toString()), Float.parseFloat(imageC.get(16).toString()), Boolean.parseBoolean(imageC.get(17).toString())
-                                , Float.parseFloat(imageC.get(18).toString()), Float.parseFloat(imageC.get(19).toString()), Float.parseFloat(imageC.get(20).toString()), Boolean.parseBoolean(imageC.get(21).toString()), Integer.parseInt(imageC.get(22).toString()));
+                        Image ImageC = new Image( imageC.get( 0 ).toString().getBytes(), Float.parseFloat( imageC.get( 1 ).toString() ), Boolean.parseBoolean( imageC.get( 2 ).toString() )
+                                , Float.parseFloat( imageC.get( 3 ).toString() ), Float.parseFloat( imageC.get( 4 ).toString() ), Float.parseFloat( imageC.get( 5 ).toString() ), Float.parseFloat( imageC.get( 6 ).toString() ), Boolean.parseBoolean( imageC.get( 7 ).toString() )
+                                , Float.parseFloat( imageC.get( 8 ).toString() ), Float.parseFloat( imageC.get( 9 ).toString() ), Float.parseFloat( imageC.get( 10 ).toString() ), Float.parseFloat( imageC.get( 11 ).toString() ), Boolean.parseBoolean( imageC.get( 12 ).toString() )
+                                , Float.parseFloat( imageC.get( 13 ).toString() ), Float.parseFloat( imageC.get( 14 ).toString() ), Float.parseFloat( imageC.get( 15 ).toString() ), Float.parseFloat( imageC.get( 16 ).toString() ), Boolean.parseBoolean( imageC.get( 17 ).toString() )
+                                , Float.parseFloat( imageC.get( 18 ).toString() ), Float.parseFloat( imageC.get( 19 ).toString() ), Float.parseFloat( imageC.get( 20 ).toString() ), Boolean.parseBoolean( imageC.get( 21 ).toString() ), Integer.parseInt( imageC.get( 22 ).toString() ) );
 
-                        mDatabaseClass.updateImage(ImageC);
+                        mDatabaseClass.updateImage( ImageC );
                     }
                 }
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 4) {
+                if (Integer.parseInt( imageTemplate.get( 0 ).toString() ) >= 4) {
                     /*Nuii*/
                     //Get value of image D
                     imageD = setImageD();
                     if (did == null) {
                         did = mDatabaseClass.createID();
 
-                        Image ImageD = new Image(did, imageD.get(0).toString().getBytes(), Float.parseFloat(imageD.get(1).toString()), Boolean.parseBoolean(imageD.get(2).toString())
-                                , Float.parseFloat(imageD.get(3).toString()), Float.parseFloat(imageD.get(4).toString()), Float.parseFloat(imageD.get(5).toString()), Float.parseFloat(imageD.get(6).toString()), Boolean.parseBoolean(imageD.get(7).toString())
-                                , Float.parseFloat(imageD.get(8).toString()), Float.parseFloat(imageD.get(9).toString()), Float.parseFloat(imageD.get(10).toString()), Float.parseFloat(imageD.get(11).toString()), Boolean.parseBoolean(imageD.get(12).toString())
-                                , Float.parseFloat(imageD.get(13).toString()), Float.parseFloat(imageD.get(14).toString()), Float.parseFloat(imageD.get(15).toString()), Float.parseFloat(imageD.get(16).toString()), Boolean.parseBoolean(imageD.get(17).toString())
-                                , Float.parseFloat(imageD.get(18).toString()), Float.parseFloat(imageD.get(19).toString()), Float.parseFloat(imageD.get(20).toString()), Boolean.parseBoolean(imageD.get(21).toString()), Integer.parseInt(imageD.get(22).toString()));
-                        mDatabaseClass.insertImage(ImageD);
+                        Image ImageD = new Image( did, imageD.get( 0 ).toString().getBytes(), Float.parseFloat( imageD.get( 1 ).toString() ), Boolean.parseBoolean( imageD.get( 2 ).toString() )
+                                , Float.parseFloat( imageD.get( 3 ).toString() ), Float.parseFloat( imageD.get( 4 ).toString() ), Float.parseFloat( imageD.get( 5 ).toString() ), Float.parseFloat( imageD.get( 6 ).toString() ), Boolean.parseBoolean( imageD.get( 7 ).toString() )
+                                , Float.parseFloat( imageD.get( 8 ).toString() ), Float.parseFloat( imageD.get( 9 ).toString() ), Float.parseFloat( imageD.get( 10 ).toString() ), Float.parseFloat( imageD.get( 11 ).toString() ), Boolean.parseBoolean( imageD.get( 12 ).toString() )
+                                , Float.parseFloat( imageD.get( 13 ).toString() ), Float.parseFloat( imageD.get( 14 ).toString() ), Float.parseFloat( imageD.get( 15 ).toString() ), Float.parseFloat( imageD.get( 16 ).toString() ), Boolean.parseBoolean( imageD.get( 17 ).toString() )
+                                , Float.parseFloat( imageD.get( 18 ).toString() ), Float.parseFloat( imageD.get( 19 ).toString() ), Float.parseFloat( imageD.get( 20 ).toString() ), Boolean.parseBoolean( imageD.get( 21 ).toString() ), Integer.parseInt( imageD.get( 22 ).toString() ) );
+                        mDatabaseClass.insertImage( ImageD );
                     } else {
-                        Image ImageD = new Image(imageD.get(0).toString().getBytes(), Float.parseFloat(imageD.get(1).toString()), Boolean.parseBoolean(imageD.get(2).toString())
-                                , Float.parseFloat(imageD.get(3).toString()), Float.parseFloat(imageD.get(4).toString()), Float.parseFloat(imageD.get(5).toString()), Float.parseFloat(imageD.get(6).toString()), Boolean.parseBoolean(imageD.get(7).toString())
-                                , Float.parseFloat(imageD.get(8).toString()), Float.parseFloat(imageD.get(9).toString()), Float.parseFloat(imageD.get(10).toString()), Float.parseFloat(imageD.get(11).toString()), Boolean.parseBoolean(imageD.get(12).toString())
-                                , Float.parseFloat(imageD.get(13).toString()), Float.parseFloat(imageD.get(14).toString()), Float.parseFloat(imageD.get(15).toString()), Float.parseFloat(imageD.get(16).toString()), Boolean.parseBoolean(imageD.get(17).toString())
-                                , Float.parseFloat(imageD.get(18).toString()), Float.parseFloat(imageD.get(19).toString()), Float.parseFloat(imageD.get(20).toString()), Boolean.parseBoolean(imageD.get(21).toString()), Integer.parseInt(imageD.get(22).toString()));
+                        Image ImageD = new Image( imageD.get( 0 ).toString().getBytes(), Float.parseFloat( imageD.get( 1 ).toString() ), Boolean.parseBoolean( imageD.get( 2 ).toString() )
+                                , Float.parseFloat( imageD.get( 3 ).toString() ), Float.parseFloat( imageD.get( 4 ).toString() ), Float.parseFloat( imageD.get( 5 ).toString() ), Float.parseFloat( imageD.get( 6 ).toString() ), Boolean.parseBoolean( imageD.get( 7 ).toString() )
+                                , Float.parseFloat( imageD.get( 8 ).toString() ), Float.parseFloat( imageD.get( 9 ).toString() ), Float.parseFloat( imageD.get( 10 ).toString() ), Float.parseFloat( imageD.get( 11 ).toString() ), Boolean.parseBoolean( imageD.get( 12 ).toString() )
+                                , Float.parseFloat( imageD.get( 13 ).toString() ), Float.parseFloat( imageD.get( 14 ).toString() ), Float.parseFloat( imageD.get( 15 ).toString() ), Float.parseFloat( imageD.get( 16 ).toString() ), Boolean.parseBoolean( imageD.get( 17 ).toString() )
+                                , Float.parseFloat( imageD.get( 18 ).toString() ), Float.parseFloat( imageD.get( 19 ).toString() ), Float.parseFloat( imageD.get( 20 ).toString() ), Boolean.parseBoolean( imageD.get( 21 ).toString() ), Integer.parseInt( imageD.get( 22 ).toString() ) );
 
-                        mDatabaseClass.updateImage(ImageD);
+                        mDatabaseClass.updateImage( ImageD );
                     }
                 }
 
@@ -829,7 +908,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         //KITTI : Link Control
         sOuter = (SeekBar) findViewById( R.id.seekBarOuter );
         sInner = (SeekBar) findViewById( R.id.seekBarInner );
-        mImage = (TouchImageView) findViewById(R.id.mImage);
+        mImage = (RotateZoomImageView) findViewById( R.id.mImage );
         farme1 = (ImageButton) findViewById( R.id.farme1 );
         farme2 = (ImageButton) findViewById( R.id.farme2 );
         farme3 = (ImageButton) findViewById( R.id.farme3 );
@@ -841,10 +920,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mLayout = (RelativeLayout) findViewById( R.id.FrameImageView );
         mLayoutParams = mLayout.getLayoutParams();
-//        mImageselect = (RelativeLayout) findViewById(R.id.Imageselect);
-//        mFrameLayout = (RelativeLayout) findViewById(R.id.mFrameLayout);
 
-        mCenterPoint = new Point(mLayoutParams.width/2,mLayoutParams.height/2);
+
+        mCenterPoint = new Point( mLayoutParams.width / 2, mLayoutParams.height / 2 );
         mLeftPoint = new Point();
         mRightPoint = new Point();
         mTopPoint = new Point();
@@ -856,61 +934,53 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mPaint = new Paint() {
             {
-                setColor(Color.BLACK);
-                setStrokeWidth(mStroke);
-                setStyle(Paint.Style.STROKE);
-                setStrokeJoin(Paint.Join.ROUND);
+                setColor( Color.BLACK );
+                setStrokeWidth( mStroke );
+                setStyle( Style.STROKE );
+                setStrokeJoin( Join.ROUND );
             }
         };
 
 
         mPaintInner = new Paint() {
             {
-                setColor(Color.WHITE);
-                setStrokeWidth(mStrokeInner);
-                setStyle(Paint.Style.STROKE);
-                setStrokeJoin(Paint.Join.ROUND);
+                setColor( Color.WHITE );
+                setStrokeWidth( mStrokeInner );
+                setStyle( Style.STROKE );
+                setStrokeJoin( Join.ROUND );
             }
         };
         mPaint3 = new Paint() {
             {
-                setStyle(Style.FILL);
-                setAntiAlias(true);
-                setAlpha(0);
+                setStyle( Style.FILL );
+                setAntiAlias( true );
+                setAlpha( 0 );
             }
         };
         mPaint4 = new Paint() {
             {
-                setStyle(Style.FILL);
-                setAntiAlias(true);
-                setAlpha(0);
+                setStyle( Style.FILL );
+                setAntiAlias( true );
+                setAlpha( 0 );
             }
         };
         mPaint5 = new Paint() {
             {
-                setStyle(Style.FILL);
-                setAntiAlias(true);
-                setAlpha(0);
+                setStyle( Style.FILL );
+                setAntiAlias( true );
+                setAlpha( 0 );
             }
         };
         mPaint6 = new Paint() {
             {
-                setStyle(Style.FILL);
-                setAntiAlias(true);
-                setAlpha(0);
+                setStyle( Style.FILL );
+                setAntiAlias( true );
+                setAlpha( 0 );
             }
         };
-
+        mImage.setImageDrawable(getResources().getDrawable(R.drawable.boston));
         draw();
 
-    }
-
-    private void SetBlockImg(ImageView ObjImageView, int height, int width, int codeColor) {
-        //Set Size Image
-        ObjImageView.getLayoutParams().height = height;
-        ObjImageView.getLayoutParams().width = width;
-        ObjImageView.setBackgroundColor( codeColor );
-        ObjImageView.setPadding( 50, 50, 50, 50 );
     }
 
     private void selectImage() {
@@ -1001,7 +1071,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
 
         mImage.setImageBitmap( bm );
-        mDraw.myPic[mIndex] = (Drawable)new BitmapDrawable(bm);
+        originalPic[mIndex] = bm;
+        mDraw.myPic[mIndex] =  bm ;
+        if(mDraw.matrix[mIndex] != null) {
+            mDraw.matrix[mIndex].reset();
+        }
+        mDraw.matrix[mIndex] = tmpMatrix;
         draw();
     }
 
@@ -1020,194 +1095,143 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 break;
         }
     }
+
     //region Nuii : set value function
         /*Nuii*/
            /*Nuii*/
     //set Image Tamplate
     public ArrayList setImageTemplate() {
         valueImageTemplate = new ArrayList();
-        valueImageTemplate.add(0,"template");//Integer : จำนวนเทมเพลต
-        valueImageTemplate.add(1,"marge_one_stroke");//Float : marge one stroke in purcent
-        valueImageTemplate.add(2,"marge_one_color");//String : color in hex
-        valueImageTemplate.add(3,"marge_two_stroke");//Float : marge two stroke in purcent
-        valueImageTemplate.add(4,"marge_two_color");//String : color in hex
-        valueImageTemplate.add(5,"top_value");//Float : position of value top for the line
-        valueImageTemplate.add(6,"bottom_value");//Float : position of value bottom for the line
-        valueImageTemplate.add(7,"right_value");//Float : position of value right for the line
-        valueImageTemplate.add(8,"left_value");//Float : position of value left for the line
-        valueImageTemplate.add(9,"center_x");//Float : position of value x for the line
-        valueImageTemplate.add(10,"center_y");//Float : position of value y for the line
+        valueImageTemplate.add( 0, "template" );//Integer : จำนวนเทมเพลต
+        valueImageTemplate.add( 1, "marge_one_stroke" );//Float : marge one stroke in purcent
+        valueImageTemplate.add( 2, "marge_one_color" );//String : color in hex
+        valueImageTemplate.add( 3, "marge_two_stroke" );//Float : marge two stroke in purcent
+        valueImageTemplate.add( 4, "marge_two_color" );//String : color in hex
+        valueImageTemplate.add( 5, "top_value" );//Float : position of value top for the line
+        valueImageTemplate.add( 6, "bottom_value" );//Float : position of value bottom for the line
+        valueImageTemplate.add( 7, "right_value" );//Float : position of value right for the line
+        valueImageTemplate.add( 8, "left_value" );//Float : position of value left for the line
+        valueImageTemplate.add( 9, "center_x" );//Float : position of value x for the line
+        valueImageTemplate.add( 10, "center_y" );//Float : position of value y for the line
         return (valueImageTemplate);
     }
+
     //Image Model A
     public ArrayList setImageA() {
         valueImageA = new ArrayList();
-        valueImageA.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageA.add(1,"offset_x");//Float : offset X of image
-        valueImageA.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageA.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageA.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageA.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageA.add(6,"offset_y");//Float : offset Y of image
-        valueImageA.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageA.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageA.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageA.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageA.add(11,"scale");//Float : scale of image
-        valueImageA.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageA.add(13,"scale_original");//Float : original scale of image
-        valueImageA.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageA.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageA.add(16,"rotate");//Float : rotate of image
-        valueImageA.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageA.add(18,"rotate_original");//Float : original rotation of image
-        valueImageA.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageA.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageA.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageA.add(22,"filter");//Float : Integer : enum filter for this image
+        valueImageA.add( 0, "url" );//String : url of image (delete when object is delete)
+        valueImageA.add( 1, "offset_x" );//Float : offset X of image
+        valueImageA.add( 2, "offset_x_enable" );//Boolean : enable offset X of image
+        valueImageA.add( 3, "offset_x_original" );//Float : original offset X of image
+        valueImageA.add( 4, "offset_x_max" );//Float : maximum authorized offset X of image
+        valueImageA.add( 5, "offset_x_min" );//Float : minimum authorized offset X of image
+        valueImageA.add( 6, "offset_y" );//Float : offset Y of image
+        valueImageA.add( 7, "offset_y_enable" );//Boolean : enable offset X of image
+        valueImageA.add( 8, "offset_y_original" );//Float : original offset Y of image
+        valueImageA.add( 9, "offset_y_max" );//Float : maximum authorized offset Y of image
+        valueImageA.add( 10, "offset_y_min" );//Float : minimum authorized offset Y of image
+        valueImageA.add( 11, "scale" );//Float : scale of image
+        valueImageA.add( 12, "scale_enable" );//Float : Boolean : enable scale of image
+        valueImageA.add( 13, "scale_original" );//Float : original scale of image
+        valueImageA.add( 14, "scale_max" );//Float : maximum authorized scale of image
+        valueImageA.add( 15, "scale_min" );//Float : minimum authorized scale of image
+        valueImageA.add( 16, "rotate" );//Float : rotate of image
+        valueImageA.add( 17, "rotate_enable" );//Float : Boolean : enable rotation of image
+        valueImageA.add( 18, "rotate_original" );//Float : original rotation of image
+        valueImageA.add( 19, "rotate_max" );//Float : maximum authorized rotate of image
+        valueImageA.add( 20, "rotate_min" );//Float : minimum authorized rotate of image
+        valueImageA.add( 21, "filter_enable" );//Boolean : enable filter for this image
+        valueImageA.add( 22, "filter" );//Float : Integer : enum filter for this image
         return (valueImageA);
     }
 
     //Image Model B
     public ArrayList setImageB() {
         valueImageB = new ArrayList();
-        valueImageB.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageB.add(1,"offset_x");//Float : offset X of image
-        valueImageB.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageB.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageB.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageB.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageB.add(6,"offset_y");//Float : offset Y of image
-        valueImageB.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageB.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageB.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageB.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageB.add(11,"scale");//Float : scale of image
-        valueImageB.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageB.add(13,"scale_original");//Float : original scale of image
-        valueImageB.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageB.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageB.add(16,"rotate");//Float : rotate of image
-        valueImageB.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageB.add(18,"rotate_original");//Float : original rotation of image
-        valueImageB.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageB.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageB.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageB.add(22,"filter");//Float : Integer : enum filter for this image
+        valueImageB.add( 0, "url" );//String : url of image (delete when object is delete)
+        valueImageB.add( 1, "offset_x" );//Float : offset X of image
+        valueImageB.add( 2, "offset_x_enable" );//Boolean : enable offset X of image
+        valueImageB.add( 3, "offset_x_original" );//Float : original offset X of image
+        valueImageB.add( 4, "offset_x_max" );//Float : maximum authorized offset X of image
+        valueImageB.add( 5, "offset_x_min" );//Float : minimum authorized offset X of image
+        valueImageB.add( 6, "offset_y" );//Float : offset Y of image
+        valueImageB.add( 7, "offset_y_enable" );//Boolean : enable offset X of image
+        valueImageB.add( 8, "offset_y_original" );//Float : original offset Y of image
+        valueImageB.add( 9, "offset_y_max" );//Float : maximum authorized offset Y of image
+        valueImageB.add( 10, "offset_y_min" );//Float : minimum authorized offset Y of image
+        valueImageB.add( 11, "scale" );//Float : scale of image
+        valueImageB.add( 12, "scale_enable" );//Float : Boolean : enable scale of image
+        valueImageB.add( 13, "scale_original" );//Float : original scale of image
+        valueImageB.add( 14, "scale_max" );//Float : maximum authorized scale of image
+        valueImageB.add( 15, "scale_min" );//Float : minimum authorized scale of image
+        valueImageB.add( 16, "rotate" );//Float : rotate of image
+        valueImageB.add( 17, "rotate_enable" );//Float : Boolean : enable rotation of image
+        valueImageB.add( 18, "rotate_original" );//Float : original rotation of image
+        valueImageB.add( 19, "rotate_max" );//Float : maximum authorized rotate of image
+        valueImageB.add( 20, "rotate_min" );//Float : minimum authorized rotate of image
+        valueImageB.add( 21, "filter_enable" );//Boolean : enable filter for this image
+        valueImageB.add( 22, "filter" );//Float : Integer : enum filter for this image
         return (valueImageB);
     }
 
     //Image Model C
     public ArrayList setImageC() {
         imageC = new ArrayList();
-        valueImageC.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageC.add(1,"offset_x");//Float : offset X of image
-        valueImageC.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageC.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageC.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageC.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageC.add(6,"offset_y");//Float : offset Y of image
-        valueImageC.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageC.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageC.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageC.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageC.add(11,"scale");//Float : scale of image
-        valueImageC.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageC.add(13,"scale_original");//Float : original scale of image
-        valueImageC.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageC.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageC.add(16,"rotate");//Float : rotate of image
-        valueImageC.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageC.add(18,"rotate_original");//Float : original rotation of image
-        valueImageC.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageC.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageC.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageC.add(22,"filter");//Float : Integer : enum filter for this image
+        valueImageC.add( 0, "url" );//String : url of image (delete when object is delete)
+        valueImageC.add( 1, "offset_x" );//Float : offset X of image
+        valueImageC.add( 2, "offset_x_enable" );//Boolean : enable offset X of image
+        valueImageC.add( 3, "offset_x_original" );//Float : original offset X of image
+        valueImageC.add( 4, "offset_x_max" );//Float : maximum authorized offset X of image
+        valueImageC.add( 5, "offset_x_min" );//Float : minimum authorized offset X of image
+        valueImageC.add( 6, "offset_y" );//Float : offset Y of image
+        valueImageC.add( 7, "offset_y_enable" );//Boolean : enable offset X of image
+        valueImageC.add( 8, "offset_y_original" );//Float : original offset Y of image
+        valueImageC.add( 9, "offset_y_max" );//Float : maximum authorized offset Y of image
+        valueImageC.add( 10, "offset_y_min" );//Float : minimum authorized offset Y of image
+        valueImageC.add( 11, "scale" );//Float : scale of image
+        valueImageC.add( 12, "scale_enable" );//Float : Boolean : enable scale of image
+        valueImageC.add( 13, "scale_original" );//Float : original scale of image
+        valueImageC.add( 14, "scale_max" );//Float : maximum authorized scale of image
+        valueImageC.add( 15, "scale_min" );//Float : minimum authorized scale of image
+        valueImageC.add( 16, "rotate" );//Float : rotate of image
+        valueImageC.add( 17, "rotate_enable" );//Float : Boolean : enable rotation of image
+        valueImageC.add( 18, "rotate_original" );//Float : original rotation of image
+        valueImageC.add( 19, "rotate_max" );//Float : maximum authorized rotate of image
+        valueImageC.add( 20, "rotate_min" );//Float : minimum authorized rotate of image
+        valueImageC.add( 21, "filter_enable" );//Boolean : enable filter for this image
+        valueImageC.add( 22, "filter" );//Float : Integer : enum filter for this image
         return (valueImageC);
     }
 
     //Image Model D
     public ArrayList setImageD() {
         valueImageD = new ArrayList();
-        valueImageD.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageD.add(1,"offset_x");//Float : offset X of image
-        valueImageD.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageD.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageD.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageD.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageD.add(6,"offset_y");//Float : offset Y of image
-        valueImageD.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageD.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageD.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageD.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageD.add(11,"scale");//Float : scale of image
-        valueImageD.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageD.add(13,"scale_original");//Float : original scale of image
-        valueImageD.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageD.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageD.add(16,"rotate");//Float : rotate of image
-        valueImageD.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageD.add(18,"rotate_original");//Float : original rotation of image
-        valueImageD.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageD.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageD.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageD.add(22,"filter");//Float : Integer : enum filter for this image
+        valueImageD.add( 0, "url" );//String : url of image (delete when object is delete)
+        valueImageD.add( 1, "offset_x" );//Float : offset X of image
+        valueImageD.add( 2, "offset_x_enable" );//Boolean : enable offset X of image
+        valueImageD.add( 3, "offset_x_original" );//Float : original offset X of image
+        valueImageD.add( 4, "offset_x_max" );//Float : maximum authorized offset X of image
+        valueImageD.add( 5, "offset_x_min" );//Float : minimum authorized offset X of image
+        valueImageD.add( 6, "offset_y" );//Float : offset Y of image
+        valueImageD.add( 7, "offset_y_enable" );//Boolean : enable offset X of image
+        valueImageD.add( 8, "offset_y_original" );//Float : original offset Y of image
+        valueImageD.add( 9, "offset_y_max" );//Float : maximum authorized offset Y of image
+        valueImageD.add( 10, "offset_y_min" );//Float : minimum authorized offset Y of image
+        valueImageD.add( 11, "scale" );//Float : scale of image
+        valueImageD.add( 12, "scale_enable" );//Float : Boolean : enable scale of image
+        valueImageD.add( 13, "scale_original" );//Float : original scale of image
+        valueImageD.add( 14, "scale_max" );//Float : maximum authorized scale of image
+        valueImageD.add( 15, "scale_min" );//Float : minimum authorized scale of image
+        valueImageD.add( 16, "rotate" );//Float : rotate of image
+        valueImageD.add( 17, "rotate_enable" );//Float : Boolean : enable rotation of image
+        valueImageD.add( 18, "rotate_original" );//Float : original rotation of image
+        valueImageD.add( 19, "rotate_max" );//Float : maximum authorized rotate of image
+        valueImageD.add( 20, "rotate_min" );//Float : minimum authorized rotate of image
+        valueImageD.add( 21, "filter_enable" );//Boolean : enable filter for this image
+        valueImageD.add( 22, "filter" );//Float : Integer : enum filter for this image
         return (valueImageD);
     }
     //endregion : function
 
-   /* @Override
-    public void onStop() {
-        super.onStop();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction2 = Action.newAction(
-        Action.TYPE_VIEW, // TODO: choose an action type.
-        "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
-        // TODO: If you have web page content that matches this app activity's content,
-        // make sure this auto-generated web page URL is correct.
-        // Otherwise, set the URL to null.
-        Uri.parse( "http://host/path" ),
-        // TODO: Make sure this auto-generated app URL is correct.
-        Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
-        );
-        AppIndex.AppIndexApi.end( client2, viewAction2 );
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-        Action.TYPE_VIEW, // TODO: choose an action type.
-        "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
-        // TODO: If you have web page content that matches this app activity's content,
-        // make sure this auto-generated web page URL is correct.
-        // Otherwise, set the URL to null.
-        Uri.parse( "http://host/path" ),
-        // TODO: Make sure this auto-generated app URL is correct.
-        Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
-        );
-        AppIndex.AppIndexApi.end( client, viewAction );
-        client.disconnect();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client2.disconnect();
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client2.connect();
-        Action viewAction2 = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse( "http://host/path" ),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
-        );
-        AppIndex.AppIndexApi.start( client2, viewAction2 );
-    }*/
 }

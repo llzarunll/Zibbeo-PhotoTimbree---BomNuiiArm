@@ -134,7 +134,7 @@
         android:layout_above="@+id/nextButton"
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="true">
-        <com.zibbeo.phototrimbree.PostCard.TouchImageView
+        <com.zibbeo.phototrimbree.PostCard.RotateZoomImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/mImage"/>
