@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zibbeo.phototrimbree">
 
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -40,8 +40,8 @@
         <activity
             android:name=".PostCard.ZPTPostcardListView"
             android:label="Postcards" />
-            <activity android:name=".PostCard.ZPTImageComposerView"></activity>
-            <activity android:name=".PostCard.ZPTStickerComposerView"></activity>
+        <activity android:name=".PostCard.ZPTImageComposerView" />
+        <activity android:name=".PostCard.ZPTStickerComposerView" />
         <activity
             android:name=".Account.ZPTAccountConnectionWaitingView"
             android:label="Account"
@@ -69,11 +69,16 @@
         <activity android:name=".CreatePostcard.Massage.ZPTMessageComposerView" />
         <activity android:name=".CreatePostcard.Sign.ZPTSignComposerView" />
         <activity android:name=".CreatePostcard.Contact.ZPTContactComposerView" />
-        <activity android:name=".CreatePostcard.Preview.ZPTPreviewComposerView"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity android:name=".CreatePostcard.Preview.ZPTPreviewComposerView" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".PostCard.MainActivity"></activity>
     </application>
 
 </manifest>
