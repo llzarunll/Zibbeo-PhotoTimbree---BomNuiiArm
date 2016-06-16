@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import com.zibbeo.phototrimbree.BaseNavigationDrawer;
 import com.zibbeo.phototrimbree.CreatePostcard.Massage.ZPTMessageComposerView;
+import com.zibbeo.phototrimbree.Database.ImageComposer;
+import com.zibbeo.phototrimbree.Database.ImageTemplate;
+import com.zibbeo.phototrimbree.Database.StickerTemplate;
 import com.zibbeo.phototrimbree.PostCard.Sticker.StickerImageView;
 import com.zibbeo.phototrimbree.PostCard.Sticker.StickerView;
 import com.zibbeo.phototrimbree.R;
@@ -41,6 +44,11 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     TextView label;
     int stickerCount = 0;
 
+    /*Nuii*/
+    databaseClass mDatabaseClass;
+    String  stickerTemplateID1, stickerTemplateID2, stickerTemplateID3, stickerTemplateID4 ,getImageTemplateID ,imageTemplateID;
+    ArrayList getST1,getST2,getST3,getST4, stickerValue1,stickerValue2,stickerValue3,stickerValue4,sticker1,sticker2,sticker3,sticker4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +64,38 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
         image.setImageBitmap(bmp);*/
+
+        /*Nuii*/
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            stickerTemplateID1 = bundle.getString( "stickerTemplateID1" );
+            stickerTemplateID2 = bundle.getString( "stickerTemplateID2" );
+            stickerTemplateID3 = bundle.getString( "stickerTemplateID3" );
+            stickerTemplateID4 = bundle.getString( "stickerTemplateID4" );
+            imageTemplateID = bundle.getString( "imageTemplateID" );
+            getImageTemplateID = bundle.getString( "getImageTemplateID" );
+        }
+
+        //Get sticker 1
+        if (stickerTemplateID1 != null) {
+            GetSticker1( stickerTemplateID1 );
+        }
+
+        //Get sticker 2
+        if (stickerTemplateID2 != null) {
+            GetSticker2( stickerTemplateID2 );
+        }
+
+        //Get sticker 3
+        if (stickerTemplateID3 != null) {
+            GetSticker3( stickerTemplateID3 );
+        }
+
+        //Get sticker 4
+        if (stickerTemplateID4 != null) {
+            GetSticker4( stickerTemplateID4 );
+        }
+
         init();
         getSticker();
     }
@@ -76,6 +116,79 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                 bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
                 savedImage.destroyDrawingCache();
+
+                /*Nuii*/
+                //region Insert Sticlker image
+                if(stickerCount>=1) {
+                    sticker1 = setSticker1();
+                    if (stickerTemplateID1 == null) {
+                        stickerTemplateID1 = mDatabaseClass.createID();
+                    }
+
+                    StickerTemplate tStickerTemplate = new StickerTemplate(stickerTemplateID1,sticker1.get(0).toString().getBytes(),Float.parseFloat(sticker1.get(1).toString()),Float.parseFloat(sticker1.get(2).toString()));
+                    mDatabaseClass.insertStickerTemplate(tStickerTemplate);
+                }
+                else {
+                   // getStID = stickerTemplateID1;
+                    StickerTemplate tStickerTemplate = new StickerTemplate(sticker1.get(0).toString().getBytes(),Float.parseFloat(sticker1.get(1).toString()),Float.parseFloat(sticker1.get(2).toString()));
+                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
+                }
+                if(stickerCount>=2) {
+                    sticker2 = setSticker2();
+                    if (stickerTemplateID2 == null) {
+                        stickerTemplateID2 = mDatabaseClass.createID();
+                    }
+
+                    StickerTemplate tStickerTemplate = new StickerTemplate(stickerTemplateID2,sticker2.get(0).toString().getBytes(),Float.parseFloat(sticker2.get(1).toString()),Float.parseFloat(sticker2.get(2).toString()));
+                    mDatabaseClass.insertStickerTemplate(tStickerTemplate);
+                }
+                else {
+                    // getStID = stickerTemplateID1;
+                    StickerTemplate tStickerTemplate = new StickerTemplate(sticker2.get(0).toString().getBytes(),Float.parseFloat(sticker2.get(1).toString()),Float.parseFloat(sticker2.get(2).toString()));
+                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
+                }
+                if(stickerCount>=3) {
+                    sticker3 = setSticker3();
+                    if (stickerTemplateID3 == null) {
+                        stickerTemplateID3 = mDatabaseClass.createID();
+                    }
+
+                    StickerTemplate tStickerTemplate = new StickerTemplate(stickerTemplateID3,sticker3.get(0).toString().getBytes(),Float.parseFloat(sticker3.get(1).toString()),Float.parseFloat(sticker3.get(2).toString()));
+                    mDatabaseClass.insertStickerTemplate(tStickerTemplate);
+                }
+                else {
+                    // getStID = stickerTemplateID1;
+                    StickerTemplate tStickerTemplate = new StickerTemplate(sticker2.get(0).toString().getBytes(),Float.parseFloat(sticker3.get(1).toString()),Float.parseFloat(sticker3.get(3).toString()));
+                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
+                }
+                if(stickerCount==4) {
+                    sticker4 = setSticker4();
+                    if (stickerTemplateID4 == null) {
+                        stickerTemplateID4 = mDatabaseClass.createID();
+                    }
+
+                    StickerTemplate tStickerTemplate = new StickerTemplate(stickerTemplateID4,sticker4.get(0).toString().getBytes(),Float.parseFloat(sticker4.get(1).toString()),Float.parseFloat(sticker4.get(2).toString()));
+                    mDatabaseClass.insertStickerTemplate(tStickerTemplate);
+                }
+                else {
+                    // getStID = stickerTemplateID1;
+                    StickerTemplate tStickerTemplate = new StickerTemplate(sticker4.get(0).toString().getBytes(),Float.parseFloat(sticker4.get(1).toString()),Float.parseFloat(sticker4.get(3).toString()));
+                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
+                }
+                //endregion
+
+                //insert image composer
+                if(getImageTemplateID==null)
+                {
+                    getImageTemplateID =  mDatabaseClass.createID();
+                    ImageComposer tImageComposer = new ImageComposer(getImageTemplateID,imageTemplateID,stickerTemplateID1,stickerTemplateID2,stickerTemplateID3,stickerTemplateID4);
+                    mDatabaseClass.insertImageComposer(tImageComposer);
+                }else {
+
+                    ImageComposer tImageComposer = new ImageComposer(imageTemplateID,stickerTemplateID1,stickerTemplateID2,stickerTemplateID3,stickerTemplateID4);
+                    mDatabaseClass.updateImageComposer(tImageComposer);
+                }
+
 
                 Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(contentView.getContext(), ZPTMessageComposerView.class);
@@ -273,4 +386,92 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             StickerBar.addView(ib_view);
         }
     }
+
+    //region Get Sticker
+    /*Nuii*/
+    //Get Sticker 1
+    public ArrayList GetSticker1(String stickerTemplateID1) {
+        getST1 = new ArrayList();
+        getST1.add( 0, mDatabaseClass.getStickerTemplate( stickerTemplateID1 ).getStickerID() );
+        getST1.add( 1, mDatabaseClass.getStickerTemplate( stickerTemplateID1 ).getSticker() );
+        getST1.add( 2, mDatabaseClass.getStickerTemplate( stickerTemplateID1 ).getX() );
+        getST1.add( 3, mDatabaseClass.getStickerTemplate( stickerTemplateID1 ).getY() );
+
+        return (getST1);
+    }
+
+    //Get Sticker 2
+    public ArrayList GetSticker2(String stickerTemplateID2) {
+        getST2 = new ArrayList();
+        getST2.add( 0, mDatabaseClass.getStickerTemplate( stickerTemplateID2 ).getStickerID() );
+        getST2.add( 1, mDatabaseClass.getStickerTemplate( stickerTemplateID2 ).getSticker() );
+        getST2.add( 2, mDatabaseClass.getStickerTemplate( stickerTemplateID2 ).getX() );
+        getST2.add( 3, mDatabaseClass.getStickerTemplate( stickerTemplateID2 ).getY() );
+
+        return (getST2);
+    }
+
+    //Get Sticker 3
+    public ArrayList GetSticker3(String stickerTemplateID3) {
+        getST3 = new ArrayList();
+        getST3.add( 0, mDatabaseClass.getStickerTemplate( stickerTemplateID3 ).getStickerID() );
+        getST3.add( 1, mDatabaseClass.getStickerTemplate( stickerTemplateID3 ).getSticker() );
+        getST3.add( 2, mDatabaseClass.getStickerTemplate( stickerTemplateID3 ).getX() );
+        getST3.add( 3, mDatabaseClass.getStickerTemplate( stickerTemplateID3 ).getY() );
+
+        return (getST3);
+    }
+
+    //Get Sticker 4
+    public ArrayList GetSticker4(String stickerTemplateID4) {
+        getST4 = new ArrayList();
+        getST4.add( 0, mDatabaseClass.getStickerTemplate( stickerTemplateID4 ).getStickerID() );
+        getST4.add( 1, mDatabaseClass.getStickerTemplate( stickerTemplateID4 ).getSticker() );
+        getST4.add( 2, mDatabaseClass.getStickerTemplate( stickerTemplateID4 ).getX() );
+        getST4.add( 3, mDatabaseClass.getStickerTemplate( stickerTemplateID4 ).getY() );
+
+        return (getST4);
+    }
+
+    //Set Sticker 1
+    public ArrayList setSticker1() {
+        stickerValue1 = new ArrayList();
+        stickerValue1.add(0,"sticker");//byte[] : sticker
+        stickerValue1.add(1,"x");//Float : x
+        stickerValue1.add(2,"y");//Float : y
+
+        return (stickerValue1);
+    }
+
+    //Set Sticker 1
+    public ArrayList setSticker2() {
+        stickerValue2 = new ArrayList();
+        stickerValue2.add(0,"sticker");//byte[] : sticker
+        stickerValue2.add(1,"x");//Float : x
+        stickerValue2.add(2,"y");//Float : y
+
+        return (stickerValue2);
+    }
+
+    //Set Sticker 1
+    public ArrayList setSticker3() {
+        stickerValue3 = new ArrayList();
+        stickerValue3.add(0,"sticker");//byte[] : sticker
+        stickerValue3.add(1,"x");//Float : x
+        stickerValue3.add(2,"y");//Float : y
+
+        return (stickerValue3);
+    }
+
+    //Set Sticker 1
+    public ArrayList setSticker4() {
+        stickerValue4 = new ArrayList();
+        stickerValue4.add(0,"sticker");//byte[] : sticker
+        stickerValue4.add(1,"x");//Float : x
+        stickerValue4.add(2,"y");//Float : y
+
+        return (stickerValue4);
+    }
+
+    //endregion
 }
