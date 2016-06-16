@@ -61,7 +61,7 @@ public class TouchImageView extends ImageView {
     // MTRANS_X and MTRANS_Y are the other values used. prevMatrix is the matrix
     // saved prior to the screen rotating.
     //
-	private Matrix matrix, prevMatrix;
+	public Matrix matrix, prevMatrix;
 
     private static enum State { NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM };
     private State state;
@@ -401,7 +401,7 @@ public class TouchImageView extends ImageView {
     /**
      * Set zoom parameters equal to another TouchImageView. Including scale, position,
      * and ScaleType.
-     * @param TouchImageView
+     * @param
      */
     public void setZoom(TouchImageView img) {
     	PointF center = img.getScrollPosition();
@@ -820,63 +820,106 @@ public class TouchImageView extends ImageView {
         // Remember last point position for dragging
         //
         private PointF last = new PointF();
-    	
+        private double startAngle;
     	@Override
         public boolean onTouch(View v, MotionEvent event) {
-            mScaleDetector.onTouchEvent(event);
-            mGestureDetector.onTouchEvent(event);
-            PointF curr = new PointF(event.getX(), event.getY());
-            
+            mScaleDetector.onTouchEvent( event );
+            mGestureDetector.onTouchEvent( event );
+
+            PointF curr = new PointF( event.getX(), event.getY() );
+
             if (state == State.NONE || state == State.DRAG || state == State.FLING) {
-	            switch (event.getAction()) {
-	                case MotionEvent.ACTION_DOWN:
-	                	last.set(curr);
-	                    if (fling != null)
-	                    	fling.cancelFling();
-	                    setState(State.DRAG);
-	                    break;
-	                    
-	                case MotionEvent.ACTION_MOVE:
-	                    if (state == State.DRAG) {
-	                        float deltaX = curr.x - last.x;
-	                        float deltaY = curr.y - last.y;
-	                        float fixTransX = getFixDragTrans(deltaX, viewWidth, getImageWidth());
-	                        float fixTransY = getFixDragTrans(deltaY, viewHeight, getImageHeight());
-	                        matrix.postTranslate(fixTransX, fixTransY);
-	                        fixTrans();
-	                        last.set(curr.x, curr.y);
-	                    }
-	                    break;
-	
-	                case MotionEvent.ACTION_UP:
-	                case MotionEvent.ACTION_POINTER_UP:
-	                    setState(State.NONE);
-	                    break;
-	            }
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        last.set( curr );
+                        if (fling != null)
+                            fling.cancelFling();
+                        setState( State.DRAG );
+
+                        startAngle = getAngle( event.getX(), event.getY() );
+
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (state == State.DRAG) {
+                            float deltaX = curr.x - last.x;
+                            float deltaY = curr.y - last.y;
+                            float fixTransX = getFixDragTrans( deltaX, viewWidth, getImageWidth() );
+                            float fixTransY = getFixDragTrans( deltaY, viewHeight, getImageHeight() );
+                            matrix.postTranslate( fixTransX, fixTransY );
+                            fixTrans();
+                            last.set( curr.x, curr.y );
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_POINTER_UP:
+                        setState( State.NONE );
+                        break;
+                }
             }
-            
-            setImageMatrix(matrix);
-            
+
+            setImageMatrix( matrix );
+
             //
-    		// User-defined OnTouchListener
-    		//
-    		if(userTouchListener != null) {
-    			userTouchListener.onTouch(v, event);
-    		}
-            
-    		//
-    		// OnTouchImageViewListener is set: TouchImageView dragged by user.
-    		//
-    		if (touchImageViewListener != null) {
-    			touchImageViewListener.onMove();
-    		}
-    		
+            // User-defined OnTouchListener
+            //
+            if (userTouchListener != null) {
+                userTouchListener.onTouch( v, event );
+            }
+
+            //
+            // OnTouchImageViewListener is set: TouchImageView dragged by user.
+            //
+            if (touchImageViewListener != null) {
+                touchImageViewListener.onMove();
+            }
+
             //
             // indicate event was handled
             //
             return true;
         }
     }
+
+    /**
+     * @return The angle of the unit circle with the image view's center
+     */
+    private double getAngle(double xTouch, double yTouch) {
+
+
+        float actualWidth = getImageWidth();
+        float actualHeight = getImageHeight();
+
+        double x = xTouch - (actualWidth / 2d);
+        double y = actualHeight - yTouch - (actualHeight / 2d);
+
+        switch (getQuadrant(x, y)) {
+            case 1:
+                return Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
+            case 2:
+                return 180 - Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
+            case 3:
+                return 180 + (-1 * Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI);
+            case 4:
+                return 360 + Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * @return The selected quadrant.
+     */
+    private static int getQuadrant(double x, double y) {
+        if (x >= 0) {
+            return y >= 0 ? 1 : 4;
+        } else {
+            return y >= 0 ? 2 : 3;
+        }
+    }
+
+
 
     /**
      * ScaleListener detects user two finger scaling and scales image.
