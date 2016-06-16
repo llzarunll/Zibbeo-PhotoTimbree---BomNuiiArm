@@ -16,7 +16,7 @@ import java.util.Random;
 /**
  * Created by samchaw on 5/28/16 AD.
  */
-public class databaseClass extends SQLiteOpenHelper {
+public class  databaseClass extends SQLiteOpenHelper {
 
     // Database Name
     private static final String DATABASE_NAME = "databaseManager";
@@ -72,7 +72,11 @@ public class databaseClass extends SQLiteOpenHelper {
     // Column name
     private static final String KEY_IMAGECOMPOSER_ID = "imagecomposer_id";
     private static final String KEY_TEMPLATE_MODEL = "template_model";
-    private static final String KEY_STICKER_MODEL = "sticker_model";
+    private static final String KEY_STICKER_MODEL_1 = "sticker_model_1";
+    private static final String KEY_STICKER_MODEL_2 = "sticker_model_2";
+    private static final String KEY_STICKER_MODEL_3 = "sticker_model_3";
+    private static final String KEY_STICKER_MODEL_4 = "sticker_model_4";
+
 
     // Column name
     private static final String KEY_IMAGETEMPLATE_ID = "imagetemplate_id";
@@ -119,7 +123,10 @@ public class databaseClass extends SQLiteOpenHelper {
     private static final String KEY_FILTER = "filter";
 
     // Column name
-    private static final String KEY_STICKER_ARRAY = "sticker_array";
+    private static final String KEY_STICKER_ID = "stickerID";
+    private static final String KEY_STICKER = "sticker";
+    private static final String KEY_X = "x";
+    private static final String KEY_Y = "y";
 
 
     // Table Create Statements
@@ -172,8 +179,11 @@ public class databaseClass extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_IMAGE_COMPOSER = "CREATE TABLE " + TABLE_IMAGE_COMPOSER
             + "("
             + KEY_ID + " TEXT PRIMARY KEY,"
-            + KEY_TEMPLATE_MODEL + " BYTE[],"
-            + KEY_STICKER_MODEL + " BYTE[]"
+            + KEY_TEMPLATE_MODEL + " TEXT,"
+            + KEY_STICKER_MODEL_1 + " TEXT,"
+            + KEY_STICKER_MODEL_2 + " TEXT,"
+            + KEY_STICKER_MODEL_3 + " TEXT,"
+            + KEY_STICKER_MODEL_4 + " TEXT"
             + ")";
 
     private static final String CREATE_TABLE_IMAGE_TEMPLATE = "CREATE TABLE " + TABLE_IMAGE_TEMPLATE
@@ -226,7 +236,10 @@ public class databaseClass extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_STICKER_TEMPLATE = "CREATE TABLE " + TABLE_STICKER_TEMPLATE
             + "("
-            + KEY_STICKER_ARRAY + " ARRAY"
+            + KEY_ID + " TEXT PRIMARY KEY,"
+            + KEY_STICKER + " BYTE[],"
+            + KEY_X + " FLOAT,"
+            + KEY_Y + " FLOAT"
             + ")";
 
     public databaseClass(Context context) {
@@ -710,7 +723,10 @@ public class databaseClass extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_ID, sImageComposer.getImageComposerID());
         values.put(KEY_TEMPLATE_MODEL, sImageComposer.getTemplate());
-        values.put(KEY_STICKER_MODEL, sImageComposer.getSticker());
+        values.put(KEY_STICKER_MODEL_1, sImageComposer.getSticker1());
+        values.put(KEY_STICKER_MODEL_2, sImageComposer.getSticker2());
+        values.put(KEY_STICKER_MODEL_3, sImageComposer.getSticker3());
+        values.put(KEY_STICKER_MODEL_4, sImageComposer.getSticker4());
 
         // Inserting Row
         sqLiteDatabase.insert(TABLE_IMAGE_COMPOSER, null, values);
@@ -731,7 +747,10 @@ public class databaseClass extends SQLiteOpenHelper {
 
             rImageComposer.setImageComposerID(cursor.getString(0));
             rImageComposer.setTemplate(cursor.getString(1));
-            rImageComposer.setSticker(cursor.getString(2));
+            rImageComposer.setSticker1(cursor.getString(2));
+            rImageComposer.setSticker2(cursor.getString(3));
+            rImageComposer.setSticker3(cursor.getString(4));
+            rImageComposer.setSticker4(cursor.getString(5));
             cursor.close();
         }
         // return contact
@@ -752,7 +771,10 @@ public class databaseClass extends SQLiteOpenHelper {
                 ImageComposer tImageComposerList = new ImageComposer();
                 tImageComposerList.setImageComposerID(cursor.getString(0));
                 tImageComposerList.setTemplate(cursor.getString(1));
-                tImageComposerList.setSticker(cursor.getString(2));
+                tImageComposerList.setSticker1(cursor.getString(2));
+                tImageComposerList.setSticker2(cursor.getString(3));
+                tImageComposerList.setSticker3(cursor.getString(4));
+                tImageComposerList.setSticker4(cursor.getString(5));
                 ImageComposerList.add(tImageComposerList);
             } while (cursor.moveToNext());
             cursor.close();
@@ -766,9 +788,11 @@ public class databaseClass extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        // values.put(KEY_IMAGECOMPOSER_ID, sImageComposer.getImageComposerID());
         values.put(KEY_TEMPLATE_MODEL, sImageComposer.getTemplate());
-        values.put(KEY_STICKER_MODEL, sImageComposer.getSticker());
+        values.put(KEY_STICKER_MODEL_1, sImageComposer.getSticker1());
+        values.put(KEY_STICKER_MODEL_2, sImageComposer.getSticker2());
+        values.put(KEY_STICKER_MODEL_3, sImageComposer.getSticker3());
+        values.put(KEY_STICKER_MODEL_4, sImageComposer.getSticker4());
 
         // updating row
         return sqLiteDatabase.update(TABLE_IMAGE_COMPOSER, values, KEY_ID + " = ?",
@@ -875,53 +899,6 @@ public class databaseClass extends SQLiteOpenHelper {
         return rImage;
     }
 
-    //get all contact row
-    public List<Image> getAllImageRow() {
-        List<Image> ImageList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_IMAGE;
-
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Image tImage = new Image();
-
-                tImage.setImage_id(cursor.getString(0));
-                tImage.setUrl(cursor.getBlob(1));
-                tImage.setX(cursor.getFloat(2));
-                tImage.setX_enable(cursor.isNull(3));
-                tImage.setX_original(cursor.getFloat(4));
-                tImage.setX_max(cursor.getFloat(5));
-                tImage.setX_min(cursor.getFloat(6));
-                tImage.setY(cursor.getFloat(7));
-                tImage.setY_enable(cursor.isNull(8));
-                tImage.setY_original(cursor.getFloat(9));
-                tImage.setY_max(cursor.getFloat(10));
-                tImage.setY_min(cursor.getFloat(11));
-                tImage.setScale(cursor.getFloat(12));
-                tImage.setScale_enable(cursor.isNull(13));
-                tImage.setScale_original(cursor.getFloat(14));
-                tImage.setScale_max(cursor.getFloat(15));
-                tImage.setScale_min(cursor.getFloat(16));
-                tImage.setRotate(cursor.getFloat(17));
-                tImage.setRotate_enable(cursor.isNull(18));
-                tImage.setRotate_original(cursor.getFloat(19));
-                tImage.setRotate_max(cursor.getFloat(20));
-                tImage.setRotate_min(cursor.getFloat(21));
-                tImage.setFilter_enable(cursor.isNull(22));
-                tImage.setFilter(cursor.getInt(23));
-
-                ImageList.add(tImage);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        // return contact list
-        return ImageList;
-    }
-
     //update data in row by id
     public int updateImage(Image sImageModel) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -969,15 +946,63 @@ public class databaseClass extends SQLiteOpenHelper {
 
     //region STICKER_TEMPLATE TABLE FUNCTION--------------------------------------
     //insert StickerTemplate
-    public void insertStickerTemplate(StickerTemplate ssticker_array) {
+    public void insertStickerTemplate(StickerTemplate sstickerID) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_STICKER_ARRAY, ssticker_array.getSticker()); // id
+        values.put(KEY_ID, sstickerID.getStickerID()); // id
+        values.put(KEY_STICKER, sstickerID.getSticker()); // obj
+        values.put(KEY_X, sstickerID.getX()); // x
+        values.put(KEY_Y, sstickerID.getY()); // y
 
         // Inserting Row
         sqLiteDatabase.insert(TABLE_STICKER_TEMPLATE, null, values);
         sqLiteDatabase.close(); // Closing database connection
+    }
+
+    //get ImageTemplate
+    public StickerTemplate getStickerTemplate(String sID) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = sqLiteDatabase.query(TABLE_STICKER_TEMPLATE,
+                null,//get all column
+                KEY_ID + "=?",
+                new String[]{sID}, null, null, null, null);
+
+        StickerTemplate rStickerTemplate = new StickerTemplate();
+        if (cursor != null) {
+            cursor.moveToFirst();
+            rStickerTemplate.setStickerID(cursor.getString(0));
+            rStickerTemplate.setSticker(cursor.getBlob(1));
+            rStickerTemplate.setX(cursor.getFloat(2));
+            rStickerTemplate.setY(cursor.getFloat(3));
+
+            cursor.close();
+        }
+        // return contact
+        return rStickerTemplate;
+    }
+
+    //update data in row by id
+    public int updateStickerTemplate(StickerTemplate sStickerTemplate) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_STICKER, sStickerTemplate.getSticker()); // obj
+        values.put(KEY_X, sStickerTemplate.getX()); // x
+        values.put(KEY_Y, sStickerTemplate.getY()); // y
+
+        // updating row
+        return sqLiteDatabase.update(TABLE_STICKER_TEMPLATE, values, KEY_ID + " = ?",
+                new String[]{sStickerTemplate.getStickerID()});
+    }
+
+    //delete row by id
+    public void deleteStickerTemplateRow(StickerTemplate sStickerTemplate) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_STICKER_TEMPLATE, KEY_ID + " = ?",
+                new String[]{sStickerTemplate.getStickerID()});
+        sqLiteDatabase.close();
     }
     //endregion
 
@@ -1042,46 +1067,6 @@ public class databaseClass extends SQLiteOpenHelper {
         }
         // return contact
         return rImageTemplate;
-    }
-
-
-    //get all ImageTemplate row
-    public List<ImageTemplate> getAllImageTemplateRow() {
-        List<ImageTemplate> ImageTemplateList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_IMAGE_TEMPLATE;
-
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                ImageTemplate tImageTemplate = new ImageTemplate();
-
-                tImageTemplate.setImagetemplate_id(cursor.getString(0));
-                tImageTemplate.setTemplate(cursor.getInt(1));
-                tImageTemplate.setImage_a(cursor.getString(2));
-                tImageTemplate.setImage_b(cursor.getString(3));
-                tImageTemplate.setImage_c(cursor.getString(4));
-                tImageTemplate.setImage_d(cursor.getString(5));
-                tImageTemplate.setMarge_one_color(cursor.getString(6));
-                tImageTemplate.setMarge_one_stroke(cursor.getFloat(7));
-                tImageTemplate.setMarge_two_color(cursor.getString(8));
-                tImageTemplate.setMarge_two_stroke(cursor.getFloat(9));
-                tImageTemplate.setTop_value(cursor.getFloat(10));
-                tImageTemplate.setBottom_value(cursor.getFloat(11));
-                tImageTemplate.setRight_value(cursor.getFloat(12));
-                tImageTemplate.setLeft_value(cursor.getFloat(13));
-                tImageTemplate.setCenter_x(cursor.getFloat(14));
-                tImageTemplate.setCenter_y(cursor.getFloat(15));
-
-                ImageTemplateList.add(tImageTemplate);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        // return contact list
-        return ImageTemplateList;
     }
 
     //update data in row by id
