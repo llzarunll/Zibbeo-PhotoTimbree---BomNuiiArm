@@ -69,8 +69,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     FrameLayout FrameImg;
     SeekBar seekbar1;
     int FullHeight, FullWidth;
+    public  int mIndex = 0;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
+    public Bitmap ImageSelect;
+
     //KITTI Add Control SeekbarOuter
     SeekBar sOuter, sInner;
     //LineClass mLineClass;
@@ -80,6 +83,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     String getTpID, tpID, getImageTemplateID, imageTemplateID, stickerTemplateID;
     //Image
     String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
+
+
+
     /*marge_one_color, marge_two_color;
     Float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
     Integer template;
@@ -114,8 +120,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     Integer dfilter;
     byte[] durl;*/
     /*Nuii*/
-   //Image Template
-   ArrayList imageTemplate;
+    //Image Template
+    ArrayList imageTemplate;
     //Image Model A - D
     ArrayList imageA,imageB,imageC,imageD;
 
@@ -132,10 +138,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
      Paint mPaint3,mPaint4,mPaint5,mPaint6;
      Context mContext;
      ViewGroup mLayout;
+     RelativeLayout mImageselect,mFrameLayout;
      ViewGroup.LayoutParams mLayoutParams;
      boolean touch_state = false;
      boolean mFirstTimeCheck = true;
-
+    TouchImageView mImage;
      ArrayList<Point> mTopLeftArea,mTopRightArea,mBottomLeftArea,mBottomRightArea;
      Point mCenterPoint,mLeftPoint,mRightPoint,mTopPoint,mBottomPoint;
      float mStroke = 5f;
@@ -170,6 +177,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mDraw = new DrawCanvas(this);
         init();
+
+        //mFrameLayout.setVisibility(View.VISIBLE);
+        //mImageselect.setVisibility(View.INVISIBLE);
+
         mLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -235,6 +246,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         float mDistanceCenter, mDistanceLeft, mDistanceRight, mDistanceTop, mDistanceBottom;
         Rect mTopLeftAreaRect,mTopRightAreaRect,mBottomLeftAreaRect,mBottomRightAreaRect;
 
+        public Drawable myPic[] = {
+                getResources().getDrawable(R.drawable.boston),
+                getResources().getDrawable(R.drawable.carifornia),
+                getResources().getDrawable(R.drawable.dubai),
+                getResources().getDrawable(R.drawable.paris)
+        };
+
         private DrawCanvas(Context mContext) {
             super(mContext);
             this.setOnTouchListener(this);
@@ -245,6 +263,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 //            Log.i("PARAM",""+mLayoutParams.height+" "+getHeight());
+
+
+
+
 
             if (mFirstTimeCheck) {
                 tMaxLeft = mRadius;
@@ -275,12 +297,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     Point = (int) (mPaintInner.getStrokeWidth() / 2);
                 }
                 mPaintInner.setStrokeWidth(mPaint.getStrokeWidth() + 5);
-                Drawable myPic[] = {
-                        getResources().getDrawable(R.drawable.boston),
-                        getResources().getDrawable(R.drawable.carifornia),
-                        getResources().getDrawable(R.drawable.dubai),
-                        getResources().getDrawable(R.drawable.paris),
-                };
+
                 Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
                 Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
                 int w = getWidth(), h = getHeight();
@@ -537,23 +554,24 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 //Img B,D
                 if (y > mCenterPoint.y) {
                     //ImgD
-                    Toast msg = Toast.makeText( mContext, "ImgD \n", Toast.LENGTH_LONG );
-                    msg.show();
+                    mIndex = 3;
+                    selectImage();
+
                 } else {
+                    mIndex = 1;
                     //ImgB
-                    Toast msg = Toast.makeText( mContext, "ImgB \n", Toast.LENGTH_LONG );
-                    msg.show();
+                    selectImage();
                 }
             } else {
                 //Img A,C
                 if (y > mCenterPoint.y) {
                     //ImgC
-                    Toast msg = Toast.makeText( mContext, "ImgC \n", Toast.LENGTH_LONG );
-                    msg.show();
+                    mIndex = 2;
+                    selectImage();
                 } else {
                     //ImgA
-                    Toast msg = Toast.makeText( mContext, "ImgA \n", Toast.LENGTH_LONG );
-                    msg.show();
+                    mIndex = 0;
+                    selectImage();
                 }
             }
         }
@@ -704,7 +722,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 /*Nuii : Call values from MoveLineClass*/
                 imageTemplate = mMove.imageTemplate;
 
-                //mFrameLayout.setVisibility(View.INVISIBLE);
 
                 /*Nuii*/
                 //Insert Image Template;
@@ -917,7 +934,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         //KITTI : Link Control
         sOuter = (SeekBar) findViewById( R.id.seekBarOuter );
         sInner = (SeekBar) findViewById( R.id.seekBarInner );
-
+        mImage = (TouchImageView) findViewById(R.id.mImage);
         farme1 = (ImageButton) findViewById( R.id.farme1 );
         farme2 = (ImageButton) findViewById( R.id.farme2 );
         farme3 = (ImageButton) findViewById( R.id.farme3 );
@@ -926,9 +943,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         farme6 = (ImageButton) findViewById( R.id.farme6 );
         farme7 = (ImageButton) findViewById( R.id.farme7 );
         farme8 = (ImageButton) findViewById( R.id.farme8 );
-//        mFrameLayout = (RelativeLayout) findViewById( R.id.FrameLayout );
+
         mLayout = (RelativeLayout) findViewById( R.id.FrameImageView );
         mLayoutParams = mLayout.getLayoutParams();
+//        mImageselect = (RelativeLayout) findViewById(R.id.Imageselect);
+//        mFrameLayout = (RelativeLayout) findViewById(R.id.mFrameLayout);
 
         mCenterPoint = new Point(mLayoutParams.width/2,mLayoutParams.height/2);
         mLeftPoint = new Point();
@@ -1072,7 +1091,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             e.printStackTrace();
         }
 
-        ImgBlock1.setImageBitmap( thumbnail );
+        mImage.setImageBitmap( thumbnail );
     }
 
     private void onSelectFromGalleryResult(Intent data) {
@@ -1086,7 +1105,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
         }
 
-        ImgBlock1.setImageBitmap( bm );
+        mImage.setImageBitmap( bm );
+        mDraw.myPic[mIndex] = (Drawable)new BitmapDrawable(bm);
+        draw();
     }
 
     @Override
