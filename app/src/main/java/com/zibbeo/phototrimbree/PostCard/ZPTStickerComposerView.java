@@ -7,16 +7,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zibbeo.phototrimbree.BaseNavigationDrawer;
 import com.zibbeo.phototrimbree.CreatePostcard.Massage.ZPTMessageComposerView;
 import com.zibbeo.phototrimbree.PostCard.Sticker.StickerImageView;
+import com.zibbeo.phototrimbree.PostCard.Sticker.StickerView;
 import com.zibbeo.phototrimbree.R;
 import com.zibbeo.phototrimbree.Database.databaseClass;
 import com.zibbeo.phototrimbree.Database.Image;
@@ -35,6 +38,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     Button nextButton, previousButton;
     FrameLayout canvas;
     LinearLayout StickerBar;
+    TextView label;
     int stickerCount = 0;
 
     @Override
@@ -45,13 +49,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         contentView = inflater.inflate(R.layout.zpt_sticker_composer_view, null, false);
         mDrawerLayout.addView(contentView, 0);
 
-        Bundle extras = getIntent().getExtras();
+        /*Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
 
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        image.setImageBitmap(bmp);
+        image.setImageBitmap(bmp);*/
         init();
         getSticker();
     }
@@ -92,6 +96,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         previousButton = (Button) findViewById(R.id.previousButton);
         canvas = (FrameLayout) findViewById(R.id.canvasView);
         StickerBar = (LinearLayout) findViewById(R.id.StickerBar);
+        label = (TextView) findViewById(R.id.from_top_label);
     }
 
     private void getSticker() {
@@ -100,10 +105,10 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                 {
                         getResources().getDrawable(R.drawable.cloud),
                         getResources().getDrawable(R.drawable.idea),
-                        getResources().getDrawable(R.drawable.star),
+                        /*getResources().getDrawable(R.drawable.star),
                         getResources().getDrawable(R.drawable.camera),
                         getResources().getDrawable(R.drawable.photos),
-                        getResources().getDrawable(R.drawable.alarm),
+                        getResources().getDrawable(R.drawable.alarm),*/
                         getResources().getDrawable(R.drawable.hourglass),
                         getResources().getDrawable(R.drawable.like),
                         getResources().getDrawable(R.drawable.noimage)
@@ -136,8 +141,131 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                         });
                         canvas.addView(iv_sticker);
                         stickerCount++;
-                    }
-                    else {
+                        /*iv_sticker.setControlItemsHidden(true);*/
+
+                        /*iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            public void onFocusChange(View view, boolean hasFocus) {
+                                if (hasFocus)
+                                    iv_sticker.setControlItemsHidden(!hasFocus);
+                                else
+                                    iv_sticker.stn
+                            }
+                        });*/
+
+                        iv_sticker.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent event) {
+                                iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                    public void onFocusChange(View view, boolean hasFocus) {
+                                        iv_sticker.setControlItemsHidden(!hasFocus);
+                                    }
+                                });
+
+                                if (view.getTag().equals("DraggableViewGroup")) {
+                                    switch (event.getAction()) {
+                                        case MotionEvent.ACTION_DOWN:
+                                            iv_sticker.move_orgX = event.getRawX();
+                                            iv_sticker.move_orgY = event.getRawY();
+                                            break;
+                                        case MotionEvent.ACTION_MOVE:
+                                            float offsetX = event.getRawX() - iv_sticker.move_orgX;
+                                            float offsetY = event.getRawY() - iv_sticker.move_orgY;
+                                            iv_sticker.setX(iv_sticker.getX() + offsetX);
+                                            iv_sticker.setY(iv_sticker.getY() + offsetY);
+                                            iv_sticker.move_orgX = event.getRawX();
+                                            iv_sticker.move_orgY = event.getRawY();
+                                            break;
+                                        case MotionEvent.ACTION_UP:
+                                            break;
+                                    }
+                                } else if (view.getTag().equals("iv_scale")) {
+                                    switch (event.getAction()) {
+                                        case MotionEvent.ACTION_DOWN:
+                                            iv_sticker.this_orgX = iv_sticker.getX();
+                                            iv_sticker.this_orgY = iv_sticker.getY();
+
+                                            iv_sticker.scale_orgX = event.getRawX();
+                                            iv_sticker.scale_orgY = event.getRawY();
+                                            iv_sticker.scale_orgWidth = iv_sticker.getLayoutParams().width;
+                                            iv_sticker.scale_orgHeight = iv_sticker.getLayoutParams().height;
+
+                                            iv_sticker.rotate_orgX = event.getRawX();
+                                            iv_sticker.rotate_orgY = event.getRawY();
+
+                                            iv_sticker.centerX = iv_sticker.getX() +
+                                                    ((View) iv_sticker.getParent()).getX() +
+                                                    (float) iv_sticker.getWidth() / 2;
+
+                                            //double statusBarHeight = Math.ceil(25 * getContext().getResources().getDisplayMetrics().density);
+                                            int result = 0;
+                                            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+                                            if (resourceId > 0) {
+                                                result = getResources().getDimensionPixelSize(resourceId);
+                                            }
+                                            double statusBarHeight = result;
+                                            iv_sticker.centerY = iv_sticker.getY() +
+                                                    ((View) iv_sticker.getParent()).getY() +
+                                                    statusBarHeight +
+                                                    (float) iv_sticker.getHeight() / 2;
+
+                                            break;
+                                        case MotionEvent.ACTION_MOVE:
+                                            iv_sticker.rotate_newX = event.getRawX();
+                                            iv_sticker.rotate_newY = event.getRawY();
+
+                                            double angle_diff = Math.abs(
+                                                    Math.atan2(event.getRawY() - iv_sticker.scale_orgY, event.getRawX() - iv_sticker.scale_orgX)
+                                                            - Math.atan2(iv_sticker.scale_orgY - iv_sticker.centerY, iv_sticker.scale_orgX - iv_sticker.centerX)) * 180 / Math.PI;
+                                            double length1 = iv_sticker.getLength(iv_sticker.centerX, iv_sticker.centerY, iv_sticker.scale_orgX, iv_sticker.scale_orgY);
+                                            double length2 = iv_sticker.getLength(iv_sticker.centerX, iv_sticker.centerY, event.getRawX(), event.getRawY());
+
+                                            int size = iv_sticker.convertDpToPixel(iv_sticker.SELF_SIZE_DP, iv_sticker.getContext());
+                                            if (length2 > length1
+                                                    && (angle_diff < 25 || Math.abs(angle_diff - 180) < 25)
+                                                    ) {
+                                                //scale up
+                                                double offsetX = Math.abs(event.getRawX() - iv_sticker.scale_orgX);
+                                                double offsetY = Math.abs(event.getRawY() - iv_sticker.scale_orgY);
+                                                double offset = Math.max(offsetX, offsetY);
+                                                offset = Math.round(offset);
+                                                iv_sticker.getLayoutParams().width += offset;
+                                                iv_sticker.getLayoutParams().height += offset;
+                                                iv_sticker.onScaling(true);
+                                            } else if (length2 < length1
+                                                    && (angle_diff < 25 || Math.abs(angle_diff - 180) < 25)
+                                                    && iv_sticker.getLayoutParams().width > size / 2
+                                                    && iv_sticker.getLayoutParams().height > size / 2) {
+                                                //scale down
+                                                double offsetX = Math.abs(event.getRawX() - iv_sticker.scale_orgX);
+                                                double offsetY = Math.abs(event.getRawY() - iv_sticker.scale_orgY);
+                                                double offset = Math.max(offsetX, offsetY);
+                                                offset = Math.round(offset);
+                                                iv_sticker.getLayoutParams().width -= offset;
+                                                iv_sticker.getLayoutParams().height -= offset;
+                                                iv_sticker.onScaling(false);
+                                            }
+
+                                            //rotate
+                                            double angle = Math.atan2(event.getRawY() - iv_sticker.centerY, event.getRawX() - iv_sticker.centerX) * 180 / Math.PI;
+                                            //setRotation((float) angle - 45);
+                                            iv_sticker.setRotation((float) angle - 45);
+                                            iv_sticker.onRotating();
+                                            iv_sticker.rotate_orgX = iv_sticker.rotate_newX;
+                                            iv_sticker.rotate_orgY = iv_sticker.rotate_newY;
+                                            iv_sticker.scale_orgX = event.getRawX();
+                                            iv_sticker.scale_orgY = event.getRawY();
+                                            iv_sticker.postInvalidate();
+                                            iv_sticker.requestLayout();
+                                            break;
+                                        case MotionEvent.ACTION_UP:
+                                            break;
+                                    }
+                                }
+                                label.setText(Float.toString(iv_sticker.move_orgX));
+                                return true;
+                            }
+                        });
+                    } else {
                         Toast.makeText(contentView.getContext(), "Maximum of stickers is 4", Toast.LENGTH_LONG).show();
                     }
                 }

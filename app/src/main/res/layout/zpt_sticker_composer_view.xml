@@ -42,6 +42,16 @@
             android:layout_marginRight="5dip"/>
     </HorizontalScrollView>
 
+    <TextView
+        android:id="@+id/from_top_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="From Top: %d px"
+        android:textColor="#9c27b0"
+        android:textSize="18sp"
+
+        android:layout_below="@+id/thumbnails_scroll_view"
+        android:layout_alignEnd="@+id/thumbnails_scroll_view" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

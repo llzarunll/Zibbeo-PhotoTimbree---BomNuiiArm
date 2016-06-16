@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -23,24 +24,24 @@ import com.zibbeo.phototrimbree.R;
  */
 public abstract class StickerView extends FrameLayout {
 
-    private BorderView iv_border;
-    private ImageView iv_scale;
+    public BorderView iv_border;
+    public ImageView iv_scale;
     public ImageView iv_delete;
     /*private ImageView iv_flip;*/
 
     // For scalling
-    private float this_orgX = -1, this_orgY = -1;
-    private float scale_orgX = -1, scale_orgY = -1;
-    private double scale_orgWidth = -1, scale_orgHeight = -1;
+    public float this_orgX = -1, this_orgY = -1;
+    public float scale_orgX = -1, scale_orgY = -1;
+    public double scale_orgWidth = -1, scale_orgHeight = -1;
     // For rotating
-    private float rotate_orgX = -1, rotate_orgY = -1, rotate_newX = -1, rotate_newY = -1;
+    public float rotate_orgX = -1, rotate_orgY = -1, rotate_newX = -1, rotate_newY = -1;
     // For moving
-    private float move_orgX =-1, move_orgY = -1;
+    public float move_orgX =-1, move_orgY = -1;
 
-    private double centerX, centerY;
+    public double centerX, centerY;
 
-    private final static int BUTTON_SIZE_DP = 30;
-    private final static int SELF_SIZE_DP = 100;
+    public final static int BUTTON_SIZE_DP = 20;
+    public final static int SELF_SIZE_DP = 100;
 
     public StickerView(Context context) {
         super(context);
@@ -125,6 +126,23 @@ public abstract class StickerView extends FrameLayout {
         this.addView(iv_delete, iv_delete_params);
         /*this.addView(iv_flip, iv_flip_params);*/
         this.setOnTouchListener(mTouchListener);
+       /*this.setOnFocusChangeListener(new OnFocusChangeListener() {
+            public void onFocusChange(View view, boolean hasFocus) {
+                setControlItemsHidden(hasFocus);
+            }
+        });*/
+        /*this.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                setControlItemsHidden(false);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                setControlItemsHidden(true);
+            }
+        });*/
         this.iv_scale.setOnTouchListener(mTouchListener);
         this.iv_delete.setOnClickListener(new OnClickListener() {
             @Override
@@ -155,10 +173,18 @@ public abstract class StickerView extends FrameLayout {
 
     protected abstract View getMainView();
 
+/*    private OnFocusChangeListener mFocusChangeListener = new OnFocusChangeListener() {
+        @Override
+        public void onFocusChanged(View view, boolean hasFocus) {
+            if (view.getTag().equals("DraggableViewGroup")) {
+                setControlItemsHidden(hasFocus);
+            }
+        }
+    };*/
+
     private OnTouchListener mTouchListener = new OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-
             if(view.getTag().equals("DraggableViewGroup")) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
@@ -198,7 +224,6 @@ public abstract class StickerView extends FrameLayout {
                         centerX = StickerView.this.getX()+
                                 ((View)StickerView.this.getParent()).getX()+
                                 (float)StickerView.this.getWidth()/2;
-
 
                         //double statusBarHeight = Math.ceil(25 * getContext().getResources().getDisplayMetrics().density);
                         int result = 0;
@@ -290,7 +315,7 @@ public abstract class StickerView extends FrameLayout {
         super.onDraw(canvas);
     }
 
-    private double getLength(double x1, double y1, double x2, double y2){
+    public double getLength(double x1, double y1, double x2, double y2){
         return Math.sqrt(Math.pow(y2-y1, 2)+Math.pow(x2-x1, 2));
     }
 
@@ -324,11 +349,11 @@ public abstract class StickerView extends FrameLayout {
         return iv_flip;
     }*/
 
-    protected void onScaling(boolean scaleUp){}
+    public void onScaling(boolean scaleUp){}
 
-    protected void onRotating(){}
+    public void onRotating(){}
 
-    private class BorderView extends View{
+    public class BorderView extends View{
 
         public BorderView(Context context) {
             super(context);
@@ -364,7 +389,7 @@ public abstract class StickerView extends FrameLayout {
         }
     }
 
-    private static int convertDpToPixel(float dp, Context context){
+    public static int convertDpToPixel(float dp, Context context){
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
