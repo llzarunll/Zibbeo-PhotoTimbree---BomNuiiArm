@@ -80,54 +80,24 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     MoveLineClass mMove;
 
     databaseClass mDatabaseClass;
-    String getTpID, tpID, getImageTemplateID, imageTemplateID, stickerTemplateID;
+    String getTpID, tpID, getImageTemplateID, imageTemplateID;
     //Image
     String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
 
+    /*16062016*/
+    String  stickerTemplateID1, stickerTemplateID2, stickerTemplateID3, stickerTemplateID4 ;
 
 
-    /*marge_one_color, marge_two_color;
-    Float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
-    Integer template;
-    //Sticker
-    String stickerTemplateID;
-    //Image Model A
-    String aid;
-    Float aoffset_x, aoffset_x_original, aoffset_x_max, aoffset_x_min, aoffset_y, aoffset_y_original, aoffset_y_max;
-    Float aoffset_y_min, ascale, ascale_original, ascale_max, ascale_min, arotate, arotate_original, arotate_max, arotate_min;
-    Boolean aoffset_x_enable, aoffset_y_enable, ascale_enable, arotate_enable, afilter_enable;
-    Integer afilter;
-    byte[] aurl;
-    //Image Model B
-    String bid;
-    Float boffset_x, boffset_x_original, boffset_x_max, boffset_x_min, boffset_y, boffset_y_original, boffset_y_max;
-    Float boffset_y_min, bscale, bscale_original, bscale_max, bscale_min, brotate, brotate_original, brotate_max, brotate_min;
-    Boolean boffset_x_enable, boffset_y_enable, bscale_enable, brotate_enable, bfilter_enable;
-    Integer bfilter;
-    byte[] burl;
-    //Image Model C
-    String cid;
-    Float coffset_x, coffset_x_original, coffset_x_max, coffset_x_min, coffset_y, coffset_y_original, coffset_y_max;
-    Float coffset_y_min, cscale, cscale_original, cscale_max, cscale_min, crotate, crotate_original, crotate_max, crotate_min;
-    Boolean coffset_x_enable, coffset_y_enable, cscale_enable, crotate_enable, cfilter_enable;
-    Integer cfilter;
-    byte[] curl;
-    //Image Model D
-    String did;
-    Float doffset_x, doffset_x_original, doffset_x_max, doffset_x_min, doffset_y, doffset_y_original, doffset_y_max;
-    Float doffset_y_min, dscale, dscale_original, dscale_max, dscale_min, drotate, drotate_original, drotate_max, drotate_min;
-    Boolean doffset_x_enable, doffset_y_enable, dscale_enable, drotate_enable, dfilter_enable;
-    Integer dfilter;
-    byte[] durl;*/
     /*Nuii*/
     //Image Template
-    ArrayList imageTemplate;
+    ArrayList valueImageTemplate;
     //Image Model A - D
-    ArrayList imageA,imageB,imageC,imageD;
+    ArrayList valueImageA,valueImageB,valueImageC,valueImageD;
 
     /*Nuii*/
     ArrayList getTemplate;
     ArrayList getModel;
+    ArrayList imageTemplate;  ArrayList imageA,imageB,imageC,imageD;
 
     /*** KITTI */
      DrawCanvas mDraw;
@@ -201,7 +171,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
         if (getImageTemplateID != null) {
             imageTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getTemplate();
-            stickerTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker();
+            /*16062016*/
+            stickerTemplateID1 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker1();
+            stickerTemplateID2 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker2();
+            stickerTemplateID3 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker3();
+            stickerTemplateID4 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker4();
         }
         //Get Image Template
         /*imageTemplate = "123456789";*/
@@ -210,10 +184,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             GetImageTemplate(imageTemplateID);
         }
         //Get Sticker
-        if (stickerTemplateID != null) {
+        /*if (stickerTemplateID != null) {
             // imageTemplate = mDatabaseClass.getImageComposer(getImageTemplateID).getTemplate();
             // stickerTemplate = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker();
-        }
+        }*/
         //Get model of image A
         if (image_a != null) {
             GetImageModel( image_a );
@@ -263,9 +237,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 //            Log.i("PARAM",""+mLayoutParams.height+" "+getHeight());
-
-
-
 
 
             if (mFirstTimeCheck) {
@@ -478,6 +449,14 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             } else if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 touch_state = false;
             }
+            /*Nuii*/
+            //Get Image values
+            setImageTemplate();
+            setImageA();
+            setImageB();
+            setImageC();
+            setImageD();
+
             return true;
         }
 
@@ -705,22 +684,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 cid = image_c;
                 did = image_d;
 
-                //Add Values 1
-                /*template = 1;
-                marge_one_stroke = 1.00f;
-                marge_one_color = "";
-                marge_two_stroke = 1.00f;
-                marge_two_color = "";
-                top_value = 1.00f;
-                bottom_value = 1.00f;
-                right_value = 1.00f;
-                left_value = 1.00f;
-                center_x = 1.00f;
-                center_y = 1.00f;*/
-
-
-                /*Nuii : Call values from MoveLineClass*/
-                imageTemplate = mMove.imageTemplate;
+                  /*Nuii : Call values from MoveLineClass*/
+                imageTemplate = setImageTemplate();
 
 
                 /*Nuii*/
@@ -740,9 +705,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                             , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
                             , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
                             , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
-                   /* ImageTemplate tImageTemplate = new ImageTemplate( getTpID, template, image_a, image_b, image_c, image_d
-                            , marge_one_stroke, marge_one_color, marge_two_stroke, marge_two_color
-                            , top_value, bottom_value, right_value, left_value, center_x, center_y );*/
 
                     mDatabaseClass.insertImageTemplate(tImageTemplate);
 
@@ -753,48 +715,16 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                             , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
                             , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
                             , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
-                    /*ImageTemplate tImageTemplate = new ImageTemplate( template, image_a, image_b, image_c, image_d
-                            , marge_one_stroke, marge_one_color, marge_two_stroke, marge_two_color
-                            , top_value, bottom_value, right_value, left_value, center_x, center_y );*/
+
                     mDatabaseClass.updateImageTemplate(tImageTemplate);
                 }
-                /*Nuii*/
-                //Get value of image A
-                /*aurl = null;
-                aoffset_x = 0.00f;
-                aoffset_x_enable = false;
-                aoffset_x_original = 0.00f;
-                aoffset_x_max = 0.00f;
-                aoffset_x_min = 0.00f;
-                aoffset_y = 0.00f;
-                aoffset_y_enable = false;
-                aoffset_y_original = 0.00f;
-                aoffset_y_max = 0.00f;
-                aoffset_y_min = 0.00f;
-                ascale = 0.00f;
-                ascale_enable = false;
-                ascale_original = 0.00f;
-                ascale_max = 0.00f;
-                ascale_min = 0.00f;
-                arotate = 0.00f;
-                arotate_enable = false;
-                arotate_original = 0.00f;
-                arotate_max = 0.00f;
-                arotate_min = 0.00f;
-                afilter_enable = false;
-                afilter = 1;*/
+
                  /*Nuii : Call values from MoveLineClass*/
-                imageA = mMove.imageA;
+                imageA = setImageA();
 
                 if (Integer.parseInt(imageTemplate.get(0).toString()) >= 1) {
                     if (aid == null) {
                         aid = mDatabaseClass.createID();
-
-                       /* Image ImageA = new Image( aid, aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
-                                , aoffset_y, aoffset_y_enable, aoffset_y_original, aoffset_y_max, aoffset_y_min
-                                , ascale, ascale_enable, ascale_original, ascale_max, ascale_min
-                                , arotate, arotate_enable, arotate_original, arotate_max, arotate_min
-                                , afilter_enable, afilter );*/
 
                         Image ImageA = new Image(aid, imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
                                 , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
@@ -802,38 +732,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                                 , Float.parseFloat(imageA.get(13).toString()), Float.parseFloat(imageA.get(14).toString()), Float.parseFloat(imageA.get(15).toString()), Float.parseFloat(imageA.get(16).toString()), Boolean.parseBoolean(imageA.get(17).toString())
                                 , Float.parseFloat(imageA.get(18).toString()), Float.parseFloat(imageA.get(19).toString()), Float.parseFloat(imageA.get(20).toString()), Boolean.parseBoolean(imageA.get(21).toString()), Integer.parseInt(imageA.get(22).toString()));
 
-                    /*    imageA.add(0,"url");//String : url of image (delete when object is delete)
-                        imageA.add(1,"offset_x");//Float : offset X of image
-                        imageA.add(2,"offset_x_enable");//Boolean : enable offset X of image
-                        imageA.add(3,"offset_x_original");//Float : original offset X of image
-                        imageA.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-                        imageA.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-                        imageA.add(6,"offset_y");//Float : offset Y of image
-                        imageA.add(7,"offset_y_enable");//Boolean : enable offset X of image
-                        imageA.add(8,"offset_y_original");//Float : original offset Y of image
-                        imageA.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-                        imageA.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-                        imageA.add(11,"scale");//Float : scale of image
-                        imageA.add(12,"scale_enable");//Float : Boolean : enable scale of image
-                        imageA.add(13,"scale_original");//Float : original scale of image
-                        imageA.add(14,"scale_max");//Float : maximum authorized scale of image
-                        imageA.add(15,"scale_min");//Float : minimum authorized scale of image
-                        imageA.add(16,"rotate");//Float : rotate of image
-                        imageA.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-                        imageA.add(18,"rotate_original");//Float : original rotation of image
-                        imageA.add(19,"rotate_max");//Float : maximum authorized rotate of image
-                        imageA.add(20,"rotate_min");//Float : minimum authorized rotate of image
-                        imageA.add(21,"filter_enable");//Boolean : enable filter for this image
-                        imageA.add(22,"filter");//Float : Integer : enum filter for this image
-                        return (imageA);*/
 
                         mDatabaseClass.insertImage(ImageA);
                     } else {
-                       /* Image ImageA = new Image( aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
-                                , aoffset_y, aoffset_y_enable, aoffset_y_original, aoffset_y_max, aoffset_y_min
-                                , ascale, ascale_enable, ascale_original, ascale_max, ascale_min
-                                , arotate, arotate_enable, arotate_original, arotate_max, arotate_min
-                                , afilter_enable, afilter );*/
+
                         Image ImageA = new Image(imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
                                 , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
                                 , Float.parseFloat(imageA.get(8).toString()), Float.parseFloat(imageA.get(9).toString()), Float.parseFloat(imageA.get(10).toString()), Float.parseFloat(imageA.get(11).toString()), Boolean.parseBoolean(imageA.get(12).toString())
@@ -845,7 +747,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 if (Integer.parseInt(imageTemplate.get(0).toString()) >= 2) {
                     /*Nuii*/
                     //Get value of image B
-                    imageB = mMove.imageB;
+                    imageB = setImageB();
                     if (bid == null) {
                         bid = mDatabaseClass.createID();
 
@@ -868,7 +770,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 if (Integer.parseInt(imageTemplate.get(0).toString()) >= 3) {
                     /*Nuii*/
                     //Get value of image C
-                    imageC = mMove.imageC;
+                    imageC =setImageC();
                     if (cid == null) {
                         cid = mDatabaseClass.createID();
 
@@ -891,7 +793,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 if (Integer.parseInt(imageTemplate.get(0).toString()) >= 4) {
                     /*Nuii*/
                     //Get value of image D
-                    imageD = mMove.imageD;
+                    imageD = setImageD();
                     if (did == null) {
                         did = mDatabaseClass.createID();
 
@@ -914,6 +816,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 Intent intent = new Intent( contentView.getContext(), ZPTStickerComposerView.class );
                 intent.putExtra( "imageTemplateID", getTpID );
+                /*16062016*/
+                intent.putExtra( "stickerTemplateID1", stickerTemplateID1 );
+                intent.putExtra( "stickerTemplateID2", stickerTemplateID2 );
+                intent.putExtra( "stickerTemplateID3", stickerTemplateID2 );
+                intent.putExtra( "stickerTemplateID4", stickerTemplateID3 );
+
                 startActivity( intent );
             }
 
@@ -1125,7 +1033,141 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 break;
         }
     }
+    //region Nuii : set value function
+        /*Nuii*/
+           /*Nuii*/
+    //set Image Tamplate
+    public ArrayList setImageTemplate() {
+        valueImageTemplate = new ArrayList();
+        valueImageTemplate.add(0,"template");//Integer : จำนวนเทมเพลต
+        valueImageTemplate.add(1,"marge_one_stroke");//Float : marge one stroke in purcent
+        valueImageTemplate.add(2,"marge_one_color");//String : color in hex
+        valueImageTemplate.add(3,"marge_two_stroke");//Float : marge two stroke in purcent
+        valueImageTemplate.add(4,"marge_two_color");//String : color in hex
+        valueImageTemplate.add(5,"top_value");//Float : position of value top for the line
+        valueImageTemplate.add(6,"bottom_value");//Float : position of value bottom for the line
+        valueImageTemplate.add(7,"right_value");//Float : position of value right for the line
+        valueImageTemplate.add(8,"left_value");//Float : position of value left for the line
+        valueImageTemplate.add(9,"center_x");//Float : position of value x for the line
+        valueImageTemplate.add(10,"center_y");//Float : position of value y for the line
+        return (valueImageTemplate);
+    }
+    //Image Model A
+    public ArrayList setImageA() {
+        valueImageA = new ArrayList();
+        valueImageA.add(0,"url");//String : url of image (delete when object is delete)
+        valueImageA.add(1,"offset_x");//Float : offset X of image
+        valueImageA.add(2,"offset_x_enable");//Boolean : enable offset X of image
+        valueImageA.add(3,"offset_x_original");//Float : original offset X of image
+        valueImageA.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+        valueImageA.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+        valueImageA.add(6,"offset_y");//Float : offset Y of image
+        valueImageA.add(7,"offset_y_enable");//Boolean : enable offset X of image
+        valueImageA.add(8,"offset_y_original");//Float : original offset Y of image
+        valueImageA.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+        valueImageA.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+        valueImageA.add(11,"scale");//Float : scale of image
+        valueImageA.add(12,"scale_enable");//Float : Boolean : enable scale of image
+        valueImageA.add(13,"scale_original");//Float : original scale of image
+        valueImageA.add(14,"scale_max");//Float : maximum authorized scale of image
+        valueImageA.add(15,"scale_min");//Float : minimum authorized scale of image
+        valueImageA.add(16,"rotate");//Float : rotate of image
+        valueImageA.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+        valueImageA.add(18,"rotate_original");//Float : original rotation of image
+        valueImageA.add(19,"rotate_max");//Float : maximum authorized rotate of image
+        valueImageA.add(20,"rotate_min");//Float : minimum authorized rotate of image
+        valueImageA.add(21,"filter_enable");//Boolean : enable filter for this image
+        valueImageA.add(22,"filter");//Float : Integer : enum filter for this image
+        return (valueImageA);
+    }
 
+    //Image Model B
+    public ArrayList setImageB() {
+        valueImageB = new ArrayList();
+        valueImageB.add(0,"url");//String : url of image (delete when object is delete)
+        valueImageB.add(1,"offset_x");//Float : offset X of image
+        valueImageB.add(2,"offset_x_enable");//Boolean : enable offset X of image
+        valueImageB.add(3,"offset_x_original");//Float : original offset X of image
+        valueImageB.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+        valueImageB.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+        valueImageB.add(6,"offset_y");//Float : offset Y of image
+        valueImageB.add(7,"offset_y_enable");//Boolean : enable offset X of image
+        valueImageB.add(8,"offset_y_original");//Float : original offset Y of image
+        valueImageB.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+        valueImageB.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+        valueImageB.add(11,"scale");//Float : scale of image
+        valueImageB.add(12,"scale_enable");//Float : Boolean : enable scale of image
+        valueImageB.add(13,"scale_original");//Float : original scale of image
+        valueImageB.add(14,"scale_max");//Float : maximum authorized scale of image
+        valueImageB.add(15,"scale_min");//Float : minimum authorized scale of image
+        valueImageB.add(16,"rotate");//Float : rotate of image
+        valueImageB.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+        valueImageB.add(18,"rotate_original");//Float : original rotation of image
+        valueImageB.add(19,"rotate_max");//Float : maximum authorized rotate of image
+        valueImageB.add(20,"rotate_min");//Float : minimum authorized rotate of image
+        valueImageB.add(21,"filter_enable");//Boolean : enable filter for this image
+        valueImageB.add(22,"filter");//Float : Integer : enum filter for this image
+        return (valueImageB);
+    }
+
+    //Image Model C
+    public ArrayList setImageC() {
+        imageC = new ArrayList();
+        valueImageC.add(0,"url");//String : url of image (delete when object is delete)
+        valueImageC.add(1,"offset_x");//Float : offset X of image
+        valueImageC.add(2,"offset_x_enable");//Boolean : enable offset X of image
+        valueImageC.add(3,"offset_x_original");//Float : original offset X of image
+        valueImageC.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+        valueImageC.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+        valueImageC.add(6,"offset_y");//Float : offset Y of image
+        valueImageC.add(7,"offset_y_enable");//Boolean : enable offset X of image
+        valueImageC.add(8,"offset_y_original");//Float : original offset Y of image
+        valueImageC.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+        valueImageC.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+        valueImageC.add(11,"scale");//Float : scale of image
+        valueImageC.add(12,"scale_enable");//Float : Boolean : enable scale of image
+        valueImageC.add(13,"scale_original");//Float : original scale of image
+        valueImageC.add(14,"scale_max");//Float : maximum authorized scale of image
+        valueImageC.add(15,"scale_min");//Float : minimum authorized scale of image
+        valueImageC.add(16,"rotate");//Float : rotate of image
+        valueImageC.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+        valueImageC.add(18,"rotate_original");//Float : original rotation of image
+        valueImageC.add(19,"rotate_max");//Float : maximum authorized rotate of image
+        valueImageC.add(20,"rotate_min");//Float : minimum authorized rotate of image
+        valueImageC.add(21,"filter_enable");//Boolean : enable filter for this image
+        valueImageC.add(22,"filter");//Float : Integer : enum filter for this image
+        return (valueImageC);
+    }
+
+    //Image Model D
+    public ArrayList setImageD() {
+        valueImageD = new ArrayList();
+        valueImageD.add(0,"url");//String : url of image (delete when object is delete)
+        valueImageD.add(1,"offset_x");//Float : offset X of image
+        valueImageD.add(2,"offset_x_enable");//Boolean : enable offset X of image
+        valueImageD.add(3,"offset_x_original");//Float : original offset X of image
+        valueImageD.add(4,"offset_x_max");//Float : maximum authorized offset X of image
+        valueImageD.add(5,"offset_x_min");//Float : minimum authorized offset X of image
+        valueImageD.add(6,"offset_y");//Float : offset Y of image
+        valueImageD.add(7,"offset_y_enable");//Boolean : enable offset X of image
+        valueImageD.add(8,"offset_y_original");//Float : original offset Y of image
+        valueImageD.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
+        valueImageD.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
+        valueImageD.add(11,"scale");//Float : scale of image
+        valueImageD.add(12,"scale_enable");//Float : Boolean : enable scale of image
+        valueImageD.add(13,"scale_original");//Float : original scale of image
+        valueImageD.add(14,"scale_max");//Float : maximum authorized scale of image
+        valueImageD.add(15,"scale_min");//Float : minimum authorized scale of image
+        valueImageD.add(16,"rotate");//Float : rotate of image
+        valueImageD.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
+        valueImageD.add(18,"rotate_original");//Float : original rotation of image
+        valueImageD.add(19,"rotate_max");//Float : maximum authorized rotate of image
+        valueImageD.add(20,"rotate_min");//Float : minimum authorized rotate of image
+        valueImageD.add(21,"filter_enable");//Boolean : enable filter for this image
+        valueImageD.add(22,"filter");//Float : Integer : enum filter for this image
+        return (valueImageD);
+    }
+    //endregion : function
 
    /* @Override
     public void onStop() {
