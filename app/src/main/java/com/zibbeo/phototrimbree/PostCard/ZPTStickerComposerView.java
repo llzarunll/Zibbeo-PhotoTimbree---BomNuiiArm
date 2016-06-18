@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -220,7 +221,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         label3 = (TextView) findViewById(R.id.label3);
         label4 = (TextView) findViewById(R.id.label4);
         label5 = (TextView) findViewById(R.id.label5);
-
     }
 
     private void getSticker() {
@@ -418,20 +418,16 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         }
     }
 
-    private void onLoad(){
-
-        final StickerImageView iv_sticker1 = new StickerImageView(ZPTStickerComposerView.this);
-        iv_sticker1.setImageDrawable(getResources().getDrawable(R.drawable.like));
-        final StickerImageView iv_sticker2 = new StickerImageView(ZPTStickerComposerView.this);
-        iv_sticker2.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
+    private void loadSticker (byte[] sticker, float x, float y)
+    {
+        Bitmap bmp = BitmapFactory.decodeByteArray(sticker, 0, sticker.length);
+        Drawable d = new BitmapDrawable(getResources(), bmp);
+        final StickerImageView iv_sticker = new StickerImageView(ZPTStickerComposerView.this);
+        iv_sticker.setImageDrawable(d);
         FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(100, 100);
-        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(100, 100);
-        params1.leftMargin = -35;
-        params1.topMargin = 108;
-        params2.leftMargin = 174;
-        params2.topMargin = 55;
-        canvas.addView(iv_sticker1, params1);
-        canvas.addView(iv_sticker2, params2);
+        params1.leftMargin = Math.round(x);
+        params1.topMargin = Math.round(y);
+        canvas.addView(iv_sticker, params1);
     }
 
     public static class stickerListItem {
@@ -461,6 +457,8 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         sticker1 = mDatabaseClass.getStickerTemplate(stickerTemplateID1).getSticker();
         sticker1_x = mDatabaseClass.getStickerTemplate(stickerTemplateID1).getX();
         sticker1_y = mDatabaseClass.getStickerTemplate(stickerTemplateID1).getY();
+
+        loadSticker(sticker1, sticker1_x, sticker1_y);
     }
 
     //Get Sticker 2
@@ -468,6 +466,8 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         sticker2 = mDatabaseClass.getStickerTemplate(stickerTemplateID2).getSticker();
         sticker2_x = mDatabaseClass.getStickerTemplate(stickerTemplateID2).getX();
         sticker2_y = mDatabaseClass.getStickerTemplate(stickerTemplateID2).getY();
+
+        loadSticker(sticker2, sticker2_x, sticker2_y);
     }
 
     //Get Sticker 3
@@ -475,6 +475,8 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         sticker3 = mDatabaseClass.getStickerTemplate(stickerTemplateID3).getSticker();
         sticker3_x = mDatabaseClass.getStickerTemplate(stickerTemplateID3).getX();
         sticker3_y = mDatabaseClass.getStickerTemplate(stickerTemplateID3).getY();
+
+        loadSticker(sticker3, sticker3_x, sticker3_y);
     }
 
     //Get Sticker 4
@@ -482,6 +484,8 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         sticker4 = mDatabaseClass.getStickerTemplate(stickerTemplateID4).getSticker();
         sticker4_x = mDatabaseClass.getStickerTemplate(stickerTemplateID4).getX();
         sticker4_y = mDatabaseClass.getStickerTemplate(stickerTemplateID4).getY();
+
+        loadSticker(sticker4, sticker4_x, sticker4_y);
     }
 
   //Set Sticker 1
@@ -510,4 +514,5 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         sticker4_y = 0.00f ;//Float : y
     }
     //endregion
+
 }
