@@ -114,7 +114,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            /*Convert Bitmap to Byte Array*/
+                /*Convert Bitmap to Byte Array*/
                 FrameLayout savedImage = (FrameLayout) findViewById(R.id.canvasView);
                 savedImage.setDrawingCacheEnabled(true);
                 savedImage.buildDrawingCache();
@@ -228,10 +228,10 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                 {
                         getResources().getDrawable(R.drawable.cloud),
                         getResources().getDrawable(R.drawable.idea),
-                        /*getResources().getDrawable(R.drawable.star),
+                        getResources().getDrawable(R.drawable.star),
                         getResources().getDrawable(R.drawable.camera),
                         getResources().getDrawable(R.drawable.photos),
-                        getResources().getDrawable(R.drawable.alarm),*/
+                        getResources().getDrawable(R.drawable.alarm),
                         getResources().getDrawable(R.drawable.hourglass),
                         getResources().getDrawable(R.drawable.like),
                         getResources().getDrawable(R.drawable.noimage)
@@ -426,6 +426,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(100, 100);
         params1.leftMargin = Math.round(x);
         params1.topMargin = Math.round(y);
+        stickerItems.add(new stickerListItem(String.valueOf(stickerItems.size()), Math.round(x), Math.round(y), -1, -1, -1, -1));
         canvas.addView(iv_sticker, params1);
     }
 
