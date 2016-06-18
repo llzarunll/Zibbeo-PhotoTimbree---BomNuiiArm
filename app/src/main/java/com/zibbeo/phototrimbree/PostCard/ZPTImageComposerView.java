@@ -172,7 +172,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
 
 
-        if(aurl != null) {
+    /*    if(aurl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(aurl, 0, aurl.length, opts);
             mDraw.myPic[0] = new BitmapDrawable(mBitmap);
         }
@@ -189,7 +189,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         if(aurl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(durl, 0, durl.length, opts);
             mDraw.myPic[3] = new BitmapDrawable(mBitmap);
-        }
+        }*/
 
 
         mLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -226,23 +226,32 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
 
         //Get model of image A
+       //image_a = "1466273217581536";
         if (image_a != null) {
             setImageModelA( image_a );
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(aurl, 0, aurl.length, opts);
+            mDraw.myPic[0] = new BitmapDrawable(mBitmap);
         }
 
         //Get model of image B
         if (image_b != null) {
             setImageModelB( image_b );
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(burl, 0, burl.length, opts);
+            mDraw.myPic[1] = new BitmapDrawable(mBitmap);
         }
 
         //Get model of image C
         if (image_c != null) {
             setImageModelC( image_c );
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(curl, 0, curl.length, opts);
+            mDraw.myPic[2] = new BitmapDrawable(mBitmap);
         }
 
         //Get model of image D
         if (image_d != null) {
             setImageModelD( image_d );
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(durl, 0, durl.length, opts);
+            mDraw.myPic[3] = new BitmapDrawable(mBitmap);
         }
         //endregion
 
@@ -355,10 +364,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         Rect mTopLeftAreaRect,mTopRightAreaRect,mBottomLeftAreaRect,mBottomRightAreaRect;
 
         public Drawable myPic[] =  {
-           this.getResources().getDrawable(R.drawable.boston),
-           this.getResources().getDrawable(R.drawable.carifornia),
-           this.getResources().getDrawable(R.drawable.dubai),
-           this.getResources().getDrawable(R.drawable.paris)
+                this.getResources().getDrawable(R.drawable.boston),
+                this.getResources().getDrawable(R.drawable.carifornia),
+                this.getResources().getDrawable(R.drawable.dubai),
+                this.getResources().getDrawable(R.drawable.paris)
         };
         public Matrix[] mMatrix = new Matrix[4];
         public int sFarme = 99;
@@ -520,10 +529,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 b = ((BitmapDrawable) myPic[3]).getBitmap();
                 bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
                 Point ImgD[] = {
-                    new Point(mCenterPoint.x, mCenterPoint.y),
-                    new Point(mRightPoint.x, mRightPoint.y),
-                    new Point(mRightPoint.x, mBottomPoint.y),
-                    new Point(mBottomPoint.x, mBottomPoint.y)
+                        new Point(mCenterPoint.x, mCenterPoint.y),
+                        new Point(mRightPoint.x, mRightPoint.y),
+                        new Point(mRightPoint.x, mBottomPoint.y),
+                        new Point(mBottomPoint.x, mBottomPoint.y)
                 };
 
 
@@ -1188,9 +1197,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         template = mDraw.sFarme;//1;//Integer : จำนวนเทมเพลต
 
         marge_one_stroke = mPaint.getStrokeWidth();//Float : marge one stroke in purcent
-        marge_one_color =  "111111111";//String : color in hex
+        marge_one_color =  null;//String : color in hex
         marge_two_stroke = mPaintInner.getStrokeWidth();//Float : marge two stroke in purcent
-        marge_two_color = "111111111";//String : color in hex
+        marge_two_color = null;//String : color in hex
         top_value = mTopPoint.x; //0.00f;//Float : position of value top for the line
         bottom_value = mBottomPoint.x;//Float : position of value bottom for the line
         right_value = mRightPoint.y;//Float : position of value right for the line
