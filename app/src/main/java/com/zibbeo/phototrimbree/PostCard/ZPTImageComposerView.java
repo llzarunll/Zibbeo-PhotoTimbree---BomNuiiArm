@@ -178,6 +178,11 @@ DrawCanvas mDraw;
             public void onClick(View v) {
                 mDraw.sFarme = "3";
                 mDraw.setPoint();
+                sCenter = true;
+                sLeft = false;
+                sRight = true;
+                sTop = true;
+                sBottom = true;
                 draw();
             }
         });
@@ -187,6 +192,11 @@ DrawCanvas mDraw;
             public void onClick(View v) {
                 mDraw.sFarme = "4";
                 mDraw.setPoint();
+                sCenter = true;
+                sLeft = true;
+                sRight = true;
+                sTop = false;
+                sBottom = true;
                 draw();
             }
         });
@@ -194,7 +204,7 @@ DrawCanvas mDraw;
         farme6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDraw.sFarme = "4";
+                mDraw.sFarme = "5";
                 mDraw.setPoint();
                 sCenter = true;
                 sLeft = true;
@@ -282,37 +292,12 @@ DrawCanvas mDraw;
                 tmpMaxTop = 0 + mRadius;
                 tmpMaxBottom = getHeight() - mRadius;
 
-                switch (sFarme){
-                    case "0": {
-                        mCenterPoint.set(tmpMaxRight,tmpMaxBottom);
-                        mLeftPoint.set(tmpMaxTop,tmpMaxTop);
-                        mRightPoint.set(tMaxRight, getHeight() / 2);
-                        mTopPoint.set(getWidth() / 2, tMaxTop);
-                        mBottomPoint.set(getWidth() / 2, tMaxBottom);
-                    }break;
-                    case "1": {
-                        mCenterPoint.set(tMaxRight, tMaxBottom / 2);
-                        mLeftPoint.set(tMaxLeft, tMaxBottom / 2);
-                        mRightPoint.set(tMaxRight, tMaxBottom / 2);
-                        mTopPoint.set(tMaxRight, tMaxTop);
-                        mBottomPoint.set(tMaxRight, tMaxBottom);
-                    }break;
-                    case "2":{
-                        mCenterPoint.set(tMaxRight/2, tMaxBottom);
-                        mLeftPoint.set(tMaxLeft, tMaxBottom);
-                        mRightPoint.set(tMaxRight, tMaxBottom);
-                        mTopPoint.set(getWidth()/2, tMaxTop);
-                        mBottomPoint.set(getWidth()/2, tMaxBottom);
-                    }break;
-                    default: {
+                mCenterPoint.set(getWidth() / 2, getHeight() / 2);
+                mLeftPoint.set(tMaxLeft, getHeight() / 2);
+                mRightPoint.set(tMaxRight, getHeight() / 2);
+                mTopPoint.set(getWidth() / 2, tMaxTop);
+                mBottomPoint.set(getWidth() / 2, tMaxBottom);
 
-                        mCenterPoint.set(getWidth() / 2, getHeight() / 2);
-                        mLeftPoint.set(tMaxLeft, getHeight() / 2);
-                        mRightPoint.set(tMaxRight, getHeight() / 2);
-                        mTopPoint.set(getWidth() / 2, tMaxTop);
-                        mBottomPoint.set(getWidth() / 2, tMaxBottom);
-                    }
-                }
                 mTopLeftAreaRect = new Rect( tMaxLeft, tMaxTop, mCenterPoint.x, mCenterPoint.y );
                 mTopRightAreaRect = new Rect( mTopPoint.x, mTopPoint.y, mRightPoint.x, mRightPoint.y );
                 mBottomLeftAreaRect = new Rect( mLeftPoint.x, mLeftPoint.y, mBottomPoint.x, mBottomPoint.y );
@@ -329,7 +314,7 @@ DrawCanvas mDraw;
                 } else {
                     Point = (int) (mPaintInner.getStrokeWidth() / 2);
                 }
-                mPaintInner.setStrokeWidth(mPaint.getStrokeWidth() + 5);
+                mPaintInner.setStrokeWidth(0);
                 Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
                 //Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
                 Bitmap bitmap = Bitmap.createBitmap(b, 0, 0,
@@ -337,59 +322,112 @@ DrawCanvas mDraw;
 
 //                        b.copy(Bitmap.Config.ARGB_8888, true);
                 int w = getWidth(), h = getHeight();
-                Point ImgA[] = {
-                        new Point(mLeftPoint.x, mTopPoint.y),
-                        new Point(mTopPoint.x, mTopPoint.y),
-                        new Point(mCenterPoint.x, mCenterPoint.y),
-                        new Point(mLeftPoint.x, mLeftPoint.y)
-                };
-                Bitmap roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
+                Bitmap roundBitmap;
+                if(sFarme == "3") {
+                    Point ImgA[] = {
+                            new Point(mLeftPoint.x, mTopPoint.y),
+                            new Point(mTopPoint.x, mTopPoint.y),
+                            new Point(mCenterPoint.x, mCenterPoint.y),
+                            new Point(mBottomPoint.x, mBottomPoint.y),
+                            new Point(mLeftPoint.x, mBottomPoint.y),
+                            new Point(mLeftPoint.x, mLeftPoint.y)
+                    };
+                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
+                }else if(sFarme == "4")
+                {
+                    Point ImgA[] = {
+                            new Point(mLeftPoint.x, mTopPoint.y),
+                            new Point(mTopPoint.x, mTopPoint.y),
+                            new Point(mRightPoint.x, mTopPoint.y),
+                            new Point(mRightPoint.x, mRightPoint.y),
+                            new Point(mCenterPoint.x, mCenterPoint.y),
+                            new Point(mLeftPoint.x, mLeftPoint.y)
+                    };
+                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
+                }
+                else {
+                    Point ImgA[] = {
+                            new Point(mLeftPoint.x, mTopPoint.y),
+                            new Point(mTopPoint.x, mTopPoint.y),
+                            new Point(mCenterPoint.x, mCenterPoint.y),
+                            new Point(mLeftPoint.x, mLeftPoint.y)
+                    };
+                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
+                }
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mLeftPoint.x + Point, mTopPoint.y + Point, mTopPoint.x - Point, mTopPoint.y + Point, mPaintInner);
-                canvas.drawLine(mTopPoint.x - Point, mTopPoint.y - Point, mCenterPoint.x - Point, mCenterPoint.y - Point, mPaintInner);
-                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y - Point, mPaintInner);
-                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y - Point, mLeftPoint.x + Point, mTopPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mLeftPoint.x + Point, mTopPoint.y + Point, mTopPoint.x - Point, mTopPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mTopPoint.x - Point, mTopPoint.y - Point, mCenterPoint.x - Point, mCenterPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y - Point, mLeftPoint.x + Point, mTopPoint.y + Point, mPaintInner);
 
                 b = ((BitmapDrawable) myPic[1]).getBitmap();
                 bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                ImgA[0] = new Point(mTopPoint.x, mTopPoint.y);
-                ImgA[1] = new Point(mRightPoint.x, mTopPoint.y);
-                ImgA[2] = new Point(mRightPoint.x, mRightPoint.y);
-                ImgA[3] = new Point(mCenterPoint.x, mCenterPoint.y);
+                if(sFarme == "4") {
+                    Point ImgB[] = {
+                            new Point(mRightPoint.x, mRightPoint.y),
+                            new Point(mRightPoint.x, mRightPoint.y),
+                            new Point(mRightPoint.x, mRightPoint.y),
+                            new Point(mRightPoint.x, mRightPoint.y)
+                    };
+                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgB);
+                }else {
+                    Point ImgB[] = {
+                            new Point(mTopPoint.x, mTopPoint.y),
+                            new Point(mRightPoint.x, mTopPoint.y),
+                            new Point(mRightPoint.x, mRightPoint.y),
+                            new Point(mCenterPoint.x, mCenterPoint.y)
+                    };
+                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgB);
+                }
 
-                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mTopPoint.x + Point, mTopPoint.y + Point, mRightPoint.x - Point, mTopPoint.y + Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mTopPoint.y - Point, mRightPoint.x - Point, mRightPoint.y - Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y - Point, mPaintInner);
-                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y - Point, mTopPoint.x + Point, mTopPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mTopPoint.x + Point, mTopPoint.y + Point, mRightPoint.x - Point, mTopPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mRightPoint.x - Point, mTopPoint.y - Point, mRightPoint.x - Point, mRightPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y - Point, mTopPoint.x + Point, mTopPoint.y + Point, mPaintInner);
 
                 b = ((BitmapDrawable) myPic[2]).getBitmap();
                 bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                ImgA[0] = new Point(mLeftPoint.x, mLeftPoint.y);
-                ImgA[1] = new Point(mCenterPoint.x, mCenterPoint.y);
-                ImgA[2] = new Point(mBottomPoint.x, mBottomPoint.y);
-                ImgA[3] = new Point(mLeftPoint.x, mBottomPoint.y);
-                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
+                if(sFarme == "3") {
+                    Point ImgC[] = {
+                            new Point(mBottomPoint.x, mBottomPoint.y),
+                            new Point(mBottomPoint.x, mBottomPoint.y),
+                            new Point(mBottomPoint.x, mBottomPoint.y),
+                            new Point(mBottomPoint.x, mBottomPoint.y)
+                    };
+                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgC);
+                }else {
+                    Point ImgC[] = {
+                            new Point(mLeftPoint.x, mLeftPoint.y),
+                            new Point(mCenterPoint.x, mCenterPoint.y),
+                            new Point(mBottomPoint.x, mBottomPoint.y),
+                            new Point(mLeftPoint.x, mBottomPoint.y),
+                    };
+                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgC);
+                }
+
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y + Point, mCenterPoint.x - Point, mCenterPoint.y + Point, mPaintInner);
-                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mBottomPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mBottomPoint.x - Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mLeftPoint.x + Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y + Point, mCenterPoint.x - Point, mCenterPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mBottomPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mBottomPoint.x - Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mLeftPoint.x + Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y + Point, mPaintInner);
 
                 b = ((BitmapDrawable) myPic[3]).getBitmap();
                 bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                ImgA[0] = new Point(mCenterPoint.x, mCenterPoint.y);
-                ImgA[1] = new Point(mRightPoint.x, mRightPoint.y);
-                ImgA[2] = new Point(mRightPoint.x, mBottomPoint.y);
-                ImgA[3] = new Point(mBottomPoint.x, mBottomPoint.y);
+                Point ImgD[] = {
+                    new Point(mCenterPoint.x, mCenterPoint.y),
+                    new Point(mRightPoint.x, mRightPoint.y),
+                    new Point(mRightPoint.x, mBottomPoint.y),
+                    new Point(mBottomPoint.x, mBottomPoint.y)
+                };
 
-                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
+
+                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgD);
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y + Point, mRightPoint.x - Point, mRightPoint.y + Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mRightPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mRightPoint.x - Point, mBottomPoint.y - Point, mBottomPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
-                canvas.drawLine(mBottomPoint.x + Point, mBottomPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y + Point, mRightPoint.x - Point, mRightPoint.y + Point, mPaintInner);
+//                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mRightPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mRightPoint.x - Point, mBottomPoint.y - Point, mBottomPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
+//                canvas.drawLine(mBottomPoint.x + Point, mBottomPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y + Point, mPaintInner);
             }
 
             canvas.drawRect( tMaxLeft, tMaxTop, tMaxRight, tMaxBottom, mPaint );
@@ -414,6 +452,38 @@ DrawCanvas mDraw;
                     canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
                 }
                 break;
+                case "3":{
+                    //top
+                    canvas.drawLine( mTopPoint.x, mTopPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //right
+                    canvas.drawLine( mRightPoint.x, mRightPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //bottom
+                    canvas.drawLine( mBottomPoint.x, mBottomPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //center
+                    canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
+                    //right
+                    canvas.drawCircle( mRightPoint.x, mRightPoint.y, mRadius, mPaint2 );
+                    //top
+                    canvas.drawCircle( mTopPoint.x, mTopPoint.y, mRadius, mPaint2 );
+                    //bottom
+                    canvas.drawCircle( mBottomPoint.x, mBottomPoint.y, mRadius, mPaint2 );
+                }break;
+                case "4":{
+                    //left
+                    canvas.drawLine( mLeftPoint.x, mLeftPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //right
+                    canvas.drawLine( mRightPoint.x, mRightPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //bottom
+                    canvas.drawLine( mBottomPoint.x, mBottomPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //center
+                    canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
+                    //left
+                    canvas.drawCircle( mLeftPoint.x, mLeftPoint.y, mRadius, mPaint2 );
+                    //right
+                    canvas.drawCircle( mRightPoint.x, mRightPoint.y, mRadius, mPaint2 );
+                    //bottom
+                    canvas.drawCircle( mBottomPoint.x, mBottomPoint.y, mRadius, mPaint2 );
+                }break;
                 default:{
                     //top
                     canvas.drawLine( mTopPoint.x, mTopPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
@@ -576,11 +646,22 @@ DrawCanvas mDraw;
             final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
 
             Path path = new Path();
-            path.moveTo(point_draw[0].x,point_draw[0].y);
-            path.lineTo(point_draw[1].x,point_draw[1].y);
-            path.lineTo(point_draw[2].x,point_draw[2].y);
-            path.lineTo(point_draw[3].x,point_draw[3].y);
-            path.lineTo(point_draw[0].x,point_draw[0].y);
+            for(int i = 0; i <= point_draw.length ;i++)
+            {
+                if(i == 0)
+                {
+                    path.moveTo(point_draw[i].x,point_draw[i].y);
+                }
+                else if(i == point_draw.length)
+                {
+                    path.lineTo(point_draw[0].x,point_draw[0].y);
+                }
+                else
+                {
+                    path.lineTo(point_draw[i].x,point_draw[i].y);
+                }
+            }
+
             path.close();
             canvas.drawARGB(0, 0, 0, 0);
             paint.setColor(Color.parseColor("#BAB399"));
