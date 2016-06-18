@@ -96,6 +96,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     boolean sBottom = true;
     boolean sLeft = true;
     boolean sRight = true;
+    Matrix mMateix[] = new Matrix[4];
+    Bitmap mPicOriginal[] = new Bitmap[4];
+
 
 
     /*Nuii*/
@@ -105,36 +108,44 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     //Image
     String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
     String marge_one_color, marge_two_color;
-    Float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
-    Integer template;
+    float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
+    int template;
 
     //Image Model A
     //String aid;
-    Float aoffset_x, aoffset_x_original, aoffset_x_max, aoffset_x_min, aoffset_y, aoffset_y_original, aoffset_y_max;
-    Float aoffset_y_min, ascale, ascale_original, ascale_max, ascale_min, arotate, arotate_original, arotate_max, arotate_min;
+    float aoffset_x, aoffset_x_original, aoffset_x_max, aoffset_x_min, aoffset_y, aoffset_y_original, aoffset_y_max;
+    float aoffset_y_min;
+    float ascale;
+    float ascale_original;
+    float ascale_max;
+    float ascale_min;
+    float arotate;
+    float arotate_original;
+    float arotate_max;
+    float arotate_min;
     Boolean aoffset_x_enable, aoffset_y_enable, ascale_enable, arotate_enable, afilter_enable;
-    Integer afilter;
+    int afilter;
     byte[] aurl;
 
     //Image Model B
-    Float boffset_x, boffset_x_original, boffset_x_max, boffset_x_min, boffset_y, boffset_y_original, boffset_y_max;
-    Float boffset_y_min, bscale, bscale_original, bscale_max, bscale_min, brotate, brotate_original, brotate_max, brotate_min;
+    float boffset_x, boffset_x_original, boffset_x_max, boffset_x_min, boffset_y, boffset_y_original, boffset_y_max;
+    float boffset_y_min, bscale, bscale_original, bscale_max, bscale_min, brotate, brotate_original, brotate_max, brotate_min;
     Boolean boffset_x_enable, boffset_y_enable, bscale_enable, brotate_enable, bfilter_enable;
-    Integer bfilter;
+    int bfilter;
     byte[] burl;
 
     //Image Model C
-    Float coffset_x, coffset_x_original, coffset_x_max, coffset_x_min, coffset_y, coffset_y_original, coffset_y_max;
-    Float coffset_y_min, cscale, cscale_original, cscale_max, cscale_min, crotate, crotate_original, crotate_max, crotate_min;
+    float coffset_x, coffset_x_original, coffset_x_max, coffset_x_min, coffset_y, coffset_y_original, coffset_y_max;
+    float coffset_y_min, cscale, cscale_original, cscale_max, cscale_min, crotate, crotate_original, crotate_max, crotate_min;
     Boolean coffset_x_enable, coffset_y_enable, cscale_enable, crotate_enable, cfilter_enable;
-    Integer cfilter;
+    int cfilter;
     byte[] curl;
 
     //Image Model D
-    Float doffset_x, doffset_x_original, doffset_x_max, doffset_x_min, doffset_y, doffset_y_original, doffset_y_max;
-    Float doffset_y_min, dscale, dscale_original, dscale_max, dscale_min, drotate, drotate_original, drotate_max, drotate_min;
+    float doffset_x, doffset_x_original, doffset_x_max, doffset_x_min, doffset_y, doffset_y_original, doffset_y_max;
+    float doffset_y_min, dscale, dscale_original, dscale_max, dscale_min, drotate, drotate_original, drotate_max, drotate_min;
     Boolean doffset_x_enable, doffset_y_enable, dscale_enable, drotate_enable, dfilter_enable;
-    Integer dfilter;
+    int dfilter;
     byte[] durl;
 
     @Override
@@ -147,6 +158,39 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mDraw = new DrawCanvas(this);
         init();
+
+        mTopPoint.x = (int)top_value;
+        mBottomPoint.x = (int)top_value;
+        mRightPoint.y = (int)top_value;
+        mLeftPoint.y = (int)top_value;
+        mCenterPoint = new Point((int)center_x,(int)center_y);
+        mPaint.setStrokeWidth(marge_one_stroke);
+        mDraw.sFarme = template;
+
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+
+
+
+        if(aurl != null) {
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(aurl, 0, aurl.length, opts);
+            mDraw.myPic[0] = new BitmapDrawable(mBitmap);
+        }
+        if(aurl != null) {
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(burl, 0, burl.length, opts);
+            mDraw.myPic[1] = new BitmapDrawable(mBitmap);
+        }
+
+        if(aurl != null) {
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(curl, 0, curl.length, opts);
+            mDraw.myPic[2] = new BitmapDrawable(mBitmap);
+        }
+
+        if(aurl != null) {
+            Bitmap mBitmap = BitmapFactory.decodeByteArray(durl, 0, durl.length, opts);
+            mDraw.myPic[3] = new BitmapDrawable(mBitmap);
+        }
+
 
         mLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -218,7 +262,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         farme1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDraw.sFarme = "0";
+                mDraw.sFarme = 0;
                 mDraw.setPoint();
                 sCenter = false;
                 sLeft = false;
@@ -232,7 +276,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         farme2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDraw.sFarme = "1";
+                mDraw.sFarme = 1;
                 mDraw.setPoint();
                 sCenter = true;
                 sLeft = true;
@@ -246,7 +290,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         farme3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDraw.sFarme = "2";
+                mDraw.sFarme = 2;
                 mDraw.setPoint();
                 sCenter = true;
                 sLeft = false;
@@ -261,7 +305,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         farme4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDraw.sFarme = "3";
+                mDraw.sFarme = 3;
                 mDraw.setPoint();
                 sCenter = true;
                 sLeft = false;
@@ -275,7 +319,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         farme5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDraw.sFarme = "4";
+                mDraw.sFarme = 4;
                 mDraw.setPoint();
                 sCenter = true;
                 sLeft = true;
@@ -289,7 +333,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         farme6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDraw.sFarme = "5";
+                mDraw.sFarme = 5;
                 mDraw.setPoint();
                 sCenter = true;
                 sLeft = true;
@@ -314,10 +358,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
            this.getResources().getDrawable(R.drawable.boston),
            this.getResources().getDrawable(R.drawable.carifornia),
            this.getResources().getDrawable(R.drawable.dubai),
-                this.getResources().getDrawable(R.drawable.paris)
+           this.getResources().getDrawable(R.drawable.paris)
         };
         public Matrix[] mMatrix = new Matrix[4];
-        public String sFarme = "99";
+        public int sFarme = 99;
         private DrawCanvas(Context mContext) {
             super(mContext);
             this.setOnTouchListener(this);
@@ -325,21 +369,21 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
         public void setPoint(){
             switch (sFarme){
-                case "0":
+                case 0:
                 {
                     mCenterPoint.set(tmpMaxRight,tmpMaxBottom);
                     mLeftPoint.set(tmpMaxTop,tmpMaxBottom);
                     mRightPoint.set(tmpMaxRight, tmpMaxTop);
                     mTopPoint.set(tmpMaxRight, tmpMaxTop);
                 }break;
-                case "1": {
+                case 1: {
                     mCenterPoint.set(tmpMaxRight, getHeight() / 2);
                     mLeftPoint.set(tmpMaxLeft, getHeight() / 2);
                     mRightPoint.set(tmpMaxRight, getHeight() / 2);
                     mTopPoint.set(tmpMaxRight, tmpMaxTop);
                     mBottomPoint.set(tmpMaxRight, tmpMaxBottom);
                 }break;
-                case "2":{
+                case 2:{
                     mCenterPoint.set(getWidth()/2, tmpMaxBottom);
                     mLeftPoint.set(tmpMaxLeft, tmpMaxBottom);
                     mRightPoint.set(tmpMaxRight, tmpMaxBottom);
@@ -359,13 +403,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         @Override
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-
-
-
-
-
             if (mFirstTimeCheck) {
-
 
                 tMaxLeft = 0 + mRadius;
                 tMaxRight = getWidth() - mRadius;
@@ -394,21 +432,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
             if (!touch_state) {
                 int Point = 0;
-                if ((int) (mPaint.getStrokeWidth() / 2) > Point) {
-                    Point = (int) (mPaint.getStrokeWidth() / 2);
-                } else {
-                    Point = (int) (mPaintInner.getStrokeWidth() / 2);
-                }
                 mPaintInner.setStrokeWidth(0);
                 Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
-                //Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
                 Bitmap bitmap = Bitmap.createBitmap(b, 0, 0,
                         b.getWidth(), b.getHeight(), mMatrix[0], true);
 
 //                        b.copy(Bitmap.Config.ARGB_8888, true);
                 int w = getWidth(), h = getHeight();
                 Bitmap roundBitmap;
-                if(sFarme == "3") {
+                if(sFarme == 3) {
                     Point ImgA[] = {
                             new Point(mLeftPoint.x, mTopPoint.y),
                             new Point(mTopPoint.x, mTopPoint.y),
@@ -418,7 +450,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                             new Point(mLeftPoint.x, mLeftPoint.y)
                     };
                     roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
-                }else if(sFarme == "4")
+                }else if(sFarme == 4)
                 {
                     Point ImgA[] = {
                             new Point(mLeftPoint.x, mTopPoint.y),
@@ -440,14 +472,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
                 }
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-//                canvas.drawLine(mLeftPoint.x + Point, mTopPoint.y + Point, mTopPoint.x - Point, mTopPoint.y + Point, mPaintInner);
-//                canvas.drawLine(mTopPoint.x - Point, mTopPoint.y - Point, mCenterPoint.x - Point, mCenterPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y - Point, mLeftPoint.x + Point, mTopPoint.y + Point, mPaintInner);
 
                 b = ((BitmapDrawable) myPic[1]).getBitmap();
                 bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                if(sFarme == "4") {
+                if(sFarme == 4) {
                     Point ImgB[] = {
                             new Point(mRightPoint.x, mRightPoint.y),
                             new Point(mRightPoint.x, mRightPoint.y),
@@ -466,14 +494,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
 
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-//                canvas.drawLine(mTopPoint.x + Point, mTopPoint.y + Point, mRightPoint.x - Point, mTopPoint.y + Point, mPaintInner);
-//                canvas.drawLine(mRightPoint.x - Point, mTopPoint.y - Point, mRightPoint.x - Point, mRightPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y - Point, mTopPoint.x + Point, mTopPoint.y + Point, mPaintInner);
 
                 b = ((BitmapDrawable) myPic[2]).getBitmap();
                 bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-                if(sFarme == "3") {
+                if(sFarme == 3) {
                     Point ImgC[] = {
                             new Point(mBottomPoint.x, mBottomPoint.y),
                             new Point(mBottomPoint.x, mBottomPoint.y),
@@ -492,10 +516,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
 
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-//                canvas.drawLine(mLeftPoint.x + Point, mLeftPoint.y + Point, mCenterPoint.x - Point, mCenterPoint.y + Point, mPaintInner);
-//                canvas.drawLine(mCenterPoint.x - Point, mCenterPoint.y - Point, mBottomPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mBottomPoint.x - Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mLeftPoint.x + Point, mBottomPoint.y - Point, mLeftPoint.x + Point, mLeftPoint.y + Point, mPaintInner);
 
                 b = ((BitmapDrawable) myPic[3]).getBitmap();
                 bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
@@ -509,19 +529,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgD);
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
-//                canvas.drawLine(mCenterPoint.x + Point, mCenterPoint.y + Point, mRightPoint.x - Point, mRightPoint.y + Point, mPaintInner);
-//                canvas.drawLine(mRightPoint.x - Point, mRightPoint.y - Point, mRightPoint.x - Point, mBottomPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mRightPoint.x - Point, mBottomPoint.y - Point, mBottomPoint.x + Point, mBottomPoint.y - Point, mPaintInner);
-//                canvas.drawLine(mBottomPoint.x + Point, mBottomPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y + Point, mPaintInner);
             }
 
             canvas.drawRect( tMaxLeft, tMaxTop, tMaxRight, tMaxBottom, mPaint );
 
             switch (sFarme){
-                case "0":{
+                case 0:{
 
                 }break;
-                case "1":{
+                case 1:{
                     canvas.drawLine( mLeftPoint.x, mLeftPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
                     //left
                     canvas.drawCircle( mLeftPoint.x, mLeftPoint.y, mRadius, mPaint2 );
@@ -529,7 +545,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
                 }
                 break;
-                case "2":{
+                case 2:{
                     canvas.drawLine( mTopPoint.x, mTopPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
                     //top
                     canvas.drawCircle( mTopPoint.x, mTopPoint.y, mRadius, mPaint2 );
@@ -537,7 +553,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
                 }
                 break;
-                case "3":{
+                case 3:{
                     //top
                     canvas.drawLine( mTopPoint.x, mTopPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
                     //right
@@ -553,7 +569,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     //bottom
                     canvas.drawCircle( mBottomPoint.x, mBottomPoint.y, mRadius, mPaint2 );
                 }break;
-                case "4":{
+                case 4:{
                     //left
                     canvas.drawLine( mLeftPoint.x, mLeftPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
                     //right
@@ -651,10 +667,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 if (mDistanceCenter <= mRadius && sCenter){
 
                     switch (sFarme){
-                        case "1": {
+                        case 1: {
                             mCenterPoint.set(tMaxRight, tYPoint);
                         }break;
-                        case "2":{
+                        case 2:{
                             mCenterPoint.set(tXPoint,tMaxBottom);
                         }break;
                         default:{
@@ -1165,43 +1181,50 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     }
 
     //region Nuii : set value function
-        /*Nuii*/
-           /*Nuii*/
+    /*Nuii*/
+    /*Nuii*/
     //set Image Tamplate
     public void getImageTemplate() {
-        template = 1;//Integer : จำนวนเทมเพลต
-        marge_one_stroke = 0.00f;//Float : marge one stroke in purcent
-        marge_one_color = "000000000";//String : color in hex
-        marge_two_stroke = 0.00f;//Float : marge two stroke in purcent
+        template = mDraw.sFarme;//1;//Integer : จำนวนเทมเพลต
+
+        marge_one_stroke = mPaint.getStrokeWidth();//Float : marge one stroke in purcent
+        marge_one_color =  "111111111";//String : color in hex
+        marge_two_stroke = mPaintInner.getStrokeWidth();//Float : marge two stroke in purcent
         marge_two_color = "111111111";//String : color in hex
-        top_value = 0.00f;//Float : position of value top for the line
-        bottom_value = 0.00f;//Float : position of value bottom for the line
-        right_value = 0.00f;//Float : position of value right for the line
-        left_value = 0.00f;//Float : position of value left for the line
-        center_x = 0.00f;//Float : position of value x for the line
-        center_y = 0.00f;//Float : position of value y for the line
+        top_value = mTopPoint.x; //0.00f;//Float : position of value top for the line
+        bottom_value = mBottomPoint.x;//Float : position of value bottom for the line
+        right_value = mRightPoint.y;//Float : position of value right for the line
+        left_value = mLeftPoint.y;//Float : position of value left for the line
+        center_x = (float) mCenterPoint.x;//Float : position of value x for the line
+        center_y = (float) mCenterPoint.y;//Float : position of value y for the line
     }
 
     //Image Model A
     public void getImageA() {
-        aurl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
-        aoffset_x = 0.00f ;//Float : offset X of image
+//        float[] vImgA = new float[9];
+//        mDraw.mMatrix[0].getValues(vImgA);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        mPicOriginal[0] = ((BitmapDrawable)mDraw.myPic[0]).getBitmap();
+        mPicOriginal[0].compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        aurl = byteArray ;//byte[] : image (delete when object is delete)
+        aoffset_x = 0.00f; ;//Float : offset X of image
         aoffset_x_enable = true;//Boolean : enable offset X of image
         aoffset_x_original = 0.00f ;//Float : original offset X of image
         aoffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
         aoffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
-        aoffset_y = 0.00f ;//Float : offset Y of image
+        aoffset_y = 0.00f; //Float : offset Y of image
         aoffset_y_enable = true;//Boolean : enable offset X of image
         aoffset_y_original = 0.00f ;//Float : original offset Y of image
         aoffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
         aoffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
-        ascale = 0.00f;//Float : scale of image
+        ascale = 0.00f ;//Float : scale of image
         ascale_enable = true;//Float : Boolean : enable scale of image
-        ascale_original = 0.00f ;//Float : original scale of image
+        ascale_original = 0.00f; //Float : original scale of image
         ascale_max = 0.00f ;//Float : maximum authorized scale of image
         ascale_min = 0.00f ;//Float : minimum authorized scale of image
-        arotate = 0.00f ;//Float : rotate of image
-        arotate_enable = true;//Float : Boolean : enable rotation of image
+        arotate =0.00f;//Float : rotate of image
+        arotate_enable = true; //Float : Boolean : enable rotation of image
         arotate_original = 0.00f ;//Float : original rotation of image
         arotate_max = 0.00f ;//Float : maximum authorized rotate of image
         arotate_min = 0.00f ;//Float : minimum authorized rotate of image
@@ -1211,7 +1234,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     }
     //Image Model B
     public void getImageB() {
-        burl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
+//        float[] vImgA = new float[9];
+//        mDraw.mMatrix[1].getValues(vImgA);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        mPicOriginal[1] = ((BitmapDrawable)mDraw.myPic[1]).getBitmap();
+        mPicOriginal[1].compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        burl = byteArray;//"Image".getBytes() ;//byte[] : image (delete when object is delete)
         boffset_x = 0.00f ;//Float : offset X of image
         boffset_x_enable = true;//Boolean : enable offset X of image
         boffset_x_original = 0.00f ;//Float : original offset X of image
@@ -1237,7 +1266,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     }
     //Image Model C
     public void getImageC() {
-        curl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
+//        float[] vImgA = new float[9];
+//        mDraw.mMatrix[2].getValues(vImgA);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        mPicOriginal[2] = ((BitmapDrawable)mDraw.myPic[2]).getBitmap();
+        mPicOriginal[2].compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        curl = byteArray;"Image".getBytes() ;//byte[] : image (delete when object is delete)
         coffset_x = 0.00f ;//Float : offset X of image
         coffset_x_enable = true;//Boolean : enable offset X of image
         coffset_x_original = 0.00f ;//Float : original offset X of image
@@ -1261,10 +1296,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         cfilter_enable = true;//Boolean : enable filter for this image
         cfilter = 1 ;//Float : Integer : enum filter for this image
     }
-
     //Image Model D
     public void getImageD() {
-        curl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
+//        float[] vImgA = new float[9];
+//        mDraw.mMatrix[3].getValues(vImgA);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        mPicOriginal[3] = ((BitmapDrawable)mDraw.myPic[3]).getBitmap();
+        mPicOriginal[3].compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        curl = byteArray; //"Image".getBytes() ;//byte[] : image (delete when object is delete)
         doffset_x = 0.00f ;//Float : offset X of image
         doffset_x_enable = true;//Boolean : enable offset X of image
         doffset_x_original = 0.00f ;//Float : original offset X of image
@@ -1307,6 +1347,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         left_value = mDatabaseClass.getImageTemplate(imageTemplate).getLeft_value();
         center_x = mDatabaseClass.getImageTemplate(imageTemplate).getCenter_x();
         center_y = mDatabaseClass.getImageTemplate(imageTemplate).getCenter_y();
+
     }
 
     /*Nuii*/
