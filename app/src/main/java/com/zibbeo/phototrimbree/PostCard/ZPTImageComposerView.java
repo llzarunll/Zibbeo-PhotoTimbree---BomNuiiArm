@@ -66,7 +66,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     View contentView;
     Button nextButton, previousButton;
     ImageButton farme1, farme2, farme3, farme4, farme5, farme6;
-
+    RelativeLayout mFrameLayout;
     public  int mIndex = 0;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
@@ -75,7 +75,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     SeekBar sOuter, sInner;
     databaseClass mDatabaseClass;
     /*** KITTI */
-DrawCanvas mDraw;
+    DrawCanvas mDraw;
 
     Paint mPaint = new Paint();
     Paint mPaintInner = new Paint();
@@ -115,6 +115,8 @@ DrawCanvas mDraw;
                 return false;
             }
         });
+
+        mFrameLayout.setVisibility(View.VISIBLE);
 
         mDatabaseClass = new databaseClass( contentView.getContext() );
         //KITTI
@@ -225,7 +227,12 @@ DrawCanvas mDraw;
         float mDistanceCenter, mDistanceLeft, mDistanceRight, mDistanceTop, mDistanceBottom;
         Rect mTopLeftAreaRect,mTopRightAreaRect,mBottomLeftAreaRect,mBottomRightAreaRect;
 
-        public Drawable myPic[] = new Drawable[4];
+        public Drawable myPic[] =  {
+           this.getResources().getDrawable(R.drawable.boston),
+           this.getResources().getDrawable(R.drawable.carifornia),
+           this.getResources().getDrawable(R.drawable.dubai),
+                this.getResources().getDrawable(R.drawable.paris)
+        };
         public Matrix[] mMatrix = new Matrix[4];
         public String sFarme = "99";
         private DrawCanvas(Context mContext) {
@@ -271,17 +278,12 @@ DrawCanvas mDraw;
             super.onDraw(canvas);
 
 
-            if(myPic != null){
-                myPic[0] =   getResources().getDrawable(R.drawable.boston);}
-            if(myPic != null){
-                myPic[1] =   getResources().getDrawable(R.drawable.carifornia);}
-            if(myPic != null){
-                myPic[2] =   getResources().getDrawable(R.drawable.dubai);}
-            if(myPic != null){
-                myPic[3] =   getResources().getDrawable(R.drawable.paris);}
+
 
 
             if (mFirstTimeCheck) {
+
+
                 tMaxLeft = 0 + mRadius;
                 tMaxRight = getWidth() - mRadius;
                 tMaxTop = 0 + mRadius;
@@ -533,27 +535,32 @@ DrawCanvas mDraw;
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 if (mDistanceCenter <= mRadius && sCenter){
                     mCenterPoint.set(tXPoint,tYPoint);
+                    mFrameLayout.setVisibility(View.VISIBLE);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceLeft <= mRadius && sLeft){
                     mLeftPoint.set(tMaxLeft,tYPoint);
+                    mFrameLayout.setVisibility(View.VISIBLE);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceRight <= mRadius && sRight){
                     mRightPoint.set(tMaxRight,tYPoint);
+                    mFrameLayout.setVisibility(View.VISIBLE);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceTop <= mRadius && sTop){
                     mTopPoint.set(tXPoint,tMaxTop);
+                    mFrameLayout.setVisibility(View.VISIBLE);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceBottom <= mRadius && sBottom){
                     mBottomPoint.set(tXPoint,tMaxBottom);
+                    mFrameLayout.setVisibility(View.VISIBLE);
                     invalidate();
                     touch_state = true;
                 }
                 else {
-//                    FindImage((int) motionEvent.getX(), (int) motionEvent.getY() );
+                    FindImage((int) motionEvent.getX(), (int) motionEvent.getY() );
                 }
                 setPointAreaArrayList();
 
@@ -673,6 +680,7 @@ DrawCanvas mDraw;
 
         private void FindImage(int x, int y) {
 
+            mFrameLayout.setVisibility(INVISIBLE);
             if (x > mCenterPoint.x) {
                 //Img B,D
                 if (y > mCenterPoint.y) {
@@ -794,6 +802,7 @@ DrawCanvas mDraw;
 
         mLayout = (FrameLayout) findViewById( R.id.FrameImageView );
         mLayoutParams = mLayout.getLayoutParams();
+        mFrameLayout = (RelativeLayout) findViewById(R.id.mFrameLayout);
         mCenterPoint = new Point(mLayoutParams.width/2,mLayoutParams.height/2);
         mLeftPoint = new Point();
         mRightPoint = new Point();
