@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.zibbeo.phototrimbree.Database.Image;
 import com.zibbeo.phototrimbree.Database.ImageTemplate;
 import com.zibbeo.phototrimbree.Database.databaseClass;
@@ -64,78 +65,37 @@ import java.util.Iterator;
 public class ZPTImageComposerView extends BaseNavigationDrawer {
     View contentView;
     Button nextButton, previousButton;
-    ImageButton farme1, farme2, farme3, farme4, farme5, farme6, farme7, farme8;
-    ImageView ImgBlock1, ImgBlock2, ImgBlock3, ImgBlock4;
-    FrameLayout FrameImg;
-    SeekBar seekbar1;
-    int FullHeight, FullWidth;
+    ImageButton farme1, farme2, farme3, farme4, farme5, farme6;
+
     public  int mIndex = 0;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
-    public Bitmap ImageSelect;
 
     //KITTI Add Control SeekbarOuter
     SeekBar sOuter, sInner;
-    //LineClass mLineClass;
-    MoveLineClass mMove;
-
     databaseClass mDatabaseClass;
-    String getTpID, tpID, getImageTemplateID, imageTemplateID;
-    //Image
-    String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
-
-    /*16062016*/
-    String  stickerTemplateID1, stickerTemplateID2, stickerTemplateID3, stickerTemplateID4 ;
-
-
-    /*Nuii*/
-    //Image Template
-    ArrayList valueImageTemplate;
-    //Image Model A - D
-    ArrayList valueImageA,valueImageB,valueImageC,valueImageD;
-
-    /*Nuii*/
-    ArrayList getTemplate;
-    ArrayList getModel;
-    ArrayList imageTemplate;  ArrayList imageA,imageB,imageC,imageD;
-
     /*** KITTI */
-     DrawCanvas mDraw;
+DrawCanvas mDraw;
 
-     Paint mPaint = new Paint();
-     Paint mPaintInner = new Paint();
-     Paint mPaint2 = new Paint();
-     Paint mPaint3,mPaint4,mPaint5,mPaint6;
-     Context mContext;
-     ViewGroup mLayout;
-     RelativeLayout mImageselect,mFrameLayout;
-     ViewGroup.LayoutParams mLayoutParams;
-     boolean touch_state = false;
-     boolean mFirstTimeCheck = true;
-    TouchImageView mImage;
-     ArrayList<Point> mTopLeftArea,mTopRightArea,mBottomLeftArea,mBottomRightArea;
-     Point mCenterPoint,mLeftPoint,mRightPoint,mTopPoint,mBottomPoint;
-     float mStroke = 5f;
-     float mStrokeInner = 6f;
-     int mRadius = 30;
-
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client2;
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     **/
-
+    Paint mPaint = new Paint();
+    Paint mPaintInner = new Paint();
+    Paint mPaint2 = new Paint();
+    Paint mPaint3,mPaint4,mPaint5,mPaint6;
+    ViewGroup mLayout;
+    ViewGroup.LayoutParams mLayoutParams;
+    boolean touch_state = false;
+    boolean mFirstTimeCheck = true;
+    RotateZoomImageView mImage;
+    ArrayList<Point> mTopLeftArea,mTopRightArea,mBottomLeftArea,mBottomRightArea;
+    Point mCenterPoint,mLeftPoint,mRightPoint,mTopPoint,mBottomPoint;
+    float mStroke = 5f;
+    float mStrokeInner = 6f;
+    int mRadius = 30;
+    boolean sCenter = true;
+    boolean sTop = true;
+    boolean sBottom = true;
+    boolean sLeft = true;
+    boolean sRight = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,9 +108,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mDraw = new DrawCanvas(this);
         init();
 
-        //mFrameLayout.setVisibility(View.VISIBLE);
-        //mImageselect.setVisibility(View.INVISIBLE);
-
         mLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -159,98 +116,203 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
         });
 
-
-
         mDatabaseClass = new databaseClass( contentView.getContext() );
 
-        /*Nuii*/
-        //get data from previous page
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            getImageTemplateID = bundle.getString( "imageID" );
-        }
-        if (getImageTemplateID != null) {
-            imageTemplateID = mDatabaseClass.getImageComposer( getImageTemplateID ).getTemplate();
-            /*16062016*/
-            stickerTemplateID1 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker1();
-            stickerTemplateID2 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker2();
-            stickerTemplateID3 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker3();
-            stickerTemplateID4 = mDatabaseClass.getImageComposer( getImageTemplateID ).getSticker4();
-        }
-        //Get Image Template
-        /*imageTemplate = "123456789";*/
-        if (imageTemplate != null) {
-            // i = mDatabaseClass.getImageTemplate(imageTemplateID).getTemplate();
-            GetImageTemplate(imageTemplateID);
-        }
-        //Get Sticker
-        /*if (stickerTemplateID != null) {
-            // imageTemplate = mDatabaseClass.getImageComposer(getImageTemplateID).getTemplate();
-            // stickerTemplate = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker();
-        }*/
-        //Get model of image A
-        if (image_a != null) {
-            GetImageModel( image_a );
-        }
+        mImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    mDraw.mMatrix[mIndex] = mImage.getMatrix();
+                    draw();
+                }
+                return false;
+            }
+        });
 
-        //Get model of image B
-        if (image_b != null) {
-            GetImageModel( image_b );
-        }
+        farme1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDraw.sFarme = "0";
+                mDraw.setPoint();
+                sCenter = false;
+                sLeft = false;
+                sRight = false;
+                sTop = false;
+                sBottom = false;
+                draw();
+            }
+        });
 
-        //Get model of image C
-        if (image_c != null) {
-            GetImageModel( image_c );
-        }
+        farme2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDraw.sFarme = "1";
+                mDraw.setPoint();
+                sCenter = true;
+                sLeft = true;
+                sRight = false;
+                sTop = false;
+                sBottom = false;
+                draw();
+            }
+        });
 
-        //Get model of image D
-        if (image_d != null) {
-            GetImageModel( image_d );
-        }
+        farme3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDraw.sFarme = "2";
+                mDraw.setPoint();
+                sCenter = true;
+                sLeft = false;
+                sRight = false;
+                sTop = true;
+                sBottom = false;
+                draw();
+            }
+        });
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client2 = new GoogleApiClient.Builder( this ).addApi( AppIndex.API ).build();
+
+        farme4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDraw.sFarme = "3";
+                mDraw.setPoint();
+                draw();
+            }
+        });
+
+        farme5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDraw.sFarme = "4";
+                mDraw.setPoint();
+                draw();
+            }
+        });
+
+        farme6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDraw.sFarme = "4";
+                mDraw.setPoint();
+                sCenter = true;
+                sLeft = true;
+                sRight = true;
+                sTop = true;
+                sBottom = true;
+                draw();
+            }
+        });
+
     }
 
     //KITTI
     private class DrawCanvas extends View implements View.OnTouchListener{
 
         int tMaxLeft,tMaxRight,tMaxTop,tMaxBottom;
+        int tmpMaxLeft,tmpMaxRight,tmpMaxTop,tmpMaxBottom;
         float mDistanceCenter, mDistanceLeft, mDistanceRight, mDistanceTop, mDistanceBottom;
         Rect mTopLeftAreaRect,mTopRightAreaRect,mBottomLeftAreaRect,mBottomRightAreaRect;
 
-        public Drawable myPic[] = {
-                getResources().getDrawable(R.drawable.boston),
-                getResources().getDrawable(R.drawable.carifornia),
-                getResources().getDrawable(R.drawable.dubai),
-                getResources().getDrawable(R.drawable.paris)
-        };
-
+        public Drawable myPic[] = new Drawable[4];
+        public Matrix[] mMatrix = new Matrix[4];
+        public String sFarme = "99";
         private DrawCanvas(Context mContext) {
             super(mContext);
             this.setOnTouchListener(this);
 
         }
+        public void setPoint(){
+            switch (sFarme){
+                case "0":
+                {
+                    mCenterPoint.set(tmpMaxRight,tmpMaxBottom);
+                    mLeftPoint.set(tmpMaxTop,tmpMaxBottom);
+                    mRightPoint.set(tmpMaxRight, tmpMaxTop);
+                    mTopPoint.set(tmpMaxRight, tmpMaxTop);
+                }break;
+                case "1": {
+                    mCenterPoint.set(tmpMaxRight, getHeight() / 2);
+                    mLeftPoint.set(tmpMaxLeft, getHeight() / 2);
+                    mRightPoint.set(tmpMaxRight, getHeight() / 2);
+                    mTopPoint.set(tmpMaxRight, tmpMaxTop);
+                    mBottomPoint.set(tmpMaxRight, tmpMaxBottom);
+                }break;
+                case "2":{
+                    mCenterPoint.set(getWidth()/2, tmpMaxBottom);
+                    mLeftPoint.set(tmpMaxLeft, tmpMaxBottom);
+                    mRightPoint.set(tmpMaxRight, tmpMaxBottom);
+                    mTopPoint.set(getWidth()/2, tmpMaxTop);
+                    mBottomPoint.set(getWidth()/2, tmpMaxBottom);
+                }break;
+                default: {
+                    mCenterPoint.set(getWidth() / 2, getHeight() / 2);
+                    mLeftPoint.set(tMaxLeft, getHeight() / 2);
+                    mRightPoint.set(tMaxRight, getHeight() / 2);
+                    mTopPoint.set(getWidth() / 2, tMaxTop);
+                    mBottomPoint.set(getWidth() / 2, tMaxBottom);
+                }
+            }
+        }
 
         @Override
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-//            Log.i("PARAM",""+mLayoutParams.height+" "+getHeight());
+
+
+            if(myPic != null){
+                myPic[0] =   getResources().getDrawable(R.drawable.boston);}
+            if(myPic != null){
+                myPic[1] =   getResources().getDrawable(R.drawable.carifornia);}
+            if(myPic != null){
+                myPic[2] =   getResources().getDrawable(R.drawable.dubai);}
+            if(myPic != null){
+                myPic[3] =   getResources().getDrawable(R.drawable.paris);}
 
 
             if (mFirstTimeCheck) {
-                tMaxLeft = mRadius;
+                tMaxLeft = 0 + mRadius;
                 tMaxRight = getWidth() - mRadius;
-                tMaxTop = mRadius;
+                tMaxTop = 0 + mRadius;
                 tMaxBottom = getHeight() - mRadius;
 
-                mCenterPoint.set( getWidth() / 2, getHeight() / 2 );
-                mLeftPoint.set( tMaxLeft, getHeight() / 2 );
-                mRightPoint.set( tMaxRight, getHeight() / 2 );
-                mTopPoint.set( getWidth() / 2, tMaxTop );
-                mBottomPoint.set( getWidth() / 2, tMaxBottom );
+                tmpMaxLeft = 0 + mRadius;
+                tmpMaxRight = getWidth() - mRadius;
+                tmpMaxTop = 0 + mRadius;
+                tmpMaxBottom = getHeight() - mRadius;
 
+                switch (sFarme){
+                    case "0": {
+                        mCenterPoint.set(tmpMaxRight,tmpMaxBottom);
+                        mLeftPoint.set(tmpMaxTop,tmpMaxTop);
+                        mRightPoint.set(tMaxRight, getHeight() / 2);
+                        mTopPoint.set(getWidth() / 2, tMaxTop);
+                        mBottomPoint.set(getWidth() / 2, tMaxBottom);
+                    }break;
+                    case "1": {
+                        mCenterPoint.set(tMaxRight, tMaxBottom / 2);
+                        mLeftPoint.set(tMaxLeft, tMaxBottom / 2);
+                        mRightPoint.set(tMaxRight, tMaxBottom / 2);
+                        mTopPoint.set(tMaxRight, tMaxTop);
+                        mBottomPoint.set(tMaxRight, tMaxBottom);
+                    }break;
+                    case "2":{
+                        mCenterPoint.set(tMaxRight/2, tMaxBottom);
+                        mLeftPoint.set(tMaxLeft, tMaxBottom);
+                        mRightPoint.set(tMaxRight, tMaxBottom);
+                        mTopPoint.set(getWidth()/2, tMaxTop);
+                        mBottomPoint.set(getWidth()/2, tMaxBottom);
+                    }break;
+                    default: {
+
+                        mCenterPoint.set(getWidth() / 2, getHeight() / 2);
+                        mLeftPoint.set(tMaxLeft, getHeight() / 2);
+                        mRightPoint.set(tMaxRight, getHeight() / 2);
+                        mTopPoint.set(getWidth() / 2, tMaxTop);
+                        mBottomPoint.set(getWidth() / 2, tMaxBottom);
+                    }
+                }
                 mTopLeftAreaRect = new Rect( tMaxLeft, tMaxTop, mCenterPoint.x, mCenterPoint.y );
                 mTopRightAreaRect = new Rect( mTopPoint.x, mTopPoint.y, mRightPoint.x, mRightPoint.y );
                 mBottomLeftAreaRect = new Rect( mLeftPoint.x, mLeftPoint.y, mBottomPoint.x, mBottomPoint.y );
@@ -268,9 +330,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     Point = (int) (mPaintInner.getStrokeWidth() / 2);
                 }
                 mPaintInner.setStrokeWidth(mPaint.getStrokeWidth() + 5);
-
                 Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
-                Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+                //Bitmap b = ((BitmapDrawable) myPic[0]).getBitmap();
+                Bitmap bitmap = Bitmap.createBitmap(b, 0, 0,
+                        b.getWidth(), b.getHeight(), mMatrix[0], true);
+
+//                        b.copy(Bitmap.Config.ARGB_8888, true);
                 int w = getWidth(), h = getHeight();
                 Point ImgA[] = {
                         new Point(mLeftPoint.x, mTopPoint.y),
@@ -327,34 +392,50 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 canvas.drawLine(mBottomPoint.x + Point, mBottomPoint.y - Point, mCenterPoint.x + Point, mCenterPoint.y + Point, mPaintInner);
             }
 
-            //topleftarea
-            canvas.drawRect( mTopLeftAreaRect, mPaint3 );
-            //toprightarea
-            canvas.drawRect( mTopRightAreaRect, mPaint4 );
-            //bottomleftarea
-            canvas.drawRect( mBottomLeftAreaRect, mPaint5 );
-            //bottomrightarea
-            canvas.drawRect( mBottomRightAreaRect, mPaint6 );
-            //frame
             canvas.drawRect( tMaxLeft, tMaxTop, tMaxRight, tMaxBottom, mPaint );
-            //top
-            canvas.drawLine( mTopPoint.x, mTopPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
-            //left
-            canvas.drawLine( mLeftPoint.x, mLeftPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
-            //right
-            canvas.drawLine( mRightPoint.x, mRightPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
-            //bottom
-            canvas.drawLine( mBottomPoint.x, mBottomPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
-            //center
-            canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
-            //left
-            canvas.drawCircle( mLeftPoint.x, mLeftPoint.y, mRadius, mPaint2 );
-            //right
-            canvas.drawCircle( mRightPoint.x, mRightPoint.y, mRadius, mPaint2 );
-            //top
-            canvas.drawCircle( mTopPoint.x, mTopPoint.y, mRadius, mPaint2 );
-            //bottom
-            canvas.drawCircle( mBottomPoint.x, mBottomPoint.y, mRadius, mPaint2 );
+
+            switch (sFarme){
+                case "0":{
+
+                }break;
+                case "1":{
+                    canvas.drawLine( mLeftPoint.x, mLeftPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //left
+                    canvas.drawCircle( mLeftPoint.x, mLeftPoint.y, mRadius, mPaint2 );
+                    //right
+                    canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
+                }
+                break;
+                case "2":{
+                    canvas.drawLine( mTopPoint.x, mTopPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //top
+                    canvas.drawCircle( mTopPoint.x, mTopPoint.y, mRadius, mPaint2 );
+                    //bottom
+                    canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
+                }
+                break;
+                default:{
+                    //top
+                    canvas.drawLine( mTopPoint.x, mTopPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //left
+                    canvas.drawLine( mLeftPoint.x, mLeftPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //right
+                    canvas.drawLine( mRightPoint.x, mRightPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //bottom
+                    canvas.drawLine( mBottomPoint.x, mBottomPoint.y, mCenterPoint.x, mCenterPoint.y, mPaint );
+                    //center
+                    canvas.drawCircle( mCenterPoint.x, mCenterPoint.y, mRadius, mPaint2 );
+                    //left
+                    canvas.drawCircle( mLeftPoint.x, mLeftPoint.y, mRadius, mPaint2 );
+                    //right
+                    canvas.drawCircle( mRightPoint.x, mRightPoint.y, mRadius, mPaint2 );
+                    //top
+                    canvas.drawCircle( mTopPoint.x, mTopPoint.y, mRadius, mPaint2 );
+                    //bottom
+                    canvas.drawCircle( mBottomPoint.x, mBottomPoint.y, mRadius, mPaint2 );
+                }
+            }
+
 
         }
 
@@ -378,69 +459,64 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             mDistanceRight = (float) Math.sqrt(Math.pow(mRightPoint.x-tXPoint, 2) + Math.pow(mRightPoint.y-tYPoint, 2));
             mDistanceTop = (float) Math.sqrt(Math.pow(mTopPoint.x-tXPoint, 2) + Math.pow(mTopPoint.y-tYPoint, 2));
             mDistanceBottom = (float) Math.sqrt(Math.pow(mBottomPoint.x-tXPoint, 2) + Math.pow(mBottomPoint.y-tYPoint, 2));
-            //Log.d("PARAM4", "" + tXPoint + " " + tYPoint +" D1 "+mDistanceCenter
-            //        +" D2 "+mDistanceLeft+" D3 "+mDistanceRight+" D4 "+mDistanceTop+" D5 "+mDistanceBottom);
 
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                if (mDistanceCenter <= mRadius){
+                if (mDistanceCenter <= mRadius && sCenter){
                     mCenterPoint.set(tXPoint,tYPoint);
-                    //Log.i("PARAM1",""+tXPoint+" "+tYPoint+" D1 "+mDistanceCenter);
                     invalidate();
-//                draw();
                     touch_state = true;
-                } else if (mDistanceLeft <= mRadius){
+                } else if (mDistanceLeft <= mRadius && sLeft){
                     mLeftPoint.set(tMaxLeft,tYPoint);
-                    //Log.i("PARAMLEFT",""+tXPoint+" "+tYPoint+" D2 "+mDistanceLeft);
                     invalidate();
-//                draw();
                     touch_state = true;
-                } else if (mDistanceRight <= mRadius){
+                } else if (mDistanceRight <= mRadius && sRight){
                     mRightPoint.set(tMaxRight,tYPoint);
-                    //Log.i("PARAMRIGHT",""+tXPoint+" "+tYPoint+" D3 "+mDistanceRight);
                     invalidate();
-//                draw();
                     touch_state = true;
-                } else if (mDistanceTop <= mRadius){
+                } else if (mDistanceTop <= mRadius && sTop){
                     mTopPoint.set(tXPoint,tMaxTop);
-                    //Log.i("PARAMTOP",""+tXPoint+" "+tYPoint+" D4 "+mDistanceTop);
                     invalidate();
-//                draw();
                     touch_state = true;
-                } else if (mDistanceBottom <= mRadius){
+                } else if (mDistanceBottom <= mRadius && sBottom){
                     mBottomPoint.set(tXPoint,tMaxBottom);
-                    //Log.i("PARAMBOTTOM",""+tXPoint+" "+tYPoint+" D5 "+mDistanceBottom);
                     invalidate();
                     touch_state = true;
                 }
                 else {
-                    FindImage((int) motionEvent.getX(), (int) motionEvent.getY() );
+//                    FindImage((int) motionEvent.getX(), (int) motionEvent.getY() );
                 }
                 setPointAreaArrayList();
 
             } else if(motionEvent.getAction() == MotionEvent.ACTION_MOVE && touch_state) {
-                if (mDistanceCenter <= mRadius){
-                    mCenterPoint.set(tXPoint,tYPoint);
-//                    Log.i("PARAM1",""+tXPoint+" "+tYPoint+" D1 "+mDistanceCenter);
+                if (mDistanceCenter <= mRadius && sCenter){
+
+                    switch (sFarme){
+                        case "1": {
+                            mCenterPoint.set(tMaxRight, tYPoint);
+                        }break;
+                        case "2":{
+                            mCenterPoint.set(tXPoint,tMaxBottom);
+                        }break;
+                        default:{
+                            mCenterPoint.set(tXPoint,tYPoint);
+                        }
+                    }
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceLeft <= mRadius){
+                } else if (mDistanceLeft <= mRadius && sLeft){
                     mLeftPoint.set(tMaxLeft,tYPoint);
-//                    Log.i("PARAMLEFT",""+tXPoint+" "+tYPoint+" D2 "+mDistanceLeft);
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceRight <= mRadius){
+                } else if (mDistanceRight <= mRadius && sRight){
                     mRightPoint.set(tMaxRight,tYPoint);
-//                    Log.i("PARAMRIGHT",""+tXPoint+" "+tYPoint+" D3 "+mDistanceRight);
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceTop <= mRadius){
+                } else if (mDistanceTop <= mRadius && sTop){
                     mTopPoint.set(tXPoint,tMaxTop);
-//                    Log.i("PARAMTOP",""+tXPoint+" "+tYPoint+" D4 "+mDistanceTop);
                     invalidate();
                     touch_state = true;
-                } else if (mDistanceBottom <= mRadius){
+                } else if (mDistanceBottom <= mRadius && sBottom){
                     mBottomPoint.set(tXPoint,tMaxBottom);
-//                    Log.i("PARAMBOTTOM",""+tXPoint+" "+tYPoint+" D5 "+mDistanceBottom);
                     invalidate();
                     touch_state = true;
                 }
@@ -449,14 +525,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             } else if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 touch_state = false;
             }
-            /*Nuii*/
-            //Get Image values
-            setImageTemplate();
-            setImageA();
-            setImageB();
-            setImageC();
-            setImageD();
-
             return true;
         }
 
@@ -507,11 +575,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             Paint paint = new Paint();
             final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
 
-            Point point1_draw = new Point(mLeftPoint.x,mTopPoint.y);
-            Point point2_draw = new Point(mTopPoint.x,mTopPoint.y);
-            Point point3_draw = new Point(mCenterPoint.x,mCenterPoint.y);
-            Point point4_draw = new Point(mLeftPoint.x,mLeftPoint.y);
-
             Path path = new Path();
             path.moveTo(point_draw[0].x,point_draw[0].y);
             path.lineTo(point_draw[1].x,point_draw[1].y);
@@ -555,6 +618,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
         }
     }
+
     public void draw() {
         try {
             mLayout.removeView(mDraw);
@@ -562,67 +626,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mLayout.addView(mDraw);
     }
 
-    /*Nuii*/
-    //Get Image Tamplate
-    public ArrayList GetImageTemplate(String imageTemplate) {
-        getTemplate = new ArrayList();
-        getTemplate.add( mDatabaseClass.getImageTemplate( imageTemplate ).getImageTemplate_id() );
-        getTemplate.add( 1, mDatabaseClass.getImageTemplate( imageTemplate ).getTemplate() );
-        getTemplate.add( 2, mDatabaseClass.getImageTemplate( imageTemplate ).getImage_a() );
-        getTemplate.add( 3, mDatabaseClass.getImageTemplate( imageTemplate ).getImage_b() );
-        getTemplate.add( 4, mDatabaseClass.getImageTemplate( imageTemplate ).getImage_c() );
-        getTemplate.add( 5, mDatabaseClass.getImageTemplate( imageTemplate ).getImage_d() );
-        getTemplate.add( 6, mDatabaseClass.getImageTemplate( imageTemplate ).getMarge_one_color() );
-        getTemplate.add( 7, mDatabaseClass.getImageTemplate( imageTemplate ).getMarge_two_color() );
-        getTemplate.add( 8, mDatabaseClass.getImageTemplate( imageTemplate ).getMarge_one_stroke() );
-        getTemplate.add( 9, mDatabaseClass.getImageTemplate( imageTemplate ).getMarge_two_stroke() );
-        getTemplate.add( 10, mDatabaseClass.getImageTemplate( imageTemplate ).getTop_value() );
-        getTemplate.add( 11, mDatabaseClass.getImageTemplate( imageTemplate ).getBottom_value() );
-        getTemplate.add( 12, mDatabaseClass.getImageTemplate( imageTemplate ).getMarge_two_color() );
-        getTemplate.add( 13, mDatabaseClass.getImageTemplate( imageTemplate ).getMarge_one_stroke() );
-        getTemplate.add( 14, mDatabaseClass.getImageTemplate( imageTemplate ).getMarge_two_stroke() );
-        getTemplate.add( 15, mDatabaseClass.getImageTemplate( imageTemplate ).getTop_value() );
-        getTemplate.add( 16, mDatabaseClass.getImageTemplate( imageTemplate ).getBottom_value() );
-        return (getTemplate);
-    }
-
-    /*Nuii*/
-    //Get Image Model
-    public ArrayList GetImageModel(String ImageID) {
-        getModel = new ArrayList();
-        getModel.add( 0, mDatabaseClass.getImage( ImageID ).getUrl() );
-        getModel.add( 1, mDatabaseClass.getImage( ImageID ).getUrl() );
-        getModel.add( 2, mDatabaseClass.getImage( ImageID ).getX() );
-        getModel.add( 3, mDatabaseClass.getImage( ImageID ).getX_enable() );
-        getModel.add( 4, mDatabaseClass.getImage( ImageID ).getX_original() );
-        getModel.add( 5, mDatabaseClass.getImage( ImageID ).getX_max() );
-        getModel.add( 6, mDatabaseClass.getImage( ImageID ).getX_min() );
-        getModel.add( 7, mDatabaseClass.getImage( ImageID ).getY() );
-        getModel.add( 8, mDatabaseClass.getImage( ImageID ).getY_enable() );
-        getModel.add( 9, mDatabaseClass.getImage( ImageID ).getY_original() );
-        getModel.add( 10, mDatabaseClass.getImage( ImageID ).getY_max() );
-        getModel.add( 11, mDatabaseClass.getImage( ImageID ).getY_min() );
-        getModel.add( 12, mDatabaseClass.getImage( ImageID ).getScale() );
-        getModel.add( 13, mDatabaseClass.getImage( ImageID ).getScale_enable() );
-        getModel.add( 14, mDatabaseClass.getImage( ImageID ).getScale_original() );
-        getModel.add( 15, mDatabaseClass.getImage( ImageID ).getScale_max() );
-        getModel.add( 16, mDatabaseClass.getImage( ImageID ).getScale_min() );
-        getModel.add( 17, mDatabaseClass.getImage( ImageID ).getRotate() );
-        getModel.add( 18, mDatabaseClass.getImage( ImageID ).getRotate_enable() );
-        getModel.add( 19, mDatabaseClass.getImage( ImageID ).getRotate_original() );
-        getModel.add( 20, mDatabaseClass.getImage( ImageID ).getRotate_max() );
-        getModel.add( 21, mDatabaseClass.getImage( ImageID ).getRotate_min() );
-        getModel.add( 22, mDatabaseClass.getImage( ImageID ).getFilter_enable() );
-        getModel.add( 23, mDatabaseClass.getImage( ImageID ).getFilter() );
-        return (getModel);
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-
-
 
         sOuter.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -664,10 +670,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         nextButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //  Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
-                /*Convert Bitmap to Byte Array*/
-                /*
-                RelativeLayout savedImage = (RelativeLayout) findViewById( R.id.FrameImageView );
+                mRadius = 0;
+                draw();
+                FrameLayout savedImage = (FrameLayout) findViewById( R.id.FrameImageView );
+                savedImage.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
                 savedImage.setDrawingCacheEnabled( true );
                 savedImage.buildDrawingCache();
                 Bitmap bmp = savedImage.getDrawingCache();
@@ -677,151 +683,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 savedImage.destroyDrawingCache();
                 Intent intent = new Intent( contentView.getContext(), ZPTStickerComposerView.class );
                 intent.putExtra( "picture", byteArray );
-                startActivity( intent );*/
-                /*Nuii*/
-                aid = image_a;
-                bid = image_b;
-                cid = image_c;
-                did = image_d;
-
-                  /*Nuii : Call values from MoveLineClass*/
-                imageTemplate = setImageTemplate();
-
-
-                /*Nuii*/
-                //Insert Image Template;
-                if (getImageTemplateID == null) {
-                    getTpID = mDatabaseClass.createID();
-                    image_a = mDatabaseClass.createID();
-                    image_b = mDatabaseClass.createID();
-                    image_c = mDatabaseClass.createID();
-                    image_d = mDatabaseClass.createID();
-                    /*while (mDatabaseClass.checkUniqueID(tID, "image")) {
-                        tID = mDatabaseClass.createID();
-                    }*/
-                    //imageTemplate
-                    ImageTemplate tImageTemplate = new ImageTemplate(getTpID, Integer.parseInt(imageTemplate.get(0).toString()), image_a, image_b, image_c, image_d
-                            , Float.parseFloat(imageTemplate.get(1).toString()), imageTemplate.get(2).toString(), Float.parseFloat(imageTemplate.get(3).toString())
-                            , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
-                            , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
-                            , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
-
-                    mDatabaseClass.insertImageTemplate(tImageTemplate);
-
-                } else {
-                    getTpID = imageTemplateID;
-                    ImageTemplate tImageTemplate = new ImageTemplate(Integer.parseInt(imageTemplate.get(0).toString()), image_a, image_b, image_c, image_d
-                            , Float.parseFloat(imageTemplate.get(1).toString()), imageTemplate.get(2).toString(), Float.parseFloat(imageTemplate.get(3).toString())
-                            , imageTemplate.get(4).toString(), Float.parseFloat(imageTemplate.get(5).toString()), Float.parseFloat(imageTemplate.get(6).toString())
-                            , Float.parseFloat(imageTemplate.get(7).toString()), Float.parseFloat(imageTemplate.get(8).toString())
-                            , Float.parseFloat(imageTemplate.get(9).toString()), Float.parseFloat(imageTemplate.get(10).toString()));
-
-                    mDatabaseClass.updateImageTemplate(tImageTemplate);
-                }
-
-                 /*Nuii : Call values from MoveLineClass*/
-                imageA = setImageA();
-
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 1) {
-                    if (aid == null) {
-                        aid = mDatabaseClass.createID();
-
-                        Image ImageA = new Image(aid, imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
-                                , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
-                                , Float.parseFloat(imageA.get(8).toString()), Float.parseFloat(imageA.get(9).toString()), Float.parseFloat(imageA.get(10).toString()), Float.parseFloat(imageA.get(11).toString()), Boolean.parseBoolean(imageA.get(12).toString())
-                                , Float.parseFloat(imageA.get(13).toString()), Float.parseFloat(imageA.get(14).toString()), Float.parseFloat(imageA.get(15).toString()), Float.parseFloat(imageA.get(16).toString()), Boolean.parseBoolean(imageA.get(17).toString())
-                                , Float.parseFloat(imageA.get(18).toString()), Float.parseFloat(imageA.get(19).toString()), Float.parseFloat(imageA.get(20).toString()), Boolean.parseBoolean(imageA.get(21).toString()), Integer.parseInt(imageA.get(22).toString()));
-
-
-                        mDatabaseClass.insertImage(ImageA);
-                    } else {
-
-                        Image ImageA = new Image(imageA.get(0).toString().getBytes(), Float.parseFloat(imageA.get(1).toString()), Boolean.parseBoolean(imageA.get(2).toString())
-                                , Float.parseFloat(imageA.get(3).toString()), Float.parseFloat(imageA.get(4).toString()), Float.parseFloat(imageA.get(5).toString()), Float.parseFloat(imageA.get(6).toString()), Boolean.parseBoolean(imageA.get(7).toString())
-                                , Float.parseFloat(imageA.get(8).toString()), Float.parseFloat(imageA.get(9).toString()), Float.parseFloat(imageA.get(10).toString()), Float.parseFloat(imageA.get(11).toString()), Boolean.parseBoolean(imageA.get(12).toString())
-                                , Float.parseFloat(imageA.get(13).toString()), Float.parseFloat(imageA.get(14).toString()), Float.parseFloat(imageA.get(15).toString()), Float.parseFloat(imageA.get(16).toString()), Boolean.parseBoolean(imageA.get(17).toString())
-                                , Float.parseFloat(imageA.get(18).toString()), Float.parseFloat(imageA.get(19).toString()), Float.parseFloat(imageA.get(20).toString()), Boolean.parseBoolean(imageA.get(21).toString()), Integer.parseInt(imageA.get(22).toString()));
-                        mDatabaseClass.updateImage(ImageA);
-                    }
-                }
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 2) {
-                    /*Nuii*/
-                    //Get value of image B
-                    imageB = setImageB();
-                    if (bid == null) {
-                        bid = mDatabaseClass.createID();
-
-                        Image ImageB = new Image(bid, imageB.get(0).toString().getBytes(), Float.parseFloat(imageB.get(1).toString()), Boolean.parseBoolean(imageB.get(2).toString())
-                                , Float.parseFloat(imageB.get(3).toString()), Float.parseFloat(imageB.get(4).toString()), Float.parseFloat(imageB.get(5).toString()), Float.parseFloat(imageB.get(6).toString()), Boolean.parseBoolean(imageB.get(7).toString())
-                                , Float.parseFloat(imageB.get(8).toString()), Float.parseFloat(imageB.get(9).toString()), Float.parseFloat(imageB.get(10).toString()), Float.parseFloat(imageB.get(11).toString()), Boolean.parseBoolean(imageB.get(12).toString())
-                                , Float.parseFloat(imageB.get(13).toString()), Float.parseFloat(imageB.get(14).toString()), Float.parseFloat(imageB.get(15).toString()), Float.parseFloat(imageB.get(16).toString()), Boolean.parseBoolean(imageB.get(17).toString())
-                                , Float.parseFloat(imageB.get(18).toString()), Float.parseFloat(imageB.get(19).toString()), Float.parseFloat(imageB.get(20).toString()), Boolean.parseBoolean(imageB.get(21).toString()), Integer.parseInt(imageB.get(22).toString()));
-                        mDatabaseClass.insertImage(ImageB);
-                    } else {
-                        Image ImageB = new Image(imageB.get(0).toString().getBytes(), Float.parseFloat(imageB.get(1).toString()), Boolean.parseBoolean(imageB.get(2).toString())
-                                , Float.parseFloat(imageB.get(3).toString()), Float.parseFloat(imageB.get(4).toString()), Float.parseFloat(imageB.get(5).toString()), Float.parseFloat(imageB.get(6).toString()), Boolean.parseBoolean(imageB.get(7).toString())
-                                , Float.parseFloat(imageB.get(8).toString()), Float.parseFloat(imageB.get(9).toString()), Float.parseFloat(imageB.get(10).toString()), Float.parseFloat(imageB.get(11).toString()), Boolean.parseBoolean(imageB.get(12).toString())
-                                , Float.parseFloat(imageB.get(13).toString()), Float.parseFloat(imageB.get(14).toString()), Float.parseFloat(imageB.get(15).toString()), Float.parseFloat(imageB.get(16).toString()), Boolean.parseBoolean(imageB.get(17).toString())
-                                , Float.parseFloat(imageB.get(18).toString()), Float.parseFloat(imageB.get(19).toString()), Float.parseFloat(imageB.get(20).toString()), Boolean.parseBoolean(imageB.get(21).toString()), Integer.parseInt(imageB.get(22).toString()));
-
-                        mDatabaseClass.updateImage(ImageB);
-                    }
-                }
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 3) {
-                    /*Nuii*/
-                    //Get value of image C
-                    imageC =setImageC();
-                    if (cid == null) {
-                        cid = mDatabaseClass.createID();
-
-                        Image ImageC = new Image(cid, imageC.get(0).toString().getBytes(), Float.parseFloat(imageC.get(1).toString()), Boolean.parseBoolean(imageC.get(2).toString())
-                                , Float.parseFloat(imageC.get(3).toString()), Float.parseFloat(imageC.get(4).toString()), Float.parseFloat(imageC.get(5).toString()), Float.parseFloat(imageC.get(6).toString()), Boolean.parseBoolean(imageC.get(7).toString())
-                                , Float.parseFloat(imageC.get(8).toString()), Float.parseFloat(imageC.get(9).toString()), Float.parseFloat(imageC.get(10).toString()), Float.parseFloat(imageC.get(11).toString()), Boolean.parseBoolean(imageC.get(12).toString())
-                                , Float.parseFloat(imageC.get(13).toString()), Float.parseFloat(imageC.get(14).toString()), Float.parseFloat(imageC.get(15).toString()), Float.parseFloat(imageC.get(16).toString()), Boolean.parseBoolean(imageC.get(17).toString())
-                                , Float.parseFloat(imageC.get(18).toString()), Float.parseFloat(imageC.get(19).toString()), Float.parseFloat(imageC.get(20).toString()), Boolean.parseBoolean(imageC.get(21).toString()), Integer.parseInt(imageC.get(22).toString()));
-                        mDatabaseClass.insertImage(ImageC);
-                    } else {
-                        Image ImageC = new Image(imageC.get(0).toString().getBytes(), Float.parseFloat(imageC.get(1).toString()), Boolean.parseBoolean(imageC.get(2).toString())
-                                , Float.parseFloat(imageC.get(3).toString()), Float.parseFloat(imageC.get(4).toString()), Float.parseFloat(imageC.get(5).toString()), Float.parseFloat(imageC.get(6).toString()), Boolean.parseBoolean(imageC.get(7).toString())
-                                , Float.parseFloat(imageC.get(8).toString()), Float.parseFloat(imageC.get(9).toString()), Float.parseFloat(imageC.get(10).toString()), Float.parseFloat(imageC.get(11).toString()), Boolean.parseBoolean(imageC.get(12).toString())
-                                , Float.parseFloat(imageC.get(13).toString()), Float.parseFloat(imageC.get(14).toString()), Float.parseFloat(imageC.get(15).toString()), Float.parseFloat(imageC.get(16).toString()), Boolean.parseBoolean(imageC.get(17).toString())
-                                , Float.parseFloat(imageC.get(18).toString()), Float.parseFloat(imageC.get(19).toString()), Float.parseFloat(imageC.get(20).toString()), Boolean.parseBoolean(imageC.get(21).toString()), Integer.parseInt(imageC.get(22).toString()));
-
-                        mDatabaseClass.updateImage(ImageC);
-                    }
-                }
-                if (Integer.parseInt(imageTemplate.get(0).toString()) >= 4) {
-                    /*Nuii*/
-                    //Get value of image D
-                    imageD = setImageD();
-                    if (did == null) {
-                        did = mDatabaseClass.createID();
-
-                        Image ImageD = new Image(did, imageD.get(0).toString().getBytes(), Float.parseFloat(imageD.get(1).toString()), Boolean.parseBoolean(imageD.get(2).toString())
-                                , Float.parseFloat(imageD.get(3).toString()), Float.parseFloat(imageD.get(4).toString()), Float.parseFloat(imageD.get(5).toString()), Float.parseFloat(imageD.get(6).toString()), Boolean.parseBoolean(imageD.get(7).toString())
-                                , Float.parseFloat(imageD.get(8).toString()), Float.parseFloat(imageD.get(9).toString()), Float.parseFloat(imageD.get(10).toString()), Float.parseFloat(imageD.get(11).toString()), Boolean.parseBoolean(imageD.get(12).toString())
-                                , Float.parseFloat(imageD.get(13).toString()), Float.parseFloat(imageD.get(14).toString()), Float.parseFloat(imageD.get(15).toString()), Float.parseFloat(imageD.get(16).toString()), Boolean.parseBoolean(imageD.get(17).toString())
-                                , Float.parseFloat(imageD.get(18).toString()), Float.parseFloat(imageD.get(19).toString()), Float.parseFloat(imageD.get(20).toString()), Boolean.parseBoolean(imageD.get(21).toString()), Integer.parseInt(imageD.get(22).toString()));
-                        mDatabaseClass.insertImage(ImageD);
-                    } else {
-                        Image ImageD = new Image(imageD.get(0).toString().getBytes(), Float.parseFloat(imageD.get(1).toString()), Boolean.parseBoolean(imageD.get(2).toString())
-                                , Float.parseFloat(imageD.get(3).toString()), Float.parseFloat(imageD.get(4).toString()), Float.parseFloat(imageD.get(5).toString()), Float.parseFloat(imageD.get(6).toString()), Boolean.parseBoolean(imageD.get(7).toString())
-                                , Float.parseFloat(imageD.get(8).toString()), Float.parseFloat(imageD.get(9).toString()), Float.parseFloat(imageD.get(10).toString()), Float.parseFloat(imageD.get(11).toString()), Boolean.parseBoolean(imageD.get(12).toString())
-                                , Float.parseFloat(imageD.get(13).toString()), Float.parseFloat(imageD.get(14).toString()), Float.parseFloat(imageD.get(15).toString()), Float.parseFloat(imageD.get(16).toString()), Boolean.parseBoolean(imageD.get(17).toString())
-                                , Float.parseFloat(imageD.get(18).toString()), Float.parseFloat(imageD.get(19).toString()), Float.parseFloat(imageD.get(20).toString()), Boolean.parseBoolean(imageD.get(21).toString()), Integer.parseInt(imageD.get(22).toString()));
-
-                        mDatabaseClass.updateImage(ImageD);
-                    }
-                }
-
-                Intent intent = new Intent( contentView.getContext(), ZPTStickerComposerView.class );
-                intent.putExtra( "imageTemplateID", getTpID );
-                /*16062016*/
-                intent.putExtra( "stickerTemplateID1", stickerTemplateID1 );
-                intent.putExtra( "stickerTemplateID2", stickerTemplateID2 );
-                intent.putExtra( "stickerTemplateID3", stickerTemplateID2 );
-                intent.putExtra( "stickerTemplateID4", stickerTemplateID3 );
-
                 startActivity( intent );
             }
 
@@ -842,21 +703,16 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         //KITTI : Link Control
         sOuter = (SeekBar) findViewById( R.id.seekBarOuter );
         sInner = (SeekBar) findViewById( R.id.seekBarInner );
-        mImage = (TouchImageView) findViewById(R.id.mImage);
+        mImage = (RotateZoomImageView) findViewById(R.id.mImage);
         farme1 = (ImageButton) findViewById( R.id.farme1 );
         farme2 = (ImageButton) findViewById( R.id.farme2 );
         farme3 = (ImageButton) findViewById( R.id.farme3 );
         farme4 = (ImageButton) findViewById( R.id.farme4 );
         farme5 = (ImageButton) findViewById( R.id.farme5 );
         farme6 = (ImageButton) findViewById( R.id.farme6 );
-        farme7 = (ImageButton) findViewById( R.id.farme7 );
-        farme8 = (ImageButton) findViewById( R.id.farme8 );
 
-        mLayout = (RelativeLayout) findViewById( R.id.FrameImageView );
+        mLayout = (FrameLayout) findViewById( R.id.FrameImageView );
         mLayoutParams = mLayout.getLayoutParams();
-//        mImageselect = (RelativeLayout) findViewById(R.id.Imageselect);
-//        mFrameLayout = (RelativeLayout) findViewById(R.id.mFrameLayout);
-
         mCenterPoint = new Point(mLayoutParams.width/2,mLayoutParams.height/2);
         mLeftPoint = new Point();
         mRightPoint = new Point();
@@ -916,14 +772,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         draw();
 
-    }
-
-    private void SetBlockImg(ImageView ObjImageView, int height, int width, int codeColor) {
-        //Set Size Image
-        ObjImageView.getLayoutParams().height = height;
-        ObjImageView.getLayoutParams().width = width;
-        ObjImageView.setBackgroundColor( codeColor );
-        ObjImageView.setPadding( 50, 50, 50, 50 );
     }
 
     private void selectImage() {
@@ -1014,7 +862,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
 
         mImage.setImageBitmap( bm );
-        mDraw.myPic[mIndex] = (Drawable)new BitmapDrawable(bm);
+        mDraw.myPic[mIndex] = new BitmapDrawable(bm);
         draw();
     }
 
@@ -1033,194 +881,4 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 break;
         }
     }
-    //region Nuii : set value function
-        /*Nuii*/
-           /*Nuii*/
-    //set Image Tamplate
-    public ArrayList setImageTemplate() {
-        valueImageTemplate = new ArrayList();
-        valueImageTemplate.add(0,"template");//Integer : จำนวนเทมเพลต
-        valueImageTemplate.add(1,"marge_one_stroke");//Float : marge one stroke in purcent
-        valueImageTemplate.add(2,"marge_one_color");//String : color in hex
-        valueImageTemplate.add(3,"marge_two_stroke");//Float : marge two stroke in purcent
-        valueImageTemplate.add(4,"marge_two_color");//String : color in hex
-        valueImageTemplate.add(5,"top_value");//Float : position of value top for the line
-        valueImageTemplate.add(6,"bottom_value");//Float : position of value bottom for the line
-        valueImageTemplate.add(7,"right_value");//Float : position of value right for the line
-        valueImageTemplate.add(8,"left_value");//Float : position of value left for the line
-        valueImageTemplate.add(9,"center_x");//Float : position of value x for the line
-        valueImageTemplate.add(10,"center_y");//Float : position of value y for the line
-        return (valueImageTemplate);
-    }
-    //Image Model A
-    public ArrayList setImageA() {
-        valueImageA = new ArrayList();
-        valueImageA.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageA.add(1,"offset_x");//Float : offset X of image
-        valueImageA.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageA.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageA.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageA.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageA.add(6,"offset_y");//Float : offset Y of image
-        valueImageA.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageA.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageA.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageA.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageA.add(11,"scale");//Float : scale of image
-        valueImageA.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageA.add(13,"scale_original");//Float : original scale of image
-        valueImageA.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageA.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageA.add(16,"rotate");//Float : rotate of image
-        valueImageA.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageA.add(18,"rotate_original");//Float : original rotation of image
-        valueImageA.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageA.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageA.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageA.add(22,"filter");//Float : Integer : enum filter for this image
-        return (valueImageA);
-    }
-
-    //Image Model B
-    public ArrayList setImageB() {
-        valueImageB = new ArrayList();
-        valueImageB.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageB.add(1,"offset_x");//Float : offset X of image
-        valueImageB.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageB.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageB.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageB.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageB.add(6,"offset_y");//Float : offset Y of image
-        valueImageB.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageB.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageB.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageB.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageB.add(11,"scale");//Float : scale of image
-        valueImageB.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageB.add(13,"scale_original");//Float : original scale of image
-        valueImageB.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageB.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageB.add(16,"rotate");//Float : rotate of image
-        valueImageB.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageB.add(18,"rotate_original");//Float : original rotation of image
-        valueImageB.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageB.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageB.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageB.add(22,"filter");//Float : Integer : enum filter for this image
-        return (valueImageB);
-    }
-
-    //Image Model C
-    public ArrayList setImageC() {
-        imageC = new ArrayList();
-        valueImageC.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageC.add(1,"offset_x");//Float : offset X of image
-        valueImageC.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageC.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageC.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageC.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageC.add(6,"offset_y");//Float : offset Y of image
-        valueImageC.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageC.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageC.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageC.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageC.add(11,"scale");//Float : scale of image
-        valueImageC.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageC.add(13,"scale_original");//Float : original scale of image
-        valueImageC.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageC.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageC.add(16,"rotate");//Float : rotate of image
-        valueImageC.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageC.add(18,"rotate_original");//Float : original rotation of image
-        valueImageC.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageC.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageC.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageC.add(22,"filter");//Float : Integer : enum filter for this image
-        return (valueImageC);
-    }
-
-    //Image Model D
-    public ArrayList setImageD() {
-        valueImageD = new ArrayList();
-        valueImageD.add(0,"url");//String : url of image (delete when object is delete)
-        valueImageD.add(1,"offset_x");//Float : offset X of image
-        valueImageD.add(2,"offset_x_enable");//Boolean : enable offset X of image
-        valueImageD.add(3,"offset_x_original");//Float : original offset X of image
-        valueImageD.add(4,"offset_x_max");//Float : maximum authorized offset X of image
-        valueImageD.add(5,"offset_x_min");//Float : minimum authorized offset X of image
-        valueImageD.add(6,"offset_y");//Float : offset Y of image
-        valueImageD.add(7,"offset_y_enable");//Boolean : enable offset X of image
-        valueImageD.add(8,"offset_y_original");//Float : original offset Y of image
-        valueImageD.add(9,"offset_y_max");//Float : maximum authorized offset Y of image
-        valueImageD.add(10,"offset_y_min");//Float : minimum authorized offset Y of image
-        valueImageD.add(11,"scale");//Float : scale of image
-        valueImageD.add(12,"scale_enable");//Float : Boolean : enable scale of image
-        valueImageD.add(13,"scale_original");//Float : original scale of image
-        valueImageD.add(14,"scale_max");//Float : maximum authorized scale of image
-        valueImageD.add(15,"scale_min");//Float : minimum authorized scale of image
-        valueImageD.add(16,"rotate");//Float : rotate of image
-        valueImageD.add(17,"rotate_enable");//Float : Boolean : enable rotation of image
-        valueImageD.add(18,"rotate_original");//Float : original rotation of image
-        valueImageD.add(19,"rotate_max");//Float : maximum authorized rotate of image
-        valueImageD.add(20,"rotate_min");//Float : minimum authorized rotate of image
-        valueImageD.add(21,"filter_enable");//Boolean : enable filter for this image
-        valueImageD.add(22,"filter");//Float : Integer : enum filter for this image
-        return (valueImageD);
-    }
-    //endregion : function
-
-   /* @Override
-    public void onStop() {
-        super.onStop();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction2 = Action.newAction(
-        Action.TYPE_VIEW, // TODO: choose an action type.
-        "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
-        // TODO: If you have web page content that matches this app activity's content,
-        // make sure this auto-generated web page URL is correct.
-        // Otherwise, set the URL to null.
-        Uri.parse( "http://host/path" ),
-        // TODO: Make sure this auto-generated app URL is correct.
-        Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
-        );
-        AppIndex.AppIndexApi.end( client2, viewAction2 );
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-        Action.TYPE_VIEW, // TODO: choose an action type.
-        "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
-        // TODO: If you have web page content that matches this app activity's content,
-        // make sure this auto-generated web page URL is correct.
-        // Otherwise, set the URL to null.
-        Uri.parse( "http://host/path" ),
-        // TODO: Make sure this auto-generated app URL is correct.
-        Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
-        );
-        AppIndex.AppIndexApi.end( client, viewAction );
-        client.disconnect();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client2.disconnect();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client2.connect();
-        Action viewAction2 = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "ZPTImageComposerView Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse( "http://host/path" ),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse( "android-app://com.zibbeo.phototrimbree.PostCard/http/host/path" )
-        );
-        AppIndex.AppIndexApi.start( client2, viewAction2 );
-    }*/
 }
