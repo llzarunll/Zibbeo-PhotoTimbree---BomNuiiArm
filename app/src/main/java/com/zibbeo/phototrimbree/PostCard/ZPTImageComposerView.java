@@ -97,6 +97,46 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     boolean sLeft = true;
     boolean sRight = true;
 
+
+    /*Nuii*/
+    String stickerTemplateID1, stickerTemplateID2, stickerTemplateID3, stickerTemplateID4 ;
+    String getTpID, getImageTemplateID,imageTemplateID;
+
+    //Image
+    String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
+    String marge_one_color, marge_two_color;
+    Float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
+    Integer template;
+
+    //Image Model A
+    //String aid;
+    Float aoffset_x, aoffset_x_original, aoffset_x_max, aoffset_x_min, aoffset_y, aoffset_y_original, aoffset_y_max;
+    Float aoffset_y_min, ascale, ascale_original, ascale_max, ascale_min, arotate, arotate_original, arotate_max, arotate_min;
+    Boolean aoffset_x_enable, aoffset_y_enable, ascale_enable, arotate_enable, afilter_enable;
+    Integer afilter;
+    byte[] aurl;
+
+    //Image Model B
+    Float boffset_x, boffset_x_original, boffset_x_max, boffset_x_min, boffset_y, boffset_y_original, boffset_y_max;
+    Float boffset_y_min, bscale, bscale_original, bscale_max, bscale_min, brotate, brotate_original, brotate_max, brotate_min;
+    Boolean boffset_x_enable, boffset_y_enable, bscale_enable, brotate_enable, bfilter_enable;
+    Integer bfilter;
+    byte[] burl;
+
+    //Image Model C
+    Float coffset_x, coffset_x_original, coffset_x_max, coffset_x_min, coffset_y, coffset_y_original, coffset_y_max;
+    Float coffset_y_min, cscale, cscale_original, cscale_max, cscale_min, crotate, crotate_original, crotate_max, crotate_min;
+    Boolean coffset_x_enable, coffset_y_enable, cscale_enable, crotate_enable, cfilter_enable;
+    Integer cfilter;
+    byte[] curl;
+
+    //Image Model D
+    Float doffset_x, doffset_x_original, doffset_x_max, doffset_x_min, doffset_y, doffset_y_original, doffset_y_max;
+    Float doffset_y_min, dscale, dscale_original, dscale_max, dscale_min, drotate, drotate_original, drotate_max, drotate_min;
+    Boolean doffset_x_enable, doffset_y_enable, dscale_enable, drotate_enable, dfilter_enable;
+    Integer dfilter;
+    byte[] durl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -119,6 +159,49 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mFrameLayout.setVisibility(View.VISIBLE);
 
         mDatabaseClass = new databaseClass( contentView.getContext() );
+
+        //region Get value
+        /*Nuii*/
+        //get data from previous page
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            getImageTemplateID = bundle.getString( "imageID" );
+        }
+        if (getImageTemplateID != null) {
+            imageTemplateID = mDatabaseClass.getImageComposer(getImageTemplateID).getTemplate();
+            stickerTemplateID1 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker1();
+            stickerTemplateID2 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker2();
+            stickerTemplateID3 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker3();
+            stickerTemplateID4 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker4();
+        }
+        //Get Image Template
+        /*imageTemplate = "123456789";*/
+        if (imageTemplateID != null) {
+            // i = mDatabaseClass.getImageTemplate(imageTemplateID).getTemplate();
+            setImageTemplate(imageTemplateID);
+        }
+
+        //Get model of image A
+        if (image_a != null) {
+            setImageModelA( image_a );
+        }
+
+        //Get model of image B
+        if (image_b != null) {
+            setImageModelB( image_b );
+        }
+
+        //Get model of image C
+        if (image_c != null) {
+            setImageModelC( image_c );
+        }
+
+        //Get model of image D
+        if (image_d != null) {
+            setImageModelD( image_d );
+        }
+        //endregion
+
         //KITTI
         mImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -770,8 +853,117 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 bmp.compress( Bitmap.CompressFormat.PNG, 100, stream );
                 byte[] byteArray = stream.toByteArray();
                 savedImage.destroyDrawingCache();
+
+                //region save data
+                /*Nuii*/
+                getImageTemplate();
+                getImageA();
+                if ( image_a == null) {
+                    aid = mDatabaseClass.createID();
+
+                    Image ImageA = new Image(aid, aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
+                            , aoffset_y, aoffset_y_enable, aoffset_y_original, aoffset_y_max, aoffset_y_min
+                            , ascale, ascale_enable, ascale_original, ascale_max, ascale_min
+                            , arotate, arotate_enable, arotate_original, arotate_max, arotate_min
+                            , afilter_enable, afilter);
+                    mDatabaseClass.insertImage(ImageA);
+                }else {
+                    aid = image_a;
+                    Image ImageA = new Image(aid, aurl, aoffset_x, aoffset_x_enable, aoffset_x_original, aoffset_x_max, aoffset_x_min
+                            , aoffset_y, aoffset_y_enable, aoffset_y_original, aoffset_y_max, aoffset_y_min
+                            , ascale, ascale_enable, ascale_original, ascale_max, ascale_min
+                            , arotate, arotate_enable, arotate_original, arotate_max, arotate_min
+                            , afilter_enable, afilter);
+                    mDatabaseClass.updateImage(ImageA);
+                }
+                if ( template >= 2) {
+                    getImageB();
+                    if ( image_b == null) {
+                        bid = mDatabaseClass.createID();
+
+                        Image ImageB = new Image( bid, burl, boffset_x, boffset_x_enable, boffset_x_original, boffset_x_max, boffset_x_min
+                                , boffset_y, boffset_y_enable, boffset_y_original, boffset_y_max, boffset_y_min
+                                , bscale, bscale_enable, bscale_original, bscale_max, bscale_min
+                                , brotate, brotate_enable, brotate_original, brotate_max, brotate_min
+                                , bfilter_enable, bfilter);
+                        mDatabaseClass.insertImage(ImageB);
+                    }else {
+                        bid = image_b;
+                        Image ImageB = new Image( burl, boffset_x, boffset_x_enable, boffset_x_original, boffset_x_max, boffset_x_min
+                                , boffset_y, boffset_y_enable, boffset_y_original, boffset_y_max, boffset_y_min
+                                , bscale, bscale_enable, bscale_original, bscale_max, bscale_min
+                                , brotate, brotate_enable, brotate_original, brotate_max, brotate_min
+                                , bfilter_enable, bfilter);
+                        mDatabaseClass.updateImage(ImageB);
+                    }
+                }
+                if ( template >= 3) {
+                    getImageC();
+                    if ( image_c == null) {
+                        cid = mDatabaseClass.createID();
+
+                        Image ImageC = new Image( cid, curl, coffset_x, coffset_x_enable, coffset_x_original, coffset_x_max, coffset_x_min
+                                , coffset_y, coffset_y_enable, coffset_y_original, coffset_y_max, coffset_y_min
+                                , cscale, cscale_enable, cscale_original, cscale_max, cscale_min
+                                , crotate, crotate_enable, crotate_original, crotate_max, crotate_min
+                                , cfilter_enable, cfilter);
+                        mDatabaseClass.insertImage(ImageC);
+                    }else {
+                        cid = image_c;
+                        Image ImageC = new Image( curl, coffset_x, coffset_x_enable, coffset_x_original, coffset_x_max, coffset_x_min
+                                , coffset_y, coffset_y_enable, coffset_y_original, coffset_y_max, coffset_y_min
+                                , cscale, cscale_enable, cscale_original, cscale_max, cscale_min
+                                , crotate, crotate_enable, crotate_original, crotate_max, crotate_min
+                                , cfilter_enable, cfilter);
+                        mDatabaseClass.updateImage(ImageC);
+                    }
+                }
+                if ( template == 4) {
+                    getImageD();
+                    if ( image_d == null) {
+                        did = mDatabaseClass.createID();
+
+                        Image ImageD = new Image( did, durl, doffset_x, doffset_x_enable, doffset_x_original, doffset_x_max, doffset_x_min
+                                , doffset_y, doffset_y_enable, doffset_y_original, doffset_y_max, doffset_y_min
+                                , dscale, dscale_enable, dscale_original, dscale_max, dscale_min
+                                , drotate, drotate_enable, drotate_original, drotate_max, drotate_min
+                                , dfilter_enable, dfilter);
+                        mDatabaseClass.insertImage(ImageD);
+                    }else {
+                        did = image_d;
+                        Image ImageD = new Image( durl, doffset_x, doffset_x_enable, doffset_x_original, doffset_x_max, doffset_x_min
+                                , doffset_y, doffset_y_enable, doffset_y_original, doffset_y_max, doffset_y_min
+                                , dscale, dscale_enable, dscale_original, dscale_max, dscale_min
+                                , drotate, drotate_enable, drotate_original, drotate_max, drotate_min
+                                , dfilter_enable, dfilter);
+                        mDatabaseClass.updateImage(ImageD);
+                    }
+                }
+
+                if (imageTemplateID == null) {
+                    getTpID = mDatabaseClass.createID();
+                    ImageTemplate tImageTemplate = new ImageTemplate(getTpID, template, aid, bid, cid, did
+                            , marge_one_stroke, marge_one_color, marge_two_stroke, marge_two_color
+                            , top_value, bottom_value, right_value, left_value, center_x, center_y);
+                    mDatabaseClass.insertImageTemplate(tImageTemplate);
+                } else {
+                    getTpID = imageTemplateID;
+                    ImageTemplate tImageTemplate = new ImageTemplate(getTpID,template, aid, bid, cid, did
+                            , marge_one_stroke, marge_one_color, marge_two_stroke, marge_two_color
+                            , top_value, bottom_value, right_value, left_value, center_x, center_y);
+                    mDatabaseClass.updateImageTemplate(tImageTemplate);
+                }
+                //endregion
+
                 Intent intent = new Intent( contentView.getContext(), ZPTStickerComposerView.class );
                 intent.putExtra( "picture", byteArray );
+                /*Nuii*/
+                intent.putExtra( "imageTemplateID", getTpID );
+                intent.putExtra( "getImageTemplateID", getImageTemplateID );
+                intent.putExtra( "stickerTemplateID1", stickerTemplateID1 );
+                intent.putExtra( "stickerTemplateID2", stickerTemplateID2 );
+                intent.putExtra( "stickerTemplateID3", stickerTemplateID3 );
+                intent.putExtra( "stickerTemplateID4", stickerTemplateID4 );
                 startActivity( intent );
             }
 
@@ -971,4 +1163,261 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 break;
         }
     }
+
+    //region Nuii : set value function
+        /*Nuii*/
+           /*Nuii*/
+    //set Image Tamplate
+    public void getImageTemplate() {
+        template = 1;//Integer : จำนวนเทมเพลต
+        marge_one_stroke = 0.00f;//Float : marge one stroke in purcent
+        marge_one_color = "000000000";//String : color in hex
+        marge_two_stroke = 0.00f;//Float : marge two stroke in purcent
+        marge_two_color = "111111111";//String : color in hex
+        top_value = 0.00f;//Float : position of value top for the line
+        bottom_value = 0.00f;//Float : position of value bottom for the line
+        right_value = 0.00f;//Float : position of value right for the line
+        left_value = 0.00f;//Float : position of value left for the line
+        center_x = 0.00f;//Float : position of value x for the line
+        center_y = 0.00f;//Float : position of value y for the line
+    }
+
+    //Image Model A
+    public void getImageA() {
+        aurl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
+        aoffset_x = 0.00f ;//Float : offset X of image
+        aoffset_x_enable = true;//Boolean : enable offset X of image
+        aoffset_x_original = 0.00f ;//Float : original offset X of image
+        aoffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
+        aoffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
+        aoffset_y = 0.00f ;//Float : offset Y of image
+        aoffset_y_enable = true;//Boolean : enable offset X of image
+        aoffset_y_original = 0.00f ;//Float : original offset Y of image
+        aoffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
+        aoffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
+        ascale = 0.00f;//Float : scale of image
+        ascale_enable = true;//Float : Boolean : enable scale of image
+        ascale_original = 0.00f ;//Float : original scale of image
+        ascale_max = 0.00f ;//Float : maximum authorized scale of image
+        ascale_min = 0.00f ;//Float : minimum authorized scale of image
+        arotate = 0.00f ;//Float : rotate of image
+        arotate_enable = true;//Float : Boolean : enable rotation of image
+        arotate_original = 0.00f ;//Float : original rotation of image
+        arotate_max = 0.00f ;//Float : maximum authorized rotate of image
+        arotate_min = 0.00f ;//Float : minimum authorized rotate of image
+        afilter_enable = true;//Boolean : enable filter for this image
+        afilter = 1 ;//Float : Integer : enum filter for this image
+
+    }
+    //Image Model B
+    public void getImageB() {
+        burl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
+        boffset_x = 0.00f ;//Float : offset X of image
+        boffset_x_enable = true;//Boolean : enable offset X of image
+        boffset_x_original = 0.00f ;//Float : original offset X of image
+        boffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
+        boffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
+        boffset_y = 0.00f ;//Float : offset Y of image
+        boffset_y_enable = true;//Boolean : enable offset X of image
+        boffset_y_original = 0.00f ;//Float : original offset Y of image
+        boffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
+        boffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
+        bscale = 0.00f;//Float : scale of image
+        bscale_enable = true;//Float : Boolean : enable scale of image
+        bscale_original = 0.00f ;//Float : original scale of image
+        bscale_max = 0.00f ;//Float : maximum authorized scale of image
+        bscale_min = 0.00f ;//Float : minimum authorized scale of image
+        brotate = 0.00f ;//Float : rotate of image
+        brotate_enable = true;//Float : Boolean : enable rotation of image
+        brotate_original = 0.00f ;//Float : original rotation of image
+        brotate_max = 0.00f ;//Float : maximum authorized rotate of image
+        brotate_min = 0.00f ;//Float : minimum authorized rotate of image
+        bfilter_enable = true;//Boolean : enable filter for this image
+        bfilter = 1 ;//Float : Integer : enum filter for this image
+    }
+    //Image Model C
+    public void getImageC() {
+        curl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
+        coffset_x = 0.00f ;//Float : offset X of image
+        coffset_x_enable = true;//Boolean : enable offset X of image
+        coffset_x_original = 0.00f ;//Float : original offset X of image
+        coffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
+        coffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
+        coffset_y = 0.00f ;//Float : offset Y of image
+        coffset_y_enable = true;//Boolean : enable offset X of image
+        coffset_y_original = 0.00f ;//Float : original offset Y of image
+        coffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
+        coffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
+        cscale = 0.00f;//Float : scale of image
+        cscale_enable = true;//Float : Boolean : enable scale of image
+        cscale_original = 0.00f ;//Float : original scale of image
+        cscale_max = 0.00f ;//Float : maximum authorized scale of image
+        cscale_min = 0.00f ;//Float : minimum authorized scale of image
+        crotate = 0.00f ;//Float : rotate of image
+        crotate_enable = true;//Float : Boolean : enable rotation of image
+        crotate_original = 0.00f ;//Float : original rotation of image
+        crotate_max = 0.00f ;//Float : maximum authorized rotate of image
+        crotate_min = 0.00f ;//Float : minimum authorized rotate of image
+        cfilter_enable = true;//Boolean : enable filter for this image
+        cfilter = 1 ;//Float : Integer : enum filter for this image
+    }
+
+    //Image Model D
+    public void getImageD() {
+        curl = "Image".getBytes() ;//byte[] : image (delete when object is delete)
+        doffset_x = 0.00f ;//Float : offset X of image
+        doffset_x_enable = true;//Boolean : enable offset X of image
+        doffset_x_original = 0.00f ;//Float : original offset X of image
+        doffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
+        doffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
+        doffset_y = 0.00f ;//Float : offset Y of image
+        doffset_y_enable = true;//Boolean : enable offset X of image
+        doffset_y_original = 0.00f ;//Float : original offset Y of image
+        doffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
+        doffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
+        dscale = 0.00f;//Float : scale of image
+        dscale_enable = true;//Float : Boolean : enable scale of image
+        dscale_original = 0.00f ;//Float : original scale of image
+        dscale_max = 0.00f ;//Float : maximum authorized scale of image
+        dscale_min = 0.00f ;//Float : minimum authorized scale of image
+        drotate = 0.00f ;//Float : rotate of image
+        drotate_enable = true;//Float : Boolean : enable rotation of image
+        drotate_original = 0.00f ;//Float : original rotation of image
+        drotate_max = 0.00f ;//Float : maximum authorized rotate of image
+        drotate_min = 0.00f ;//Float : minimum authorized rotate of image
+        dfilter_enable = true;//Boolean : enable filter for this image
+        dfilter = 1 ;//Float : Integer : enum filter for this image
+    }
+
+    /*Nuii*/
+    //Set point of Image Template
+    public void setImageTemplate(String imageTemplate) {
+        template = mDatabaseClass.getImageTemplate(imageTemplate).getTemplate();
+        image_a = mDatabaseClass.getImageTemplate(imageTemplate).getImage_a();
+        image_b = mDatabaseClass.getImageTemplate(imageTemplate).getImage_b();
+        image_c = mDatabaseClass.getImageTemplate(imageTemplate).getImage_c();
+        image_d = mDatabaseClass.getImageTemplate(imageTemplate).getImage_d();
+        marge_one_stroke = mDatabaseClass.getImageTemplate(imageTemplate).getMarge_one_stroke();
+        marge_one_color = mDatabaseClass.getImageTemplate(imageTemplate).getMarge_one_color();
+        marge_two_stroke = mDatabaseClass.getImageTemplate(imageTemplate).getMarge_two_stroke();
+        marge_two_color = mDatabaseClass.getImageTemplate(imageTemplate).getMarge_two_color();
+        top_value = mDatabaseClass.getImageTemplate(imageTemplate).getTop_value();
+        bottom_value = mDatabaseClass.getImageTemplate(imageTemplate).getBottom_value();
+        right_value = mDatabaseClass.getImageTemplate(imageTemplate).getRight_value();
+        left_value = mDatabaseClass.getImageTemplate(imageTemplate).getLeft_value();
+        center_x = mDatabaseClass.getImageTemplate(imageTemplate).getCenter_x();
+        center_y = mDatabaseClass.getImageTemplate(imageTemplate).getCenter_y();
+    }
+
+    /*Nuii*/
+    //Set point of Image Model A
+    public void setImageModelA(String ImageID) {
+        aurl=mDatabaseClass.getImage(ImageID).getUrl();
+        aoffset_x = mDatabaseClass.getImage(ImageID).getX();
+        aoffset_x_enable = mDatabaseClass.getImage(ImageID).getX_enable();
+        aoffset_x_original = mDatabaseClass.getImage(ImageID).getX_original();
+        aoffset_x_max = mDatabaseClass.getImage(ImageID).getX_max();
+        aoffset_x_min = mDatabaseClass.getImage(ImageID).getX_min();
+        aoffset_y = mDatabaseClass.getImage(ImageID).getY();
+        aoffset_y_enable = mDatabaseClass.getImage(ImageID).getY_enable();
+        aoffset_y_original = mDatabaseClass.getImage(ImageID).getY_original();
+        aoffset_y_max = mDatabaseClass.getImage(ImageID).getY_max();
+        aoffset_y_min =  mDatabaseClass.getImage(ImageID).getY_min();
+        ascale = mDatabaseClass.getImage(ImageID).getScale();
+        ascale_enable = mDatabaseClass.getImage(ImageID).getScale_enable();
+        ascale_original = mDatabaseClass.getImage(ImageID).getScale_original();
+        ascale_max = mDatabaseClass.getImage(ImageID).getScale_max();
+        ascale_min = mDatabaseClass.getImage(ImageID).getScale_min();
+        arotate = mDatabaseClass.getImage(ImageID).getRotate();
+        arotate_enable = mDatabaseClass.getImage(ImageID).getRotate_enable();
+        arotate_original = mDatabaseClass.getImage(ImageID).getRotate_original();
+        arotate_max = mDatabaseClass.getImage(ImageID).getRotate_max();
+        arotate_min = mDatabaseClass.getImage(ImageID).getRotate_min();
+        afilter_enable = mDatabaseClass.getImage(ImageID).getFilter_enable();
+        afilter = mDatabaseClass.getImage(ImageID).getFilter();
+    }
+
+    //Set point of Image Model B
+    public void setImageModelB(String ImageID) {
+        burl=mDatabaseClass.getImage(ImageID).getUrl();
+        boffset_x = mDatabaseClass.getImage(ImageID).getX();
+        boffset_x_enable = mDatabaseClass.getImage(ImageID).getX_enable();
+        boffset_x_original = mDatabaseClass.getImage(ImageID).getX_original();
+        boffset_x_max = mDatabaseClass.getImage(ImageID).getX_max();
+        boffset_x_min = mDatabaseClass.getImage(ImageID).getX_min();
+        boffset_y = mDatabaseClass.getImage(ImageID).getY();
+        boffset_y_enable = mDatabaseClass.getImage(ImageID).getY_enable();
+        boffset_y_original = mDatabaseClass.getImage(ImageID).getY_original();
+        boffset_y_max = mDatabaseClass.getImage(ImageID).getY_max();
+        boffset_y_min =  mDatabaseClass.getImage(ImageID).getY_min();
+        bscale = mDatabaseClass.getImage(ImageID).getScale();
+        bscale_enable = mDatabaseClass.getImage(ImageID).getScale_enable();
+        bscale_original = mDatabaseClass.getImage(ImageID).getScale_original();
+        bscale_max = mDatabaseClass.getImage(ImageID).getScale_max();
+        bscale_min = mDatabaseClass.getImage(ImageID).getScale_min();
+        brotate = mDatabaseClass.getImage(ImageID).getRotate();
+        brotate_enable = mDatabaseClass.getImage(ImageID).getRotate_enable();
+        brotate_original = mDatabaseClass.getImage(ImageID).getRotate_original();
+        brotate_max = mDatabaseClass.getImage(ImageID).getRotate_max();
+        brotate_min = mDatabaseClass.getImage(ImageID).getRotate_min();
+        bfilter_enable = mDatabaseClass.getImage(ImageID).getFilter_enable();
+        bfilter = mDatabaseClass.getImage(ImageID).getFilter();
+    }
+
+    //Set point of Image Model C
+    public void setImageModelC(String ImageID) {
+        curl=mDatabaseClass.getImage(ImageID).getUrl();
+        coffset_x = mDatabaseClass.getImage(ImageID).getX();
+        coffset_x_enable = mDatabaseClass.getImage(ImageID).getX_enable();
+        coffset_x_original = mDatabaseClass.getImage(ImageID).getX_original();
+        coffset_x_max = mDatabaseClass.getImage(ImageID).getX_max();
+        coffset_x_min = mDatabaseClass.getImage(ImageID).getX_min();
+        coffset_y = mDatabaseClass.getImage(ImageID).getY();
+        coffset_y_enable = mDatabaseClass.getImage(ImageID).getY_enable();
+        coffset_y_original = mDatabaseClass.getImage(ImageID).getY_original();
+        coffset_y_max = mDatabaseClass.getImage(ImageID).getY_max();
+        coffset_y_min =  mDatabaseClass.getImage(ImageID).getY_min();
+        cscale = mDatabaseClass.getImage(ImageID).getScale();
+        cscale_enable = mDatabaseClass.getImage(ImageID).getScale_enable();
+        cscale_original = mDatabaseClass.getImage(ImageID).getScale_original();
+        cscale_max = mDatabaseClass.getImage(ImageID).getScale_max();
+        cscale_min = mDatabaseClass.getImage(ImageID).getScale_min();
+        crotate = mDatabaseClass.getImage(ImageID).getRotate();
+        crotate_enable = mDatabaseClass.getImage(ImageID).getRotate_enable();
+        crotate_original = mDatabaseClass.getImage(ImageID).getRotate_original();
+        crotate_max = mDatabaseClass.getImage(ImageID).getRotate_max();
+        crotate_min = mDatabaseClass.getImage(ImageID).getRotate_min();
+        cfilter_enable = mDatabaseClass.getImage(ImageID).getFilter_enable();
+        cfilter = mDatabaseClass.getImage(ImageID).getFilter();
+    }
+
+    //Set point of Image Model D
+    public void setImageModelD(String ImageID) {
+        durl=mDatabaseClass.getImage(ImageID).getUrl();
+        doffset_x = mDatabaseClass.getImage(ImageID).getX();
+        doffset_x_enable = mDatabaseClass.getImage(ImageID).getX_enable();
+        doffset_x_original = mDatabaseClass.getImage(ImageID).getX_original();
+        doffset_x_max = mDatabaseClass.getImage(ImageID).getX_max();
+        doffset_x_min = mDatabaseClass.getImage(ImageID).getX_min();
+        doffset_y = mDatabaseClass.getImage(ImageID).getY();
+        doffset_y_enable = mDatabaseClass.getImage(ImageID).getY_enable();
+        doffset_y_original = mDatabaseClass.getImage(ImageID).getY_original();
+        doffset_y_max = mDatabaseClass.getImage(ImageID).getY_max();
+        doffset_y_min =  mDatabaseClass.getImage(ImageID).getY_min();
+        dscale = mDatabaseClass.getImage(ImageID).getScale();
+        dscale_enable = mDatabaseClass.getImage(ImageID).getScale_enable();
+        dscale_original = mDatabaseClass.getImage(ImageID).getScale_original();
+        dscale_max = mDatabaseClass.getImage(ImageID).getScale_max();
+        dscale_min = mDatabaseClass.getImage(ImageID).getScale_min();
+        drotate = mDatabaseClass.getImage(ImageID).getRotate();
+        drotate_enable = mDatabaseClass.getImage(ImageID).getRotate_enable();
+        drotate_original = mDatabaseClass.getImage(ImageID).getRotate_original();
+        drotate_max = mDatabaseClass.getImage(ImageID).getRotate_max();
+        drotate_min = mDatabaseClass.getImage(ImageID).getRotate_min();
+        dfilter_enable = mDatabaseClass.getImage(ImageID).getFilter_enable();
+        dfilter = mDatabaseClass.getImage(ImageID).getFilter();
+    }
+
+    //endregion : function
+
 }
