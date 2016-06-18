@@ -117,7 +117,7 @@ DrawCanvas mDraw;
         });
 
         mDatabaseClass = new databaseClass( contentView.getContext() );
-
+        //KITTI
         mImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
