@@ -13,7 +13,7 @@ import android.widget.ImageView;
  */
 public class StickerImageView extends StickerView{
 
-    private String owner_id;
+    public String owner_id;
     private ImageView iv_main;
 
     public StickerImageView(Context context) {
