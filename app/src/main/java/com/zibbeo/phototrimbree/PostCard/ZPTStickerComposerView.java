@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,6 +72,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
 
         init();
         getSticker();
+        onLoad();
 
         /*Nuii*/
         Bundle bundle = getIntent().getExtras();
@@ -218,6 +220,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         label3 = (TextView) findViewById(R.id.label3);
         label4 = (TextView) findViewById(R.id.label4);
         label5 = (TextView) findViewById(R.id.label5);
+
     }
 
     private void getSticker() {
@@ -247,16 +250,22 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             ib_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (stickerCount < 4) {
+                    if (stickerItems.size() < 4) {
                         final StickerImageView iv_sticker = new StickerImageView(ZPTStickerComposerView.this);
                         iv_sticker.setImageDrawable(Stickers[v.getId()]);
                         iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if ((stickerCount - 1) < 0)
+                                /*if ((stickerItems.size() - 1) < 0)
                                     stickerCount = 0;
                                 else
-                                    stickerCount--;
+                                    stickerCount--;*/
+                                for(stickerListItem SelectItem : stickerItems){
+                                    if (stickerListItem.stickerIndex.equals (iv_sticker.owner_id)){
+                                        stickerItems.remove(SelectItem);
+                                        break;
+                                    }
+                                }
                                 canvas.removeView(iv_sticker);
                             }
                         });
@@ -266,23 +275,20 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                         stickerCount++;
                         /*iv_sticker.setControlItemsHidden(true);*/
 
-                        /*iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                             public void onFocusChange(View view, boolean hasFocus) {
-                                if (hasFocus)
-                                    iv_sticker.setControlItemsHidden(!hasFocus);
-                                else
-                                    iv_sticker.stn
+                                iv_sticker.setControlItemsHidden(!hasFocus);
                             }
-                        });*/
+                        });
 
                         iv_sticker.setOnTouchListener(new View.OnTouchListener() {
                             @Override
                             public boolean onTouch(View view, MotionEvent event) {
-                                iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                /*iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                     public void onFocusChange(View view, boolean hasFocus) {
-                                        iv_sticker.setControlItemsHidden(!hasFocus);
+                                        iv_sticker.setControlItemsHidden(hasFocus);
                                     }
-                                });
+                                });*/
 
                                 if (view.getTag().equals("DraggableViewGroup")) {
                                     switch (event.getAction()) {
@@ -415,18 +421,17 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     private void onLoad(){
 
         final StickerImageView iv_sticker1 = new StickerImageView(ZPTStickerComposerView.this);
-        iv_sticker1.setImageDrawable(getResources().getDrawable(R.drawable.photos));
+        iv_sticker1.setImageDrawable(getResources().getDrawable(R.drawable.like));
         final StickerImageView iv_sticker2 = new StickerImageView(ZPTStickerComposerView.this);
         iv_sticker2.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
-         /*sticker.add(iv_sticker1);
-        sticker.add(iv_sticker2);*/
-        FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams)iv_sticker1.getLayoutParams();
-
-        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(300, 300);
-        canvas.addView(iv_sticker1);
-        canvas.addView(iv_sticker2);
-
-
+        FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(100, 100);
+        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(100, 100);
+        params1.leftMargin = -35;
+        params1.topMargin = 108;
+        params2.leftMargin = 174;
+        params2.topMargin = 55;
+        canvas.addView(iv_sticker1, params1);
+        canvas.addView(iv_sticker2, params2);
     }
 
     public static class stickerListItem {
