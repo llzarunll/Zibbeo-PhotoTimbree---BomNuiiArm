@@ -73,7 +73,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
 
         init();
         getSticker();
-        onLoad();
 
         /*Nuii*/
         Bundle bundle = getIntent().getExtras();
