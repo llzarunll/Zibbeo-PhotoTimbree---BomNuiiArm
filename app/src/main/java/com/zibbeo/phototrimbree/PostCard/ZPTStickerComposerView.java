@@ -63,14 +63,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         contentView = inflater.inflate(R.layout.zpt_sticker_composer_view, null, false);
         mDrawerLayout.addView(contentView, 0);
 
-        /*Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
 
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        image.setImageBitmap(bmp);*/
-
+        image.setImageBitmap(bmp);
         init();
         getSticker();
 
@@ -114,7 +113,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Convert Bitmap to Byte Array*/
+/*                *//*Convert Bitmap to Byte Array*//*
                 FrameLayout savedImage = (FrameLayout) findViewById(R.id.canvasView);
                 savedImage.setDrawingCacheEnabled(true);
                 savedImage.buildDrawingCache();
@@ -122,7 +121,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
-                savedImage.destroyDrawingCache();
+                savedImage.destroyDrawingCache();*/
 
                 /*Nuii*/
                 //region Insert Sticlker image
@@ -236,13 +235,22 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                         getResources().getDrawable(R.drawable.like),
                         getResources().getDrawable(R.drawable.noimage)
                 };
+        // references to your images
+/*        final Integer[] mThumbIds = {
+                R.drawable.cloud, R.drawable.idea,
+                R.drawable.star, R.drawable.camera,
+                R.drawable.photos, R.drawable.alarm,
+                R.drawable.hourglass, R.drawable.like,
+                R.drawable.noimage
+        };*/
         /*Add Stickers to Sticker Bar*/
         for (int i = 0; i < Stickers.length; i++) {
-            ImageView ib_view = new ImageView(this);
+            final ImageView ib_view = new ImageView(this);
             ib_view.setId(i);
             ib_view.setPadding(5, 10, 5, 10);
 
             ib_view.setImageDrawable(Stickers[i]);
+            /*ib_view.setImageResource(mThumbIds[i]);*/
             ib_view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(180, 180);
             ib_view.setLayoutParams(vp);
@@ -252,6 +260,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                     if (stickerItems.size() < 4) {
                         final StickerImageView iv_sticker = new StickerImageView(ZPTStickerComposerView.this);
                         iv_sticker.setImageDrawable(Stickers[v.getId()]);
+                       /* iv_sticker.setImageResource(v.getId());*/
                         iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -261,7 +270,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                         });
                         canvas.addView(iv_sticker);
                         iv_sticker.owner_id = String.valueOf(stickerCount);
-/*                        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), iv_sticker);*/
+                        /*Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), iv_sticker.getDrawingCache());*/
                         stickerItems.add(new stickerListItem(iv_sticker.owner_id, -1, -1, -1, -1, -1, -1));
                         stickerCount++;
                         /*iv_sticker.setControlItemsHidden(true);*/
