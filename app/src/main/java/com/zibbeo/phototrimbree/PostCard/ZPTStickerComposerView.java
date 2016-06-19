@@ -43,10 +43,10 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     Button nextButton, previousButton;
     FrameLayout canvas;
     LinearLayout StickerBar;
-    TextView label;
     int stickerCount = 0;
     TextView label1, label2, label3, label4, label5;
     ArrayList<stickerListItem> stickerItems = new ArrayList<stickerListItem>();
+    String Name;
 
     /*Nuii*/
     databaseClass mDatabaseClass;
@@ -255,16 +255,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                         iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                /*if ((stickerItems.size() - 1) < 0)
-                                    stickerCount = 0;
-                                else
-                                    stickerCount--;*/
-                                for(stickerListItem SelectItem : stickerItems){
-                                    if (stickerListItem.stickerIndex.equals (iv_sticker.owner_id)){
-                                        stickerItems.remove(SelectItem);
-                                        break;
-                                    }
-                                }
+                                stickerItems.remove(stickerItems.get(Integer.valueOf(Name)-1));
                                 canvas.removeView(iv_sticker);
                             }
                         });
@@ -280,6 +271,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                 iv_sticker.setControlItemsHidden(!hasFocus);
                             }
                         });
+
 
                         iv_sticker.setOnTouchListener(new View.OnTouchListener() {
                             @Override
@@ -401,11 +393,12 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                             break;
                                     }
                                 }
+                                Name = iv_sticker.owner_id;
                                 label1.setText(Float.toString(iv_sticker.getX()));
                                 label2.setText(Float.toString(iv_sticker.getY()));
                                 label3.setText(Double.toString(iv_sticker.getScaleX()));
                                 label4.setText(Double.toString(iv_sticker.getScaleY()));
-                                label5.setText("Sticker Name : " + iv_sticker.owner_id);
+                                label5.setText("Sticker Name : " + stickerItems.size());
                                 return true;
                             }
                         });
@@ -427,16 +420,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                                /*if ((stickerItems.size() - 1) < 0)
-                                    stickerCount = 0;
-                                else
-                                    stickerCount--;*/
-                for(stickerListItem SelectItem : stickerItems){
-                    if (stickerListItem.stickerIndex.equals (iv_sticker.owner_id)){
-                        stickerItems.remove(SelectItem);
-                        break;
-                    }
-                }
+                stickerItems.remove(stickerItems.get(Integer.valueOf(Name)-1));
                 canvas.removeView(iv_sticker);
             }
         });
