@@ -20,7 +20,8 @@ public class RotateZoomImageView extends ImageView {
     private ScaleGestureDetector mScaleDetector;
     public Matrix mImageMatrix;
     /* Last Rotation Angle */
-    private int mLastAngle = 0;
+    public int mLastAngle = 0;
+    public float mscaleFactor = 0;
     /* Pivot Point for Transforms */
     private int mPivotX, mPivotY;
 
@@ -86,6 +87,7 @@ public class RotateZoomImageView extends ImageView {
             // ScaleGestureDetector calculates a scale factor based on whether
             // the fingers are moving apart or together
             float scaleFactor = detector.getScaleFactor();
+            mscaleFactor = detector.getScaleFactor();
             //Pass that factor to a scale for the image
             mImageMatrix.postScale(scaleFactor, scaleFactor, mPivotX, mPivotY);
             setImageMatrix(mImageMatrix);
@@ -153,7 +155,6 @@ public class RotateZoomImageView extends ImageView {
             return true;
         }
 
-        //KItti
         switch (event.getPointerCount()) {
             case 3:
                 // With three fingers down, zoom the image
