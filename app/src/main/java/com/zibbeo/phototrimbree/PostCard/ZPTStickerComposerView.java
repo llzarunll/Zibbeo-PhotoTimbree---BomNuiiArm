@@ -57,6 +57,29 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     float sticker1_x,sticker1_y,sticker2_x,sticker2_y,sticker3_x,sticker3_y,sticker4_x,sticker4_y;
     String getStID1,getStID2,getStID3,getStID4;
 
+    public static class stickerListItem {
+        public static String stickerIndex;
+        public Bitmap StickerImage;
+        public float rotateX;
+        public float rotateY;
+        public float scaleX;
+        public float scaleY;
+        public float moveX;
+        public float moveY;
+
+        public stickerListItem(String stickerIndex, Bitmap StickerImage, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
+            this.stickerIndex = stickerIndex;
+            this.StickerImage = StickerImage;
+            this.rotateX = rotateX;
+            this.rotateY = rotateY;
+            this.scaleX = scaleX;
+            this.scaleY = scaleY;
+            this.moveX = moveX;
+            this.moveY = moveY;
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -438,28 +461,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         canvas.addView(iv_sticker, params1);
     }
 
-    public static class stickerListItem {
-        public static String stickerIndex;
-        public Bitmap StickerImage;
-        public float rotateX;
-        public float rotateY;
-        public float scaleX;
-        public float scaleY;
-        public float moveX;
-        public float moveY;
-
-        public stickerListItem(String stickerIndex, Bitmap StickerImage, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
-            this.stickerIndex = stickerIndex;
-            this.StickerImage = StickerImage;
-            this.rotateX = rotateX;
-            this.rotateY = rotateY;
-            this.scaleX = scaleX;
-            this.scaleY = scaleY;
-            this.moveX = moveX;
-            this.moveY = moveY;
-        }
-    }
-
     //region Get Sticker
     /*Nuii*/
     //Get Sticker 1
@@ -498,30 +499,36 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         loadSticker(sticker4, sticker4_x, sticker4_y);
     }
 
-  //Set Sticker 1
+    private byte[] BitmapToByte(Bitmap bmp)    {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress( Bitmap.CompressFormat.PNG, 100, stream );
+        return stream.toByteArray();
+    }
+
+    //Set Sticker 1
     public void setSticker1() {
-        sticker1 = "sticker".getBytes();//byte[] : sticker
-        sticker1_x = 0.00f ;//Float : x
-        sticker1_y = 0.00f ;//Float : y
+        sticker1 = BitmapToByte(stickerItems.get(1).StickerImage);//byte[] : sticker
+        sticker1_x = stickerItems.get(1).moveX; //Float : x
+        sticker1_y = stickerItems.get(1).moveY; //Float : y
     }
 
     //Set Sticker 2
     public void setSticker2() {
-        sticker2 = "sticker".getBytes();//byte[] : sticker
-        sticker2_x = 0.00f ;//Float : x
-        sticker2_y = 0.00f ;//Float : y
+        sticker2 = BitmapToByte(stickerItems.get(2).StickerImage);//byte[] : sticker
+        sticker2_x = stickerItems.get(2).moveX;//Float : x
+        sticker2_y = stickerItems.get(2).moveY;//Float : y
     }
 
     public void setSticker3() {
-        sticker3 = "sticker".getBytes();//byte[] : sticker
-        sticker3_x = 0.00f ;//Float : x
-        sticker3_y = 0.00f ;//Float : y
+        sticker3 = BitmapToByte(stickerItems.get(3).StickerImage);//byte[] : sticker
+        sticker3_x = stickerItems.get(3).moveX;//Float : x
+        sticker3_y = stickerItems.get(3).moveY;//Float : y
     }
 
     public void setSticker4() {
-        sticker4 = "sticker".getBytes();//byte[] : sticker
-        sticker4_x = 0.00f ;//Float : x
-        sticker4_y = 0.00f ;//Float : y
+        sticker4 = BitmapToByte(stickerItems.get(4).StickerImage);//byte[] : sticker
+        sticker4_x = stickerItems.get(4).moveX;//Float : x
+        sticker4_y = stickerItems.get(4).moveY;//Float : y
     }
     //endregion
 
