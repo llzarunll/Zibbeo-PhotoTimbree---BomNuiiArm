@@ -47,6 +47,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     TextView label1, label2, label3, label4, label5;
     ArrayList<stickerListItem> stickerItems = new ArrayList<stickerListItem>();
     String Name;
+    ImageView selectStickerImage = new ImageView(this);
 
     /*Nuii*/
     databaseClass mDatabaseClass;
@@ -235,14 +236,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                         getResources().getDrawable(R.drawable.like),
                         getResources().getDrawable(R.drawable.noimage)
                 };
-        // references to your images
-/*        final Integer[] mThumbIds = {
-                R.drawable.cloud, R.drawable.idea,
-                R.drawable.star, R.drawable.camera,
-                R.drawable.photos, R.drawable.alarm,
-                R.drawable.hourglass, R.drawable.like,
-                R.drawable.noimage
-        };*/
         /*Add Stickers to Sticker Bar*/
         for (int i = 0; i < Stickers.length; i++) {
             final ImageView ib_view = new ImageView(this);
@@ -250,7 +243,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             ib_view.setPadding(5, 10, 5, 10);
 
             ib_view.setImageDrawable(Stickers[i]);
-            /*ib_view.setImageResource(mThumbIds[i]);*/
             ib_view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(180, 180);
             ib_view.setLayoutParams(vp);
@@ -260,7 +252,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                     if (stickerItems.size() < 4) {
                         final StickerImageView iv_sticker = new StickerImageView(ZPTStickerComposerView.this);
                         iv_sticker.setImageDrawable(Stickers[v.getId()]);
-                       /* iv_sticker.setImageResource(v.getId());*/
                         iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -270,8 +261,15 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                         });
                         canvas.addView(iv_sticker);
                         iv_sticker.owner_id = String.valueOf(stickerCount);
-                        /*Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), iv_sticker.getDrawingCache());*/
-                        stickerItems.add(new stickerListItem(iv_sticker.owner_id, -1, -1, -1, -1, -1, -1));
+
+                        selectStickerImage.setImageDrawable(Stickers[v.getId()]);
+
+                        Bitmap StickerImage = selectStickerImage.getDrawingCache();
+                        /*iv_sticker.setDrawingCacheEnabled(true);
+                        iv_sticker.buildDrawingCache();
+                        Bitmap StickerImage = iv_sticker.getDrawingCache();*/
+
+                        stickerItems.add(new stickerListItem(iv_sticker.owner_id, StickerImage, -1, -1, -1, -1, -1, -1));
                         stickerCount++;
                         /*iv_sticker.setControlItemsHidden(true);*/
 
@@ -436,12 +434,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(100, 100);
         params1.leftMargin = Math.round(x);
         params1.topMargin = Math.round(y);
-        stickerItems.add(new stickerListItem(String.valueOf(stickerItems.size()), Math.round(x), Math.round(y), -1, -1, -1, -1));
+        stickerItems.add(new stickerListItem(String.valueOf(stickerItems.size()), bmp, -1, -1, -1, -1, Math.round(x), Math.round(y)));
         canvas.addView(iv_sticker, params1);
     }
 
     public static class stickerListItem {
         public static String stickerIndex;
+        public Bitmap StickerImage;
         public float rotateX;
         public float rotateY;
         public float scaleX;
@@ -449,8 +448,9 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         public float moveX;
         public float moveY;
 
-        public stickerListItem(String stickerIndex, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
+        public stickerListItem(String stickerIndex, Bitmap StickerImage, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
             this.stickerIndex = stickerIndex;
+            this.StickerImage = StickerImage;
             this.rotateX = rotateX;
             this.rotateY = rotateY;
             this.scaleX = scaleX;
