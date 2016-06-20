@@ -162,6 +162,18 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         if(mDraw.mMatrix[0] == null){
             mDraw.mMatrix[0] = new Matrix();
         }
+        if(mDraw.mMatrix[1] == null){
+            mDraw.mMatrix[1] = new Matrix();
+        }
+        if(mDraw.mMatrix[2] == null){
+            mDraw.mMatrix[2] = new Matrix();
+        }
+        if(mDraw.mMatrix[3] == null){
+            mDraw.mMatrix[3] = new Matrix();
+        }
+
+
+
 
         mTopPoint.x = (int)top_value;
         mBottomPoint.x = (int)top_value;
@@ -182,7 +194,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             mDraw.mMatrix[0].postRotate(arotate, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
             mDraw.mMatrix[0].postScale(ascale, ascale, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
         }
-        if(aurl != null) {
+        if(burl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(burl, 0, burl.length, opts);
             mDraw.myPic[1] = mBitmap;
             mDraw.mMatrix[1].setTranslate(boffset_x, boffset_y);
@@ -190,7 +202,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             mDraw.mMatrix[1].postScale(bscale, bscale, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
         }
 
-        if(aurl != null) {
+        if(curl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(curl, 0, curl.length, opts);
             mDraw.myPic[2] = mBitmap;
             mDraw.mMatrix[2].setTranslate(coffset_x, coffset_y);
@@ -198,7 +210,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             mDraw.mMatrix[2].postScale(cscale, cscale, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
         }
 
-        if(aurl != null) {
+        if(durl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(durl, 0, durl.length, opts);
             mDraw.myPic[3] = mBitmap;
             mDraw.mMatrix[3].setTranslate(doffset_x, doffset_y);
