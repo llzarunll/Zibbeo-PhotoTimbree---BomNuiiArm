@@ -199,13 +199,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
 
 
-        mLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                draw();
-                return false;
-            }
-        });
+//        mLayout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                draw();
+//                return false;
+//            }
+//        });
 
         mFrameLayout.setVisibility(View.VISIBLE);
 
@@ -254,6 +254,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         //endregion
 
         //KITTI
+        mDraw.setPoint();
+        draw();
         mImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -323,7 +325,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
         });
 
-        mDraw.setPoint();
+
     }
 
     //KITTI
@@ -482,15 +484,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 if(mScaleFactor[0] > 0) {
                     mM.postScale(scaleWidth, scaleHeight);
                 }
-                if(mPivotX != 0 && mPivotX != 0) {
-                    mM.postRotate(mRotate[0], mPivotX, mPivotY);
-                }
-                else {
-                    mM.postRotate(mRotate[0]);
-                }
+//                if(mPivotX != 0 && mPivotX != 0) {
+//                    mM.postRotate(mRotate[0], mPivotX, mPivotY);
+//                }
+//                else {
+//                    mM.postRotate(mRotate[0]);
+//                }
                 Bitmap bitmap;
                 bitmap = scaleDown(myPic[0],MaxWidtf[0],true);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mM ,false);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
 
                 int w = bitmap.getWidth();
                 Bitmap roundBitmap;
@@ -595,6 +597,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     }
 
                 }
+                //canvas.setMatrix(mMatrix[0]);
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
                 canvas.drawPath(mPath, mPaintInner);
 
@@ -615,7 +618,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     mM.postRotate(mRotate[1]);
                 }
                 bitmap = scaleDown(myPic[1],MaxWidtf[1],true);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mM ,false);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
                     Point ImgB[] = {
                             new Point(mRightPoint.x, mRightPoint.y),
@@ -696,7 +699,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     mM.postRotate(mRotate[2]);
                 }
                 bitmap = scaleDown(myPic[2],MaxWidtf[2],true);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mM ,false);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
                 if(sFarme == 3) {
                     Point ImgC[] = {
                             new Point(mBottomPoint.x, mBottomPoint.y),
@@ -773,7 +776,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     mM.postRotate(mRotate[3]);
                 }
                 bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mM ,false);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x, mCenterPoint.y),
                     new Point(mRightPoint.x, mRightPoint.y),
