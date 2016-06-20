@@ -457,7 +457,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mTopRightAreaRect = new Rect( mTopPoint.x, mTopPoint.y, mRightPoint.x, mRightPoint.y );
                 mBottomLeftAreaRect = new Rect( mLeftPoint.x, mLeftPoint.y, mBottomPoint.x, mBottomPoint.y );
                 mBottomRightAreaRect = new Rect( mCenterPoint.x, mCenterPoint.y, tMaxRight, tMaxBottom );
-
+                setPoint();
                 mFirstTimeCheck = false;
             }
 
@@ -471,39 +471,25 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     mPoint = (int) (mPaintInner.getStrokeWidth() / 2);
                 }
                 //mPaintInner.setStrokeWidth( mPaintInner.getStrokeWidth() + 2 );
-                int mPivotX, mPivotY;
-                Matrix mM = new Matrix();
 
-                // calculate the scale - in this case = 0.4f
-                float scaleWidth = ((float) tmpMaxRight) / myPic[0].getWidth();
-                float scaleHeight = ((float) tmpMaxBottom) / myPic[0].getHeight();
-                mPivotX = myPic[0].getWidth() / 2;
-                mPivotY = myPic[0].getHeight() / 2;
+                //Get Widtf
                 MaxWidtf[0] = getWidth();
-//              resize the bit map
-                if(mScaleFactor[0] > 0) {
-                    mM.postScale(scaleWidth, scaleHeight);
-                }
-//                if(mPivotX != 0 && mPivotX != 0) {
-//                    mM.postRotate(mRotate[0], mPivotX, mPivotY);
-//                }
-//                else {
-//                    mM.postRotate(mRotate[0]);
-//                }
+
                 Bitmap bitmap;
                 bitmap = scaleDown(myPic[0],MaxWidtf[0],true);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
 
                 int w = bitmap.getWidth();
                 Bitmap roundBitmap;
+                int mPointxy = 0;
                 if(sFarme == 3) {
                     Point ImgA[] = {
-                            new Point(mLeftPoint.x, mTopPoint.y),
-                            new Point(mTopPoint.x, mTopPoint.y),
-                            new Point(mCenterPoint.x, mCenterPoint.y),
-                            new Point(mBottomPoint.x, mBottomPoint.y),
-                            new Point(mLeftPoint.x, mBottomPoint.y),
-                            new Point(mLeftPoint.x, mLeftPoint.y)
+                            new Point(mLeftPoint.x+ mPointxy, mTopPoint.y+ mPointxy),
+                            new Point(mTopPoint.x+ mPointxy, mTopPoint.y+ mPointxy),
+                            new Point(mCenterPoint.x+ mPointxy, mCenterPoint.y+ mPointxy),
+                            new Point(mBottomPoint.x+ mPointxy, mBottomPoint.y+ mPointxy),
+                            new Point(mLeftPoint.x+ mPointxy, mBottomPoint.y+ mPointxy),
+                            new Point(mLeftPoint.x+ mPointxy, mLeftPoint.y+ mPointxy)
                     };
 
                     ImgA[0] = new Point(mLeftPoint.x + mPoint, mTopPoint.y + mPoint);
@@ -533,12 +519,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }else if(sFarme == 4)
                 {
                     Point ImgA[] = {
-                            new Point(mLeftPoint.x, mTopPoint.y),
-                            new Point(mTopPoint.x, mTopPoint.y),
-                            new Point(mRightPoint.x, mTopPoint.y),
-                            new Point(mRightPoint.x, mRightPoint.y),
-                            new Point(mCenterPoint.x, mCenterPoint.y),
-                            new Point(mLeftPoint.x, mLeftPoint.y)
+                            new Point(mLeftPoint.x+ mPointxy, mTopPoint.y+ mPointxy),
+                            new Point(mTopPoint.x+ mPointxy, mTopPoint.y+ mPointxy),
+                            new Point(mRightPoint.x+ mPointxy, mTopPoint.y+ mPointxy),
+                            new Point(mRightPoint.x+ mPointxy, mRightPoint.y+ mPointxy),
+                            new Point(mCenterPoint.x+ mPointxy, mCenterPoint.y+ mPointxy),
+                            new Point(mLeftPoint.x+ mPointxy, mLeftPoint.y+ mPointxy)
                     };
                     roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
                         ImgA[0] = new Point(mLeftPoint.x + mPoint, mTopPoint.y + mPoint);
@@ -565,11 +551,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     }
                 }
                 else {
+                    mPointxy = mCenterPoint.x /4;
                     Point ImgA[] = {
-                            new Point(mLeftPoint.x, mTopPoint.y),
-                            new Point(mTopPoint.x, mTopPoint.y),
-                            new Point(mCenterPoint.x, mCenterPoint.y),
-                            new Point(mLeftPoint.x, mLeftPoint.y)
+                            new Point(mLeftPoint.x + mPointxy, mTopPoint.y + mPointxy),
+                            new Point(mTopPoint.x + mPointxy , mTopPoint.y + mPointxy),
+                            new Point(mCenterPoint.x +mPointxy , mCenterPoint.y+ mPointxy),
+                            new Point(mLeftPoint.x+mPointxy , mLeftPoint.y+mPointxy)
                     };
                     roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
 
@@ -597,217 +584,215 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     }
 
                 }
-                //canvas.setMatrix(mMatrix[0]);
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
+                canvas.drawBitmap(roundBitmap, -mPointxy,-mPointxy,null);
                 canvas.drawPath(mPath, mPaintInner);
 
-                mM = new Matrix();
-                scaleWidth = ((float) tmpMaxRight) / myPic[1].getWidth();
-                scaleHeight = ((float) tmpMaxBottom) / myPic[1].getHeight();
-                mPivotX = myPic[1].getWidth() / 2;
-                mPivotY = myPic[1].getHeight() / 2;
-
-                MaxWidtf[1] = getWidth();
-                if(mScaleFactor[1] > 0) {
-                    mM.postScale(scaleWidth, scaleHeight);
-                }
-                if(mPivotX != 0 && mPivotX != 0) {
-                    mM.postRotate(mRotate[1], mPivotX, mPivotY);
-                }
-                else {
-                    mM.postRotate(mRotate[1]);
-                }
-                bitmap = scaleDown(myPic[1],MaxWidtf[1],true);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
-                if(sFarme == 4) {
-                    Point ImgB[] = {
-                            new Point(mRightPoint.x, mRightPoint.y),
-                            new Point(mRightPoint.x, mRightPoint.y),
-                            new Point(mRightPoint.x, mRightPoint.y),
-                            new Point(mRightPoint.x, mRightPoint.y)
-                    };
-                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgB);
-
-                    ImgB[0] = new Point(mRightPoint.x, mRightPoint.y);
-                    ImgB[1] = new Point(mRightPoint.x, mRightPoint.y);
-                    ImgB[2] = new Point(mRightPoint.x, mRightPoint.y);
-                    ImgB[3] = new Point(mRightPoint.x, mRightPoint.y);
-                    mPath = new Path();
-                    for(int i = 0; i <= ImgB.length ;i++)
-                    {
-                        if(i == 0)
-                        {
-                            mPath.moveTo(ImgB[i].x  ,ImgB[i].y);
-                        }
-                        else if(i == ImgB.length)
-                        {
-                            mPath.lineTo(ImgB[0].x,ImgB[0].y);
-                        }
-                        else
-                        {
-                            mPath.lineTo(ImgB[i].x,ImgB[i].y);
-                        }
-                    }
-                }else {
-                    Point ImgB[] = {
-                            new Point(mTopPoint.x, mTopPoint.y),
-                            new Point(mRightPoint.x, mTopPoint.y),
-                            new Point(mRightPoint.x, mRightPoint.y),
-                            new Point(mCenterPoint.x, mCenterPoint.y)
-                    };
-                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgB);
-
-                    ImgB[0] = new Point(mTopPoint.x + mPoint, mTopPoint.y + mPoint);
-                    ImgB[1] = new Point(mRightPoint.x - mPoint, mTopPoint.y + mPoint);
-                    ImgB[2] = new Point(mRightPoint.x - mPoint, mRightPoint.y - mPoint);
-                    ImgB[3] = new Point(mCenterPoint.x + mPoint, mCenterPoint.y - mPoint);
-
-                    mPath = new Path();
-                    for(int i = 0; i <= ImgB.length ;i++)
-                    {
-                        if(i == 0)
-                        {
-                            mPath.moveTo(ImgB[i].x  ,ImgB[i].y);
-                        }
-                        else if(i == ImgB.length)
-                        {
-                            mPath.lineTo(ImgB[0].x,ImgB[0].y);
-                        }
-                        else
-                        {
-                            mPath.lineTo(ImgB[i].x,ImgB[i].y);
-                        }
-                    }
-                }
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawPath(mPath,mPaintInner);
-
-                mM = new Matrix();
-                scaleWidth = ((float) tmpMaxRight) / myPic[1].getWidth();
-                scaleHeight = ((float) tmpMaxBottom) / myPic[1].getHeight();
-                mPivotX = myPic[2].getWidth() / 2;
-                mPivotY = myPic[2].getHeight() / 2;
-
-                MaxWidtf[2] = getWidth();
-                if(mScaleFactor[2] > 0) {
-                    mM.postScale(scaleWidth, scaleHeight);
-                }
-                if(mPivotX != 0 && mPivotX != 0) {
-                    mM.postRotate(mRotate[2], mPivotX, mPivotY);
-                }
-                else {
-                    mM.postRotate(mRotate[2]);
-                }
-                bitmap = scaleDown(myPic[2],MaxWidtf[2],true);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
-                if(sFarme == 3) {
-                    Point ImgC[] = {
-                            new Point(mBottomPoint.x, mBottomPoint.y),
-                            new Point(mBottomPoint.x, mBottomPoint.y),
-                            new Point(mBottomPoint.x, mBottomPoint.y),
-                            new Point(mBottomPoint.x, mBottomPoint.y)
-                    };
-                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgC);
-
-
-                    mPath = new Path();
-                    for(int i = 0; i <= ImgC.length ;i++)
-                    {
-                        if(i == 0)
-                        {
-                            mPath.moveTo(ImgC[i].x  ,ImgC[i].y);
-                        }
-                        else if(i == ImgC.length)
-                        {
-                            mPath.lineTo(ImgC[0].x,ImgC[0].y);
-                        }
-                        else
-                        {
-                            mPath.lineTo(ImgC[i].x,ImgC[i].y);
-                        }
-                    }
-                }else {
-                    Point ImgC[] = {
-                            new Point(mLeftPoint.x, mLeftPoint.y),
-                            new Point(mCenterPoint.x, mCenterPoint.y),
-                            new Point(mBottomPoint.x, mBottomPoint.y),
-                            new Point(mLeftPoint.x, mBottomPoint.y),
-                    };
-                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgC);
-
-                    ImgC[0] = new Point(mLeftPoint.x + mPoint, mLeftPoint.y + mPoint);
-                    ImgC[1] = new Point(mCenterPoint.x - mPoint, mCenterPoint.y + mPoint);
-                    ImgC[2] = new Point(mBottomPoint.x - mPoint, mBottomPoint.y - mPoint);
-                    ImgC[3] = new Point(mLeftPoint.x + mPoint, mBottomPoint.y - mPoint);
-                    mPath = new Path();
-                    for(int i = 0; i <= ImgC.length ;i++)
-                    {
-                        if(i == 0)
-                        {
-                            mPath.moveTo(ImgC[i].x  ,ImgC[i].y);
-                        }
-                        else if(i == ImgC.length)
-                        {
-                            mPath.lineTo(ImgC[0].x,ImgC[0].y);
-                        }
-                        else
-                        {
-                            mPath.lineTo(ImgC[i].x,ImgC[i].y);
-                        }
-                    }
-                }
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawPath(mPath,mPaintInner);
-
-                mM = new Matrix();
-                scaleWidth = ((float) tmpMaxRight) / myPic[1].getWidth();
-                scaleHeight = ((float) tmpMaxBottom) / myPic[1].getHeight();
-                mPivotX = myPic[3].getWidth() / 2;
-                mPivotY = myPic[3].getHeight() / 2;
-
-                MaxWidtf[3] = getWidth();
-                if(mScaleFactor[3] > 0) {
-                    mM.postScale(scaleWidth, scaleHeight);
-                }
-                if(mPivotX != 0 && mPivotX != 0) {
-                    mM.postRotate(mRotate[3], mPivotX, mPivotY);
-                }
-                else {
-                    mM.postRotate(mRotate[3]);
-                }
-                bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
-                Point ImgD[] = {
-                    new Point(mCenterPoint.x, mCenterPoint.y),
-                    new Point(mRightPoint.x, mRightPoint.y),
-                    new Point(mRightPoint.x, mBottomPoint.y),
-                    new Point(mBottomPoint.x, mBottomPoint.y)
-                };
-                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgD);
-
-                ImgD[0] = new Point(mCenterPoint.x + mPoint, mCenterPoint.y + mPoint);
-                ImgD[1] = new Point(mRightPoint.x - mPoint, mRightPoint.y + mPoint);
-                ImgD[2] = new Point(mRightPoint.x - mPoint, mBottomPoint.y - mPoint);
-                ImgD[3] = new Point(mBottomPoint.x + mPoint, mBottomPoint.y - mPoint);
-
-                mPath = new Path();
-                for(int i = 0; i <= ImgD.length ;i++)
-                {
-                    if(i == 0)
-                    {
-                        mPath.moveTo(ImgD[i].x  ,ImgD[i].y);
-                    }
-                    else if(i == ImgD.length)
-                    {
-                        mPath.lineTo(ImgD[0].x,ImgD[0].y);
-                    }
-                    else
-                    {
-                        mPath.lineTo(ImgD[i].x,ImgD[i].y);
-                    }
-                }
-                canvas.drawBitmap(roundBitmap, 0, 0, null);
-                canvas.drawPath(mPath,mPaintInner);
+//                scaleWidth = ((float) tmpMaxRight) / myPic[1].getWidth();
+//                scaleHeight = ((float) tmpMaxBottom) / myPic[1].getHeight();
+//                mPivotX = myPic[1].getWidth() / 2;
+//                mPivotY = myPic[1].getHeight() / 2;
+//
+//                MaxWidtf[1] = getWidth();
+//                if(mScaleFactor[1] > 0) {
+//                    mM.postScale(scaleWidth, scaleHeight);
+//                }
+//                if(mPivotX != 0 && mPivotX != 0) {
+//                    mM.postRotate(mRotate[1], mPivotX, mPivotY);
+//                }
+//                else {
+//                    mM.postRotate(mRotate[1]);
+//                }
+//                bitmap = scaleDown(myPic[1],MaxWidtf[1],true);
+//                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
+//                if(sFarme == 4) {
+//                    Point ImgB[] = {
+//                            new Point(mRightPoint.x, mRightPoint.y),
+//                            new Point(mRightPoint.x, mRightPoint.y),
+//                            new Point(mRightPoint.x, mRightPoint.y),
+//                            new Point(mRightPoint.x, mRightPoint.y)
+//                    };
+//                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgB);
+//
+//                    ImgB[0] = new Point(mRightPoint.x, mRightPoint.y);
+//                    ImgB[1] = new Point(mRightPoint.x, mRightPoint.y);
+//                    ImgB[2] = new Point(mRightPoint.x, mRightPoint.y);
+//                    ImgB[3] = new Point(mRightPoint.x, mRightPoint.y);
+//                    mPath = new Path();
+//                    for(int i = 0; i <= ImgB.length ;i++)
+//                    {
+//                        if(i == 0)
+//                        {
+//                            mPath.moveTo(ImgB[i].x  ,ImgB[i].y);
+//                        }
+//                        else if(i == ImgB.length)
+//                        {
+//                            mPath.lineTo(ImgB[0].x,ImgB[0].y);
+//                        }
+//                        else
+//                        {
+//                            mPath.lineTo(ImgB[i].x,ImgB[i].y);
+//                        }
+//                    }
+//                }else {
+//                    Point ImgB[] = {
+//                            new Point(mTopPoint.x, mTopPoint.y),
+//                            new Point(mRightPoint.x, mTopPoint.y),
+//                            new Point(mRightPoint.x, mRightPoint.y),
+//                            new Point(mCenterPoint.x, mCenterPoint.y)
+//                    };
+//                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgB);
+//
+//                    ImgB[0] = new Point(mTopPoint.x + mPoint, mTopPoint.y + mPoint);
+//                    ImgB[1] = new Point(mRightPoint.x - mPoint, mTopPoint.y + mPoint);
+//                    ImgB[2] = new Point(mRightPoint.x - mPoint, mRightPoint.y - mPoint);
+//                    ImgB[3] = new Point(mCenterPoint.x + mPoint, mCenterPoint.y - mPoint);
+//
+//                    mPath = new Path();
+//                    for(int i = 0; i <= ImgB.length ;i++)
+//                    {
+//                        if(i == 0)
+//                        {
+//                            mPath.moveTo(ImgB[i].x  ,ImgB[i].y);
+//                        }
+//                        else if(i == ImgB.length)
+//                        {
+//                            mPath.lineTo(ImgB[0].x,ImgB[0].y);
+//                        }
+//                        else
+//                        {
+//                            mPath.lineTo(ImgB[i].x,ImgB[i].y);
+//                        }
+//                    }
+//                }
+//                canvas.drawBitmap(roundBitmap, 0, 0, null);
+//                canvas.drawPath(mPath,mPaintInner);
+//
+//                mM = new Matrix();
+//                scaleWidth = ((float) tmpMaxRight) / myPic[1].getWidth();
+//                scaleHeight = ((float) tmpMaxBottom) / myPic[1].getHeight();
+//                mPivotX = myPic[2].getWidth() / 2;
+//                mPivotY = myPic[2].getHeight() / 2;
+//
+//                MaxWidtf[2] = getWidth();
+//                if(mScaleFactor[2] > 0) {
+//                    mM.postScale(scaleWidth, scaleHeight);
+//                }
+//                if(mPivotX != 0 && mPivotX != 0) {
+//                    mM.postRotate(mRotate[2], mPivotX, mPivotY);
+//                }
+//                else {
+//                    mM.postRotate(mRotate[2]);
+//                }
+//                bitmap = scaleDown(myPic[2],MaxWidtf[2],true);
+//                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
+//                if(sFarme == 3) {
+//                    Point ImgC[] = {
+//                            new Point(mBottomPoint.x, mBottomPoint.y),
+//                            new Point(mBottomPoint.x, mBottomPoint.y),
+//                            new Point(mBottomPoint.x, mBottomPoint.y),
+//                            new Point(mBottomPoint.x, mBottomPoint.y)
+//                    };
+//                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgC);
+//
+//
+//                    mPath = new Path();
+//                    for(int i = 0; i <= ImgC.length ;i++)
+//                    {
+//                        if(i == 0)
+//                        {
+//                            mPath.moveTo(ImgC[i].x  ,ImgC[i].y);
+//                        }
+//                        else if(i == ImgC.length)
+//                        {
+//                            mPath.lineTo(ImgC[0].x,ImgC[0].y);
+//                        }
+//                        else
+//                        {
+//                            mPath.lineTo(ImgC[i].x,ImgC[i].y);
+//                        }
+//                    }
+//                }else {
+//                    Point ImgC[] = {
+//                            new Point(mLeftPoint.x, mLeftPoint.y),
+//                            new Point(mCenterPoint.x, mCenterPoint.y),
+//                            new Point(mBottomPoint.x, mBottomPoint.y),
+//                            new Point(mLeftPoint.x, mBottomPoint.y),
+//                    };
+//                    roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgC);
+//
+//                    ImgC[0] = new Point(mLeftPoint.x + mPoint, mLeftPoint.y + mPoint);
+//                    ImgC[1] = new Point(mCenterPoint.x - mPoint, mCenterPoint.y + mPoint);
+//                    ImgC[2] = new Point(mBottomPoint.x - mPoint, mBottomPoint.y - mPoint);
+//                    ImgC[3] = new Point(mLeftPoint.x + mPoint, mBottomPoint.y - mPoint);
+//                    mPath = new Path();
+//                    for(int i = 0; i <= ImgC.length ;i++)
+//                    {
+//                        if(i == 0)
+//                        {
+//                            mPath.moveTo(ImgC[i].x  ,ImgC[i].y);
+//                        }
+//                        else if(i == ImgC.length)
+//                        {
+//                            mPath.lineTo(ImgC[0].x,ImgC[0].y);
+//                        }
+//                        else
+//                        {
+//                            mPath.lineTo(ImgC[i].x,ImgC[i].y);
+//                        }
+//                    }
+//                }
+//                canvas.drawBitmap(roundBitmap, 0, 0, null);
+//                canvas.drawPath(mPath,mPaintInner);
+//
+//                mM = new Matrix();
+//                scaleWidth = ((float) tmpMaxRight) / myPic[1].getWidth();
+//                scaleHeight = ((float) tmpMaxBottom) / myPic[1].getHeight();
+//                mPivotX = myPic[3].getWidth() / 2;
+//                mPivotY = myPic[3].getHeight() / 2;
+//
+//                MaxWidtf[3] = getWidth();
+//                if(mScaleFactor[3] > 0) {
+//                    mM.postScale(scaleWidth, scaleHeight);
+//                }
+//                if(mPivotX != 0 && mPivotX != 0) {
+//                    mM.postRotate(mRotate[3], mPivotX, mPivotY);
+//                }
+//                else {
+//                    mM.postRotate(mRotate[3]);
+//                }
+//                bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
+//                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
+//                Point ImgD[] = {
+//                    new Point(mCenterPoint.x, mCenterPoint.y),
+//                    new Point(mRightPoint.x, mRightPoint.y),
+//                    new Point(mRightPoint.x, mBottomPoint.y),
+//                    new Point(mBottomPoint.x, mBottomPoint.y)
+//                };
+//                roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgD);
+//
+//                ImgD[0] = new Point(mCenterPoint.x + mPoint, mCenterPoint.y + mPoint);
+//                ImgD[1] = new Point(mRightPoint.x - mPoint, mRightPoint.y + mPoint);
+//                ImgD[2] = new Point(mRightPoint.x - mPoint, mBottomPoint.y - mPoint);
+//                ImgD[3] = new Point(mBottomPoint.x + mPoint, mBottomPoint.y - mPoint);
+//
+//                mPath = new Path();
+//                for(int i = 0; i <= ImgD.length ;i++)
+//                {
+//                    if(i == 0)
+//                    {
+//                        mPath.moveTo(ImgD[i].x  ,ImgD[i].y);
+//                    }
+//                    else if(i == ImgD.length)
+//                    {
+//                        mPath.lineTo(ImgD[0].x,ImgD[0].y);
+//                    }
+//                    else
+//                    {
+//                        mPath.lineTo(ImgD[i].x,ImgD[i].y);
+//                    }
+//                }
+//                canvas.drawBitmap(roundBitmap, 0, 0, null);
+//                canvas.drawPath(mPath,mPaintInner);
 
                 if (bitmap != null && !bitmap.isRecycled()) {
                     bitmap.recycle();
