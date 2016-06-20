@@ -21,6 +21,7 @@ public class RotateZoomImageView extends ImageView {
     public Matrix mImageMatrix;
     /* Last Rotation Angle */
     public int mLastAngle = 0;
+    public float mRotate = 0.0f;
     public float mscaleFactor = 0;
     /* Pivot Point for Transforms */
     private int mPivotX, mPivotY;
@@ -136,6 +137,7 @@ public class RotateZoomImageView extends ImageView {
                 } else {
                     //Normal rotation, rotate the difference
                     mImageMatrix.postRotate(degrees - mLastAngle, mPivotX, mPivotY);
+                    mRotate = degrees;
                 }
                 //Post the rotation to the image
                 setImageMatrix(mImageMatrix);
