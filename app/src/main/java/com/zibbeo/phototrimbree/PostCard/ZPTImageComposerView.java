@@ -805,6 +805,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
                 canvas.drawBitmap(roundBitmap, 0, 0, null);
                 canvas.drawPath(mPath,mPaintInner);
+
+                if (bitmap != null && !bitmap.isRecycled()) {
+                    bitmap.recycle();
+                }
+
+                if (roundBitmap != null && !roundBitmap.isRecycled()) {
+                    roundBitmap.recycle();
+                }
+
             }
 
             canvas.drawRect( tMaxLeft, tMaxTop, tMaxRight, tMaxBottom, mPaint );
@@ -882,6 +891,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     canvas.drawCircle( mBottomPoint.x, mBottomPoint.y, mRadius, mPaint2 );
                 }
             }
+
+
 
 
         }
@@ -1024,8 +1035,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
 
+
+
             Paint paint = new Paint();
             final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
+
 
             Path path = new Path();
             for(int i = 0; i <= point_draw.length ;i++)
@@ -1048,6 +1062,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             canvas.drawPath(path, paint);
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(finalBitmap, rect, rect, paint);
+
+            if (finalBitmap != null && !finalBitmap.isRecycled()) {
+                finalBitmap.recycle();
+            }
+
+
             return output;
         }
 
@@ -1357,14 +1377,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             public void onClick(DialogInterface dialog, int item) {
                 boolean result = Utility.checkPermission( ZPTImageComposerView.this );
 
-                if (items[item].equals( "Take Photo" )) {
+                /*if (items[item].equals( "Take Photo" )) {
                     userChoosenTask = "Take Photo";
                     if (result)
                         cameraIntent();
-                /*} else if (items[item].equals( "Choose from Library" )) {
+                } else */
+                if (items[item].equals( "Choose from Library" )) {
                     userChoosenTask = "Choose from Library";
                     if (result)
-                        galleryIntent();*/
+                        galleryIntent();
 
                 } else if (items[item].equals( "Cancel" )) {
                     dialog.dismiss();
