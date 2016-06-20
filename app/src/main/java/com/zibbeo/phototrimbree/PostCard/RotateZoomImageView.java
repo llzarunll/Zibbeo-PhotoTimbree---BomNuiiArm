@@ -54,6 +54,9 @@ public class RotateZoomImageView extends ImageView {
     }
 
     public void setMatrix(Matrix matrix){
+        if(matrix == null){
+            matrix = new Matrix();
+        }
         mImageMatrix = matrix;
         setImageMatrix(mImageMatrix);
     }

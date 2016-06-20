@@ -90,8 +90,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     Point mCenterPoint,mLeftPoint,mRightPoint,mTopPoint,mBottomPoint;
     float mStroke = 5f;
     float mStrokeInner = 6f;
-    float mRotate[] = new float[4];
-    float mScaleFactor[] = new float[4];
+    float vMatrix[] = new float[4];
     int mRadius = 30;
     boolean sCenter = true;
     boolean sTop = true;
@@ -161,6 +160,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mDraw = new DrawCanvas(this);
 
         init();
+        if(mDraw.mMatrix[0] == null){
+            mDraw.mMatrix[0] = new Matrix();
+        }
 
         mTopPoint.x = (int)top_value;
         mBottomPoint.x = (int)top_value;
@@ -174,27 +176,35 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         opts.inJustDecodeBounds = true;
 
 
-        mRotate[0] = arotate;
-        mRotate[1] = brotate;
-        mRotate[2] = crotate;
-        mRotate[3] = drotate;
         if(aurl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(aurl, 0, aurl.length, opts);
             mDraw.myPic[0] = mBitmap;
+            mDraw.mMatrix[0].setTranslate(aoffset_x, aoffset_y);
+            mDraw.mMatrix[0].postRotate(arotate, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
+            mDraw.mMatrix[0].postScale(ascale, ascale, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
         }
         if(aurl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(burl, 0, burl.length, opts);
             mDraw.myPic[1] = mBitmap;
+            mDraw.mMatrix[1].setTranslate(boffset_x, boffset_y);
+            mDraw.mMatrix[1].postRotate(brotate, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
+            mDraw.mMatrix[1].postScale(bscale, bscale, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
         }
 
         if(aurl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(curl, 0, curl.length, opts);
             mDraw.myPic[2] = mBitmap;
+            mDraw.mMatrix[2].setTranslate(coffset_x, coffset_y);
+            mDraw.mMatrix[2].postRotate(crotate, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
+            mDraw.mMatrix[2].postScale(cscale, cscale, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
         }
 
         if(aurl != null) {
             Bitmap mBitmap = BitmapFactory.decodeByteArray(durl, 0, durl.length, opts);
             mDraw.myPic[3] = mBitmap;
+            mDraw.mMatrix[3].setTranslate(doffset_x, doffset_y);
+            mDraw.mMatrix[3].postRotate(drotate, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
+            mDraw.mMatrix[3].postScale(dscale, dscale, mBitmap.getWidth()/2, mBitmap.getHeight()/2);
         }
 
 
@@ -262,8 +272,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 if(event.getAction() == MotionEvent.ACTION_UP)
                 {
                     mDraw.mMatrix[mIndex] = mImage.getMatrix();
-                    mRotate[0] = mImage.mRotate;
-                    mScaleFactor[0] = mImage.mscaleFactor;
                     draw();
                 }
                 return false;
@@ -1478,22 +1486,24 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mPicOriginal[0].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         aurl = byteArray ;//byte[] : image (delete when object is delete)
-        aoffset_x = 0.00f; ;//Float : offset X of image
+        vMatrix = new float[4];
+        vMatrix = getValueMatrix(mDraw.mMatrix[0]);
+        aoffset_x = vMatrix[0]; ;//Float : offset X of image
         aoffset_x_enable = true;//Boolean : enable offset X of image
         aoffset_x_original = 0.00f ;//Float : original offset X of image
         aoffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
         aoffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
-        aoffset_y = 0.00f; //Float : offset Y of image
+        aoffset_y = vMatrix[1]; //Float : offset Y of image
         aoffset_y_enable = true;//Boolean : enable offset X of image
         aoffset_y_original = 0.00f ;//Float : original offset Y of image
         aoffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
         aoffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
-        ascale = 0.00f ;//Float : scale of image
+        ascale = vMatrix[2] ;//Float : scale of image
         ascale_enable = true;//Float : Boolean : enable scale of image
         ascale_original = 0.00f; //Float : original scale of image
         ascale_max = 0.00f ;//Float : maximum authorized scale of image
         ascale_min = 0.00f ;//Float : minimum authorized scale of image
-        arotate = mRotate[0];//Float : rotate of image
+        arotate = vMatrix[3];//Float : rotate of image
         arotate_enable = true; //Float : Boolean : enable rotation of image
         arotate_original = 0.00f ;//Float : original rotation of image
         arotate_max = 0.00f ;//Float : maximum authorized rotate of image
@@ -1511,22 +1521,24 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mPicOriginal[1].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         burl = byteArray;//"Image".getBytes() ;//byte[] : image (delete when object is delete)
-        boffset_x = 0.00f ;//Float : offset X of image
+        vMatrix = new float[4];
+        vMatrix = getValueMatrix(mDraw.mMatrix[1]);
+        boffset_x = vMatrix[0] ;//Float : offset X of image
         boffset_x_enable = true;//Boolean : enable offset X of image
         boffset_x_original = 0.00f ;//Float : original offset X of image
         boffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
         boffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
-        boffset_y = 0.00f ;//Float : offset Y of image
+        boffset_y = vMatrix[1] ;//Float : offset Y of image
         boffset_y_enable = true;//Boolean : enable offset X of image
         boffset_y_original = 0.00f ;//Float : original offset Y of image
         boffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
         boffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
-        bscale = 0.00f;//Float : scale of image
+        bscale = vMatrix[2];//Float : scale of image
         bscale_enable = true;//Float : Boolean : enable scale of image
         bscale_original = 0.00f ;//Float : original scale of image
         bscale_max = 0.00f ;//Float : maximum authorized scale of image
         bscale_min = 0.00f ;//Float : minimum authorized scale of image
-        brotate = mRotate[1] ;//Float : rotate of image
+        brotate = vMatrix[3] ;//Float : rotate of image
         brotate_enable = true;//Float : Boolean : enable rotation of image
         brotate_original = 0.00f ;//Float : original rotation of image
         brotate_max = 0.00f ;//Float : maximum authorized rotate of image
@@ -1542,23 +1554,25 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mPicOriginal[2] = mDraw.myPic[2];
         mPicOriginal[2].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
+        vMatrix = new float[4];
+        vMatrix = getValueMatrix(mDraw.mMatrix[2]);
         curl = byteArray;"Image".getBytes() ;//byte[] : image (delete when object is delete)
-        coffset_x = 0.00f ;//Float : offset X of image
+        coffset_x = vMatrix[0] ;//Float : offset X of image
         coffset_x_enable = true;//Boolean : enable offset X of image
         coffset_x_original = 0.00f ;//Float : original offset X of image
         coffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
         coffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
-        coffset_y = 0.00f ;//Float : offset Y of image
+        coffset_y = vMatrix[1] ;//Float : offset Y of image
         coffset_y_enable = true;//Boolean : enable offset X of image
         coffset_y_original = 0.00f ;//Float : original offset Y of image
         coffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
         coffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
-        cscale = 0.00f;//Float : scale of image
+        cscale = vMatrix[2];//Float : scale of image
         cscale_enable = true;//Float : Boolean : enable scale of image
         cscale_original = 0.00f ;//Float : original scale of image
         cscale_max = 0.00f ;//Float : maximum authorized scale of image
         cscale_min = 0.00f ;//Float : minimum authorized scale of image
-        crotate = mRotate[2] ;//Float : rotate of image
+        crotate = vMatrix[3] ;//Float : rotate of image
         crotate_enable = true;//Float : Boolean : enable rotation of image
         crotate_original = 0.00f ;//Float : original rotation of image
         crotate_max = 0.00f ;//Float : maximum authorized rotate of image
@@ -1575,22 +1589,24 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mPicOriginal[3].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         curl = byteArray; //"Image".getBytes() ;//byte[] : image (delete when object is delete)
-        doffset_x = 0.00f ;//Float : offset X of image
+        vMatrix = new float[4];
+        vMatrix = getValueMatrix(mDraw.mMatrix[3]);
+        doffset_x = vMatrix[0] ;//Float : offset X of image
         doffset_x_enable = true;//Boolean : enable offset X of image
         doffset_x_original = 0.00f ;//Float : original offset X of image
         doffset_x_max = 0.00f ;//Float : maximum authorized offset X of image
         doffset_x_min = 0.00f ;//Float : minimum authorized offset X of image
-        doffset_y = 0.00f ;//Float : offset Y of image
+        doffset_y = vMatrix[1] ;//Float : offset Y of image
         doffset_y_enable = true;//Boolean : enable offset X of image
         doffset_y_original = 0.00f ;//Float : original offset Y of image
         doffset_y_max = 0.00f ;//Float : maximum authorized offset Y of image
         doffset_y_min = 0.00f ;//Float : minimum authorized offset Y of image
-        dscale = 0.00f;//Float : scale of image
+        dscale = vMatrix[2];//Float : scale of image
         dscale_enable = true;//Float : Boolean : enable scale of image
         dscale_original = 0.00f ;//Float : original scale of image
         dscale_max = 0.00f ;//Float : maximum authorized scale of image
         dscale_min = 0.00f ;//Float : minimum authorized scale of image
-        drotate = mRotate[3] ;//Float : rotate of image
+        drotate = vMatrix[3] ;//Float : rotate of image
         drotate_enable = true;//Float : Boolean : enable rotation of image
         drotate_original = 0.00f ;//Float : original rotation of image
         drotate_max = 0.00f ;//Float : maximum authorized rotate of image
@@ -1729,23 +1745,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         dfilter = mDatabaseClass.getImage(ImageID).getFilter();
     }
 
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
                                    boolean filter) {
         float ratio = Math.min(
@@ -1757,6 +1756,30 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
                 height, filter);
         return newBitmap;
+    }
+
+    public float[] getValueMatrix(Matrix mMatrix)
+    {
+        float fValue[] = new float[4];
+        float[] v = new float[9];
+        mMatrix.getValues(v);
+        // translation is simple
+        float tX = v[Matrix.MTRANS_X];
+        float tY = v[Matrix.MTRANS_Y];
+
+        // calculate real scale
+        float scaleX = v[Matrix.MSCALE_X];
+        float skewY = v[Matrix.MSKEW_Y];
+        float realScale = (float) Math.sqrt(scaleX * scaleX + skewY * skewY);
+
+        // calculate the degree of rotation
+        float skewX = v[Matrix.MSKEW_X];
+        float realAngle = Math.round(Math.atan2(skewX, scaleX) * (180 / Math.PI));
+        fValue[0] = tX;
+        fValue[1] = tY;
+        fValue[2] = realScale;
+        fValue[3] = realAngle;
+        return  fValue;
     }
 
     //endregion : function
