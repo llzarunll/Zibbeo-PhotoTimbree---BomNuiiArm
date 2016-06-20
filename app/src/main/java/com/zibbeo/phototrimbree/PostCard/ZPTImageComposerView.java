@@ -172,7 +172,22 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             mDraw.mMatrix[3] = new Matrix();
         }
 
+        mDatabaseClass = new databaseClass( contentView.getContext() );
 
+        //region Get value
+        /*Nuii*/
+        //get data from previous page
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            getImageTemplateID = bundle.getString( "imageID" );
+        }
+        if (getImageTemplateID != null) {
+            imageTemplateID = mDatabaseClass.getImageComposer(getImageTemplateID).getTemplate();
+            stickerTemplateID1 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker1();
+            stickerTemplateID2 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker2();
+            stickerTemplateID3 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker3();
+            stickerTemplateID4 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker4();
+        }
 
 
         mTopPoint.x = (int)top_value;
@@ -221,22 +236,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mFrameLayout.setVisibility(View.VISIBLE);
 
-        mDatabaseClass = new databaseClass( contentView.getContext() );
-
-        //region Get value
-        /*Nuii*/
-        //get data from previous page
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            getImageTemplateID = bundle.getString( "imageID" );
-        }
-        if (getImageTemplateID != null) {
-            imageTemplateID = mDatabaseClass.getImageComposer(getImageTemplateID).getTemplate();
-            stickerTemplateID1 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker1();
-            stickerTemplateID2 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker2();
-            stickerTemplateID3 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker3();
-            stickerTemplateID4 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker4();
-        }
+       
         //Get Image Template
         /*imageTemplate = "123456789";*/
         if (imageTemplateID != null) {
