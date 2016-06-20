@@ -2,8 +2,10 @@ package com.zibbeo.phototrimbree.PostCard;
 
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.FloatMath;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -23,6 +25,19 @@ public class RotateZoomImageView extends ImageView {
     public int mLastAngle = 0;
     public float mRotate = 0.0f;
     public float mscaleFactor = 0;
+    private Matrix savedMatrix = new Matrix();
+    // we can be in one of these 3 states
+    private static final int NONE = 0;
+    private static final int DRAG = 1;
+    private static final int ZOOM = 2;
+    private int mode = NONE;
+    // remember some things for zooming
+    private PointF start = new PointF();
+    private PointF mid = new PointF();
+    private float oldDist = 1f;
+    private float d = 0f;
+    private float newRot = 0f;
+    private float[] lastEvent = null;
     /* Pivot Point for Transforms */
     private int mPivotX, mPivotY;
 
@@ -66,25 +81,25 @@ public class RotateZoomImageView extends ImageView {
      * The view has no size during init(), so we must wait for this
      * callback.
      */
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (w != oldw || h != oldh) {
-            if(getDrawable() != null) {
-                //Shift the image to the center of the view
-                int translateX = (w - getDrawable().getIntrinsicWidth()) / 2;
-                int translateY = (h - getDrawable().getIntrinsicHeight()) / 2;
-                mImageMatrix.setTranslate(translateX, translateY);
-                setImageMatrix(mImageMatrix);
-                //Get the center point for future scale and rotate transforms
-                mPivotX = w / 2;
-                mPivotY = h / 2;
-            }
-            else {
-                mPivotX = w / 2;
-                mPivotY = h / 2;
-            }
-        }
-    }
+//    @Override
+//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+//        if (w != oldw || h != oldh) {
+//            if(getDrawable() != null) {
+//                //Shift the image to the center of the view
+//                int translateX = (w - getDrawable().getIntrinsicWidth()) / 2;
+//                int translateY = (h - getDrawable().getIntrinsicHeight()) / 2;
+//                mImageMatrix.setTranslate(translateX, translateY);
+//                setImageMatrix(mImageMatrix);
+//                //Get the center point for future scale and rotate transforms
+//                mPivotX = w / 2;
+//                mPivotY = h / 2;
+//            }
+//            else {
+//                mPivotX = w / 2;
+//                mPivotY = h / 2;
+//            }
+//        }
+//    }
 
     private ScaleGestureDetector.SimpleOnScaleGestureListener mScaleListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
         @Override
@@ -101,78 +116,95 @@ public class RotateZoomImageView extends ImageView {
         }
     };
 
-    /*
-     * Operate on two-finger events to rotate the image.
-     * This method calculates the change in angle between the
-     * pointers and rotates the image accordingly.  As the user
-     * rotates their fingers, the image will follow.
-     */
-    private boolean doRotationEvent(MotionEvent event) {
-        //Calculate the angle between the two fingers
-        float deltaX = event.getX(0) - event.getX(1);
-        float deltaY = event.getY(0) - event.getY(1);
-        double radians = Math.atan(deltaY / deltaX);
-        //Convert to degrees
-        int degrees = (int)(radians * 180 / Math.PI);
-
-        /*
-         * Must use getActionMasked() for switching to pick up pointer events.
-         * These events have the pointer index encoded in them so the return
-         * from getAction() won't match the exact action constant.
-         */
-        switch (event.getActionMasked()) {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                savedMatrix.set(mImageMatrix);
+                start.set(event.getX(), event.getY());
+                mode = DRAG;
+                lastEvent = null;
+                break;
             case MotionEvent.ACTION_POINTER_DOWN:
+                oldDist = spacing(event);
+                if (oldDist > 10f) {
+                    savedMatrix.set(mImageMatrix);
+                    midPoint(mid, event);
+                    mode = ZOOM;
+                }
+                lastEvent = new float[4];
+                lastEvent[0] = event.getX(0);
+                lastEvent[1] = event.getX(1);
+                lastEvent[2] = event.getY(0);
+                lastEvent[3] = event.getY(1);
+                d = rotation(event);
+                break;
+            case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                //Mark the initial angle
-                mLastAngle = degrees;
+                mode = NONE;
+                lastEvent = null;
                 break;
             case MotionEvent.ACTION_MOVE:
-                // ATAN returns a converted value between -90deg and +90deg
-                // which creates a point when two fingers are vertical where the
-                // angle flips sign.  We handle this case by rotating a small amount
-                // (5 degrees) in the direction we were traveling
-                if ((degrees - mLastAngle) > 45) {
-                    //Going CCW across the boundary
-                    mImageMatrix.postRotate(-5, mPivotX, mPivotY);
-                } else if ((degrees - mLastAngle) < -45) {
-                    //Going CW across the boundary
-                    mImageMatrix.postRotate(5, mPivotX, mPivotY);
-                } else {
-                    //Normal rotation, rotate the difference
-                    mImageMatrix.postRotate(degrees - mLastAngle, mPivotX, mPivotY);
-                    mRotate = degrees;
+                if (mode == DRAG) {
+                    mImageMatrix.set(savedMatrix);
+                    float dx = event.getX() - start.x;
+                    float dy = event.getY() - start.y;
+                    mImageMatrix.postTranslate(dx, dy);
+                } else if (mode == ZOOM) {
+                    float newDist = spacing(event);
+                    if (newDist > 10f) {
+                        mImageMatrix.set(savedMatrix);
+                        float scale = (newDist / oldDist);
+                        mImageMatrix.postScale(scale, scale, mid.x, mid.y);
+                    }
+                    if (lastEvent != null && event.getPointerCount() == 3) {
+                        newRot = rotation(event);
+                        float r = newRot - d;
+                        float[] values = new float[9];
+                        mImageMatrix.getValues(values);
+                        float tx = values[2];
+                        float ty = values[5];
+                        float sx = values[0];
+                        float xc = (getWidth() / 2) * sx;
+                        float yc = (getHeight() / 2) * sx;
+                        mImageMatrix.postRotate(r, tx + xc, ty + yc);
+                    }
                 }
-                //Post the rotation to the image
-                setImageMatrix(mImageMatrix);
-                //Save the current angle
-                mLastAngle = degrees;
                 break;
         }
 
+        setImageMatrix(mImageMatrix);
         return true;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            // We don't care about this event directly, but we declare
-            // interest so we can get later multi-touch events.
-            return true;
-        }
+    /**
+     * Calculate the mid point of the first two fingers
+     */
+    private void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
+    }
 
-        switch (event.getPointerCount()) {
-            case 3:
-                // With three fingers down, zoom the image
-                // using the ScaleGestureDetector
-                return mScaleDetector.onTouchEvent(event);
-            case 2:
-                // With two fingers down, rotate the image
-                // following the fingers
-                return doRotationEvent(event);
-            default:
-                //Ignore this event
-                return super.onTouchEvent(event);
-        }
+    /**
+            * Calculate the degree to be rotated by.
+    *
+            * @param event
+    * @return Degrees
+    */
+    private float rotation(MotionEvent event) {
+        double delta_x = (event.getX(0) - event.getX(1));
+        double delta_y = (event.getY(0) - event.getY(1));
+        double radians = Math.atan2(delta_y, delta_x);
+        return (float) Math.toDegrees(radians);
+    }
+
+    /**
+     * Determine the space between the first two fingers
+     */
+    private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt((double) (x * x + y * y));
     }
 }
