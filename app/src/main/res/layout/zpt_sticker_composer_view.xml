@@ -43,51 +43,6 @@
             android:layout_marginRight="5dip"/>
     </HorizontalScrollView>
 
-    <TextView
-        android:id="@+id/label1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="From Top: %d px"
-        android:textColor="#9c27b0"
-        android:textSize="18sp"
-        android:layout_below="@+id/thumbnails_scroll_view"
-        android:layout_alignParentStart="true" />
-    <TextView
-        android:id="@+id/label2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="From Top: %d px"
-        android:textColor="#9c27b0"
-        android:textSize="18sp"
-        android:layout_alignTop="@+id/label1"
-        android:layout_alignParentEnd="true" />
-    <TextView
-        android:id="@+id/label3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="From Top: %d px"
-        android:textColor="#9c27b0"
-        android:textSize="18sp"
-        android:layout_below="@+id/label1"
-        android:layout_alignParentStart="true" />
-    <TextView
-        android:id="@+id/label4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="From Top: %d px"
-        android:textColor="#9c27b0"
-        android:textSize="18sp"
-        android:layout_alignTop="@+id/label3"
-        android:layout_alignParentEnd="true" />
-    <TextView
-        android:id="@+id/label5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="From Top: %d px"
-        android:textColor="#9c27b0"
-        android:textSize="18sp"
-        android:layout_below="@+id/label3"
-        android:layout_centerHorizontal="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

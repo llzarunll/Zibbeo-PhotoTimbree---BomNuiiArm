@@ -44,10 +44,9 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     FrameLayout canvas;
     LinearLayout StickerBar;
     int stickerCount = 0;
-    TextView label1, label2, label3, label4, label5;
     ArrayList<stickerListItem> stickerItems = new ArrayList<stickerListItem>();
     String Name;
-    ImageView selectStickerImage = new ImageView(this);
+    ImageView selectStickerImage;
 
     /*Nuii*/
     databaseClass mDatabaseClass;
@@ -59,7 +58,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
 
     public static class stickerListItem {
         public static String stickerIndex;
-        public Bitmap StickerImage;
+        public Bitmap stickerImage;
         public float rotateX;
         public float rotateY;
         public float scaleX;
@@ -67,9 +66,9 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         public float moveX;
         public float moveY;
 
-        public stickerListItem(String stickerIndex, Bitmap StickerImage, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
+        public stickerListItem(String stickerIndex, Bitmap stickerImage, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
             this.stickerIndex = stickerIndex;
-            this.StickerImage = StickerImage;
+            this.stickerImage = stickerImage;
             this.rotateX = rotateX;
             this.rotateY = rotateY;
             this.scaleX = scaleX;
@@ -79,7 +78,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,13 +85,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         contentView = inflater.inflate(R.layout.zpt_sticker_composer_view, null, false);
         mDrawerLayout.addView(contentView, 0);
 
+        /*Show Image from Image Composer*/
         Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
-
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         ImageView image = (ImageView) findViewById(R.id.imageView);
-
         image.setImageBitmap(bmp);
+
         init();
         getSticker();
 
@@ -127,7 +125,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         if (stickerTemplateID4 != null) {
             GetSticker4( stickerTemplateID4 );
         }
-
     }
 
     @Override
@@ -137,7 +134,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-/*                *//*Convert Bitmap to Byte Array*//*
+                /*Convert Bitmap to Byte Array*//*
                 FrameLayout savedImage = (FrameLayout) findViewById(R.id.canvasView);
                 savedImage.setDrawingCacheEnabled(true);
                 savedImage.buildDrawingCache();
@@ -238,27 +235,24 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         previousButton = (Button) findViewById(R.id.previousButton);
         canvas = (FrameLayout) findViewById(R.id.canvasView);
         StickerBar = (LinearLayout) findViewById(R.id.StickerBar);
-        label1 = (TextView) findViewById(R.id.label1);
-        label2 = (TextView) findViewById(R.id.label2);
-        label3 = (TextView) findViewById(R.id.label3);
-        label4 = (TextView) findViewById(R.id.label4);
-        label5 = (TextView) findViewById(R.id.label5);
     }
 
     private void getSticker() {
+
         /*Get Sticker from Drawable*/
         final Drawable Stickers[] =
-                {
-                        getResources().getDrawable(R.drawable.cloud),
-                        getResources().getDrawable(R.drawable.idea),
-                        getResources().getDrawable(R.drawable.star),
-                        getResources().getDrawable(R.drawable.camera),
-                        getResources().getDrawable(R.drawable.photos),
-                        getResources().getDrawable(R.drawable.alarm),
-                        getResources().getDrawable(R.drawable.hourglass),
-                        getResources().getDrawable(R.drawable.like),
-                        getResources().getDrawable(R.drawable.noimage)
-                };
+        {
+            getResources().getDrawable(R.drawable.cloud),
+            getResources().getDrawable(R.drawable.idea),
+            getResources().getDrawable(R.drawable.star),
+            getResources().getDrawable(R.drawable.camera),
+            getResources().getDrawable(R.drawable.photos),
+            /*getResources().getDrawable(R.drawable.alarm),
+            getResources().getDrawable(R.drawable.hourglass),
+            getResources().getDrawable(R.drawable.like),*/
+            getResources().getDrawable(R.drawable.noimage)
+        };
+
         /*Add Stickers to Sticker Bar*/
         for (int i = 0; i < Stickers.length; i++) {
             final ImageView ib_view = new ImageView(this);
@@ -282,36 +276,17 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                 canvas.removeView(iv_sticker);
                             }
                         });
+
                         canvas.addView(iv_sticker);
                         iv_sticker.owner_id = String.valueOf(stickerCount);
 
-                        selectStickerImage.setImageDrawable(Stickers[v.getId()]);
-
-                        Bitmap StickerImage = selectStickerImage.getDrawingCache();
-                        /*iv_sticker.setDrawingCacheEnabled(true);
-                        iv_sticker.buildDrawingCache();
-                        Bitmap StickerImage = iv_sticker.getDrawingCache();*/
-
+                        Bitmap StickerImage = v.getDrawingCache();
                         stickerItems.add(new stickerListItem(iv_sticker.owner_id, StickerImage, -1, -1, -1, -1, -1, -1));
                         stickerCount++;
                         /*iv_sticker.setControlItemsHidden(true);*/
-
-                        iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                            public void onFocusChange(View view, boolean hasFocus) {
-                                iv_sticker.setControlItemsHidden(!hasFocus);
-                            }
-                        });
-
-
                         iv_sticker.setOnTouchListener(new View.OnTouchListener() {
                             @Override
                             public boolean onTouch(View view, MotionEvent event) {
-                                /*iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                    public void onFocusChange(View view, boolean hasFocus) {
-                                        iv_sticker.setControlItemsHidden(hasFocus);
-                                    }
-                                });*/
-
                                 if (view.getTag().equals("DraggableViewGroup")) {
                                     switch (event.getAction()) {
                                         case MotionEvent.ACTION_DOWN:
@@ -339,6 +314,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                                 }
                                             }
                                             break;
+                                        /*case MotionEvent.:
+                                            iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                                public void onFocusChange(View view, boolean hasFocus) {
+                                                    iv_sticker.setControlItemsHidden(hasFocus);
+                                                }
+                                            });
+                                            break;*/
                                     }
                                 } else if (view.getTag().equals("iv_scale")) {
                                     switch (event.getAction()) {
@@ -354,11 +336,9 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                             iv_sticker.rotate_orgX = event.getRawX();
                                             iv_sticker.rotate_orgY = event.getRawY();
 
-                                            iv_sticker.centerX = iv_sticker.getX() +
-                                                    ((View) iv_sticker.getParent()).getX() +
+                                            iv_sticker.centerX = iv_sticker.getX() + ((View) iv_sticker.getParent()).getX() +
                                                     (float) iv_sticker.getWidth() / 2;
 
-                                            //double statusBarHeight = Math.ceil(25 * getContext().getResources().getDisplayMetrics().density);
                                             int result = 0;
                                             int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
                                             if (resourceId > 0) {
@@ -420,15 +400,20 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                             iv_sticker.requestLayout();
                                             break;
                                         case MotionEvent.ACTION_UP:
+                                            for(stickerListItem SelectItem : stickerItems){
+                                                if (stickerListItem.stickerIndex.equals (iv_sticker.owner_id)){
+                                                    SelectItem.rotateX = iv_sticker.getRotationX();
+                                                    SelectItem.rotateY = iv_sticker.getRotationY();
+                                                    SelectItem.scaleX = iv_sticker.getScaleX();
+                                                    SelectItem.scaleY = iv_sticker.getScaleY();
+                                                    SelectItem.moveX = iv_sticker.getX();
+                                                    SelectItem.moveY = iv_sticker.getY();
+                                                    break;
+                                                }
+                                            }
                                             break;
                                     }
                                 }
-                                Name = iv_sticker.owner_id;
-                                label1.setText(Float.toString(iv_sticker.getX()));
-                                label2.setText(Float.toString(iv_sticker.getY()));
-                                label3.setText(Double.toString(iv_sticker.getScaleX()));
-                                label4.setText(Double.toString(iv_sticker.getScaleY()));
-                                label5.setText("Sticker Name : " + stickerItems.size());
                                 return true;
                             }
                         });
@@ -507,26 +492,26 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
 
     //Set Sticker 1
     public void setSticker1() {
-        sticker1 = BitmapToByte(stickerItems.get(1).StickerImage);//byte[] : sticker
+        sticker1 = BitmapToByte(stickerItems.get(1).stickerImage);//byte[] : sticker
         sticker1_x = stickerItems.get(1).moveX; //Float : x
         sticker1_y = stickerItems.get(1).moveY; //Float : y
     }
 
     //Set Sticker 2
     public void setSticker2() {
-        sticker2 = BitmapToByte(stickerItems.get(2).StickerImage);//byte[] : sticker
+        sticker2 = BitmapToByte(stickerItems.get(2).stickerImage);//byte[] : sticker
         sticker2_x = stickerItems.get(2).moveX;//Float : x
         sticker2_y = stickerItems.get(2).moveY;//Float : y
     }
 
     public void setSticker3() {
-        sticker3 = BitmapToByte(stickerItems.get(3).StickerImage);//byte[] : sticker
+        sticker3 = BitmapToByte(stickerItems.get(3).stickerImage);//byte[] : sticker
         sticker3_x = stickerItems.get(3).moveX;//Float : x
         sticker3_y = stickerItems.get(3).moveY;//Float : y
     }
 
     public void setSticker4() {
-        sticker4 = BitmapToByte(stickerItems.get(4).StickerImage);//byte[] : sticker
+        sticker4 = BitmapToByte(stickerItems.get(4).stickerImage);//byte[] : sticker
         sticker4_x = stickerItems.get(4).moveX;//Float : x
         sticker4_y = stickerItems.get(4).moveY;//Float : y
     }
