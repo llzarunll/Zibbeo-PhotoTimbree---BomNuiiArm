@@ -1347,7 +1347,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     }
 
     private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library",
+        final CharSequence[] items = {"Choose from Library",
                 "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder( ZPTImageComposerView.this );
@@ -1361,10 +1361,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     userChoosenTask = "Take Photo";
                     if (result)
                         cameraIntent();
-                } else if (items[item].equals( "Choose from Library" )) {
+                /*} else if (items[item].equals( "Choose from Library" )) {
                     userChoosenTask = "Choose from Library";
                     if (result)
-                        galleryIntent();
+                        galleryIntent();*/
 
                 } else if (items[item].equals( "Cancel" )) {
                     dialog.dismiss();
