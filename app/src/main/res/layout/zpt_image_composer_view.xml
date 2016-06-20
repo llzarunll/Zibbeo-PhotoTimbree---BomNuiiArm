@@ -125,7 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/seekBarInner"
-            android:max="10"
+            android:max="20"
             android:layout_below="@+id/seekBarOuter"
             android:layout_alignEnd="@+id/FrameImageView"
             android:focusableInTouchMode="false" />

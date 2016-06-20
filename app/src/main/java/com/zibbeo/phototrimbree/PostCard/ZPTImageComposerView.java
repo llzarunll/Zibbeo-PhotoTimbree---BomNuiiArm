@@ -386,7 +386,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }break;
                 case 3:{
                     mCenterPoint.set(getWidth()/2, getHeight()/2);
-                    mRightPoint.set(tmpMaxRight, tmpMaxBottom/2);
+                    mTopPoint.set(getWidth()/2, tmpMaxTop);
+                    mRightPoint.set(tmpMaxRight, getHeight() / 2);
+                    mBottomPoint.set(getWidth()/2, tmpMaxBottom);
                     sCenter = true;
                     sLeft = false;
                     sRight = true;
@@ -395,6 +397,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }break;
                 case 4:{
                     mCenterPoint.set(getWidth()/2, getHeight()/2);
+                    mLeftPoint.set(tmpMaxLeft,getHeight()/2);
+                    mRightPoint.set(tmpMaxRight, getHeight() / 2);
+                    mBottomPoint.set(getWidth()/2, tmpMaxBottom);
                     sCenter = true;
                     sLeft = true;
                     sRight = true;
@@ -403,6 +408,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }break;
                 case 5:{
                     mCenterPoint.set(getWidth()/2, getHeight()/2);
+                    mTopPoint.set(getWidth()/2, tmpMaxTop);
+                    mLeftPoint.set(tmpMaxLeft,getHeight()/2);
+                    mRightPoint.set(tmpMaxRight, getHeight() / 2);
+                    mBottomPoint.set(getWidth()/2, tmpMaxBottom);
                     sCenter = true;
                     sLeft = true;
                     sRight = true;
