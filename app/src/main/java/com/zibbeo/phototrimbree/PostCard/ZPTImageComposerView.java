@@ -496,8 +496,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 float Test[] = new float[4];
                 Test = getValueMatrix(mMatrix[0]);
                 int w = bitmap.getWidth();
-                mPointX[0] =  (int) Test[0];
-                mPointY[0] =  (int) Test[1];
+                mPointX[0] =  - ((int) Test[0]);
+                mPointY[0] =  - ((int) Test[1]);
 
 
                 bitmap = Bitmap.createBitmap(bitmap,0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
@@ -619,8 +619,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 Test = getValueMatrix(mMatrix[1]);
                 w = bitmap.getWidth();
-                mPointX[1] =  (int) Test[0];
-                mPointY[1] =  (int) Test[1];
+                mPointX[1] =  - ((int) Test[0]);
+                mPointY[1] =  - ((int) Test[1]);
 
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
@@ -691,8 +691,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 Test = getValueMatrix(mMatrix[2]);
                 w = bitmap.getWidth();
-                mPointX[2] =  (int) Test[0];
-                mPointY[2] =  (int) Test[1];
+                mPointX[2] =  - ((int) Test[0]);
+                mPointY[2] =  - ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
 
                 if(sFarme == 3) {
@@ -758,8 +758,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
                 Test = getValueMatrix(mMatrix[3]);
                 w = bitmap.getWidth();
-                mPointX[3] =  (int) Test[0];
-                mPointY[3] =  (int) Test[1];
+                mPointX[3] =  - ((int) Test[0]);
+                mPointY[3] =  - ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
@@ -1013,19 +1013,19 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
 
         public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius , Point point_draw[]) {
-            Bitmap finalBitmap;
-            if(bitmap.getWidth() != radius || bitmap.getHeight() != radius)
-                finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
-            else
-                finalBitmap = bitmap;
-            Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
-                    finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//            Bitmap finalBitmap;
+//            if(bitmap.getWidth() != radius || bitmap.getHeight() != radius)
+//                finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
+//            else
+//                finalBitmap = bitmap;
+            Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                    bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
 
 
 
             Paint paint = new Paint();
-            final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
+            final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
 
 
             Path path = new Path();
@@ -1048,10 +1048,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             path.close();
             canvas.drawPath(path, paint);
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(finalBitmap, rect, rect, paint);
+            canvas.drawBitmap(bitmap, rect, rect, paint);
 
-            if (finalBitmap != null && !finalBitmap.isRecycled()) {
-                finalBitmap.recycle();
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
             }
 
 
