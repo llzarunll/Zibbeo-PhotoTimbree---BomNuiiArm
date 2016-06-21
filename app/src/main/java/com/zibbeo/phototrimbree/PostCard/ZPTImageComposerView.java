@@ -189,7 +189,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             stickerTemplateID4 = mDatabaseClass.getImageComposer(getImageTemplateID).getSticker4();
         }
 
-
         mTopPoint.x = (int)top_value;
         mBottomPoint.x = (int)top_value;
         mRightPoint.y = (int)top_value;
@@ -459,7 +458,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 tmpMaxRight = getWidth() - mRadius;
                 tmpMaxTop = 0 + mRadius;
                 tmpMaxBottom = getHeight() - mRadius;
-//
+
                 mCenterPoint.set(getWidth() / 2, getHeight() / 2);
                 mLeftPoint.set(tMaxLeft, getHeight() / 2);
                 mRightPoint.set(tMaxRight, getHeight() / 2);
@@ -483,7 +482,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 } else {
                     mPoint = (int) (mPaintInner.getStrokeWidth() / 2);
                 }
-                //mPaintInner.setStrokeWidth( mPaintInner.getStrokeWidth() + 2 );
 
                 //Get Widtf
                 MaxWidtf[0] = getWidth();
@@ -578,13 +576,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                             new Point(mLeftPoint.x+mPointX[0] , mLeftPoint.y+mPointY[0])
                     };
 
-//                    Point ImgA[] = {
-//                            new Point(mLeftPoint.x, mTopPoint.y),
-//                            new Point(mTopPoint.x, mTopPoint.y),
-//                            new Point(mCenterPoint.x, mCenterPoint.y),
-//                            new Point(mLeftPoint.x, mLeftPoint.y)
-//                    };
-
                     roundBitmap = getRoundedCroppedBitmap(bitmap, w, ImgA);
 
                     ImgA[0] = new Point(mLeftPoint.x + mPoint, mTopPoint.y + mPoint);
@@ -619,7 +610,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 Test = getValueMatrix(mMatrix[1]);
                 w = bitmap.getWidth();
-                mPointX[1] =  - ((int) Test[0]);
+                mPointX[1] =   ((int) Test[0]);
                 mPointY[1] =  - ((int) Test[1]);
 
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
@@ -692,7 +683,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 Test = getValueMatrix(mMatrix[2]);
                 w = bitmap.getWidth();
                 mPointX[2] =  - ((int) Test[0]);
-                mPointY[2] =  - ((int) Test[1]);
+                mPointY[2] =   ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
 
                 if(sFarme == 3) {
@@ -758,8 +749,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
                 Test = getValueMatrix(mMatrix[3]);
                 w = bitmap.getWidth();
-                mPointX[3] =  - ((int) Test[0]);
-                mPointY[3] =  - ((int) Test[1]);
+                mPointX[3] =  ((int) Test[0]);
+                mPointY[3] =  ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
@@ -878,10 +869,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     canvas.drawCircle( mBottomPoint.x, mBottomPoint.y, mRadius, mPaint2 );
                 }
             }
-
-
-
-
         }
 
         @Override
@@ -1013,11 +1000,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
 
         public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius , Point point_draw[]) {
-//            Bitmap finalBitmap;
-//            if(bitmap.getWidth() != radius || bitmap.getHeight() != radius)
-//                finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
-//            else
-//                finalBitmap = bitmap;
+
             Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                     bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
@@ -1104,6 +1087,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float sizeF = new Float( progress );
                 mPaint.setStrokeWidth( sizeF );
+                mPaintInner.setStrokeWidth( sizeF );
                 draw();
             }
 
@@ -1121,7 +1105,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float sizeF = new Float( progress );
-                mPaintInner.setStrokeWidth( sizeF );
+                float sizeO = mPaint.getStrokeWidth();
+                float sizeI = mPaintInner.getStrokeWidth();
+                sizeI = sizeI - sizeF;
+                sizeO = sizeO + sizeF;
+                mPaint.setStrokeWidth( sizeO );
+                mPaintInner.setStrokeWidth( sizeI );
                 draw();
             }
 
