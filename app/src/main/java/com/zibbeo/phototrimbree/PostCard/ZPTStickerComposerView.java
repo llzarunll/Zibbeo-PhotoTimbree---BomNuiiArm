@@ -86,14 +86,14 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         mDrawerLayout.addView(contentView, 0);
 
         /*Show Image from Image Composer*/
-        Bundle extras = getIntent().getExtras();
+        /*Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         ImageView image = (ImageView) findViewById(R.id.imageView);
         bmp = scaleDown(bmp,image.getMaxWidth(),true);
         image.setImageBitmap(bmp);
-
+*/
         init();
         getSticker();
 
@@ -281,9 +281,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
 
                         canvas.addView(iv_sticker);
                         iv_sticker.owner_id = String.valueOf(stickerCount);
-
-                        Bitmap StickerImage = v.getDrawingCache();
-                        stickerItems.add(new stickerListItem(iv_sticker.owner_id, StickerImage, -1, -1, -1, -1, -1, -1));
+                        stickerItems.add(new stickerListItem(iv_sticker.owner_id, ((BitmapDrawable) Stickers[v.getId()]).getBitmap(), -1, -1, -1, -1, -1, -1));
                         stickerCount++;
                         /*iv_sticker.setControlItemsHidden(true);*/
                         iv_sticker.setOnTouchListener(new View.OnTouchListener() {
@@ -494,28 +492,28 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
 
     //Set Sticker 1
     public void setSticker1() {
-        sticker1 = BitmapToByte(stickerItems.get(1).stickerImage);//byte[] : sticker
-        sticker1_x = stickerItems.get(1).moveX; //Float : x
-        sticker1_y = stickerItems.get(1).moveY; //Float : y
+        sticker1 = BitmapToByte(stickerItems.get(0).stickerImage);//byte[] : sticker
+        sticker1_x = stickerItems.get(0).moveX; //Float : x
+        sticker1_y = stickerItems.get(0).moveY; //Float : y
     }
 
     //Set Sticker 2
     public void setSticker2() {
-        sticker2 = BitmapToByte(stickerItems.get(2).stickerImage);//byte[] : sticker
-        sticker2_x = stickerItems.get(2).moveX;//Float : x
-        sticker2_y = stickerItems.get(2).moveY;//Float : y
+        sticker2 = BitmapToByte(stickerItems.get(1).stickerImage);//byte[] : sticker
+        sticker2_x = stickerItems.get(1).moveX;//Float : x
+        sticker2_y = stickerItems.get(1).moveY;//Float : y
     }
 
     public void setSticker3() {
-        sticker3 = BitmapToByte(stickerItems.get(3).stickerImage);//byte[] : sticker
-        sticker3_x = stickerItems.get(3).moveX;//Float : x
-        sticker3_y = stickerItems.get(3).moveY;//Float : y
+        sticker3 = BitmapToByte(stickerItems.get(2).stickerImage);//byte[] : sticker
+        sticker3_x = stickerItems.get(2).moveX;//Float : x
+        sticker3_y = stickerItems.get(2).moveY;//Float : y
     }
 
     public void setSticker4() {
-        sticker4 = BitmapToByte(stickerItems.get(4).stickerImage);//byte[] : sticker
-        sticker4_x = stickerItems.get(4).moveX;//Float : x
-        sticker4_y = stickerItems.get(4).moveY;//Float : y
+        sticker4 = BitmapToByte(stickerItems.get(3).stickerImage);//byte[] : sticker
+        sticker4_x = stickerItems.get(3).moveX;//Float : x
+        sticker4_y = stickerItems.get(3).moveY;//Float : y
     }
 
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
