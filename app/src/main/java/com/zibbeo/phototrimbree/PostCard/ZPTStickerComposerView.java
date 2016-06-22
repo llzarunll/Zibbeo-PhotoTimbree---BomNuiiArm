@@ -89,7 +89,9 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
         ImageView image = (ImageView) findViewById(R.id.imageView);
+        bmp = scaleDown(bmp,image.getMaxWidth(),true);
         image.setImageBitmap(bmp);
 
         init();
@@ -514,6 +516,19 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         sticker4 = BitmapToByte(stickerItems.get(4).stickerImage);//byte[] : sticker
         sticker4_x = stickerItems.get(4).moveX;//Float : x
         sticker4_y = stickerItems.get(4).moveY;//Float : y
+    }
+
+    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
+                                   boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
     }
     //endregion
 

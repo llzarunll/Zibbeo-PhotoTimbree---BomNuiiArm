@@ -84,6 +84,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     ViewGroup mLayout;
     ViewGroup.LayoutParams mLayoutParams;
     boolean touch_state = false;
+    boolean next_state = false;
     boolean mFirstTimeCheck = true;
     RotateZoomImageView mImage;
     ArrayList<Point> mTopLeftArea,mTopRightArea,mBottomLeftArea,mBottomRightArea;
@@ -474,7 +475,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
 
 
-            if (!touch_state) {
+            if (!touch_state && !next_state) {
                 int mPoint = 0;
                 Path mPath;
                 if ((int) (mPaint.getStrokeWidth() / 2) > mPoint) {
@@ -484,21 +485,21 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
 
                 //Get Widtf
-                MaxWidtf[0] = getWidth();
-
                 Bitmap bitmap;
                 Bitmap roundBitmap;
-                bitmap = scaleDown(myPic[0],MaxWidtf[0],true);
+//                bitmap = scaleDown(myPic[0],MaxWidtf[0],true);
+
+//                bitmap = myPic[0];
 
 
                 float Test[] = new float[4];
                 Test = getValueMatrix(mMatrix[0]);
-                int w = bitmap.getWidth();
+                int w = myPic[0].getWidth();
                 mPointX[0] =  - ((int) Test[0]);
                 mPointY[0] =  - ((int) Test[1]);
 
 
-                bitmap = Bitmap.createBitmap(bitmap,0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
+                bitmap = Bitmap.createBitmap(myPic[0],0, 0,myPic[0].getWidth(),myPic[0].getHeight(), mMatrix[0] ,false);
 
                 if(sFarme == 3) {
                     Point ImgA[] = {
@@ -604,16 +605,18 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
                 canvas.drawBitmap(roundBitmap, -mPointX[0],-mPointY[0],null);
                 canvas.drawPath(mPath, mPaintInner);
-                MaxWidtf[1] = getWidth();
-                bitmap = scaleDown(myPic[1],MaxWidtf[1],true);
 
+
+//                MaxWidtf[1] = getWidth();
+//                bitmap = scaleDown(myPic[1],MaxWidtf[1],true);
+////                bitmap = myPic[1];
 
                 Test = getValueMatrix(mMatrix[1]);
                 w = bitmap.getWidth();
                 mPointX[1] =   ((int) Test[0]);
                 mPointY[1] =  - ((int) Test[1]);
 
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
+                bitmap = Bitmap.createBitmap(myPic[1], 0, 0,myPic[1].getWidth(),myPic[1].getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
                     Point ImgB[] = {
                             new Point(mRightPoint.x - mPointX[1], mRightPoint.y + mPointY[1]),
@@ -679,12 +682,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 MaxWidtf[2] = getWidth();
                 bitmap = scaleDown(myPic[2],MaxWidtf[2],true);
-
+//                bitmap = myPic[2];
                 Test = getValueMatrix(mMatrix[2]);
                 w = bitmap.getWidth();
                 mPointX[2] =  - ((int) Test[0]);
                 mPointY[2] =   ((int) Test[1]);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
+                bitmap = Bitmap.createBitmap(myPic[2], 0, 0,myPic[2].getWidth(),myPic[2].getHeight(), mMatrix[2] ,false);
 
                 if(sFarme == 3) {
                     Point ImgC[] = {
@@ -747,6 +750,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 MaxWidtf[3] = getWidth();
                 bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
+//                bitmap = myPic[3];
                 Test = getValueMatrix(mMatrix[3]);
                 w = bitmap.getWidth();
                 mPointX[3] =  ((int) Test[0]);
@@ -1033,10 +1037,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(bitmap, rect, rect, paint);
 
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
-
+//            if (bitmap != null && !bitmap.isRecycled()) {
+//                bitmap.recycle();
+//            }
 
             return output;
         }
@@ -1130,10 +1133,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             public void onClick(View view) {
                 mRadius = 0;
                 draw();
+
                 FrameLayout savedImage = (FrameLayout) findViewById( R.id.FrameImageView );
                 savedImage.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-                savedImage.setDrawingCacheEnabled( true );
+                savedImage.setDrawingCacheEnabled( false );
                 savedImage.buildDrawingCache();
+                next_state = true;
                 Bitmap bmp = savedImage.getDrawingCache();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bmp.compress( Bitmap.CompressFormat.PNG, 100, stream );
