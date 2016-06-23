@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -101,6 +102,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     Bitmap mPicOriginal[] = new Bitmap[4];
     ImageButton mBtnColor1,mBtnColor2;
     private Paint mColorPaint;
+    private LruCache<String, Bitmap> mMemoryCache;
+
+
 
 
 
@@ -159,6 +163,21 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         contentView = inflater.inflate( R.layout.zpt_image_composer_view, null, false );
         mDrawerLayout.addView( contentView, 0 );
         mPaint = new Paint();
+
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+        // Use 1/8th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 8;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+
         // on button click
         //new ColorPickerDialog(this, this, mColorPaint.getColor()).show();
         mDraw = new DrawCanvas(this);
@@ -239,6 +258,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
 
         mFrameLayout.setVisibility(View.VISIBLE);
+        mFrameLayout.setEnabled(false);
 
        
         //Get Image Template
@@ -342,7 +362,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mBtnColor1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, 0xFF4488CC, new HSVColorPickerDialog.OnColorSelectedListener() {
+                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, mPaint.getColor(), new HSVColorPickerDialog.OnColorSelectedListener() {
                     @Override
                     public void colorSelected(Integer color) {
                         // Do something with the selected color
@@ -358,7 +378,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mBtnColor2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, 0xFF4488CC, new HSVColorPickerDialog.OnColorSelectedListener() {
+                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, mPaintInner.getColor(), new HSVColorPickerDialog.OnColorSelectedListener() {
                     @Override
                     public void colorSelected(Integer color) {
                         // Do something with the selected color
@@ -484,6 +504,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             super.onDraw(canvas);
             System.gc();
 
+            addBitmapToMemoryCache("pic1",myPic[0]);
+            addBitmapToMemoryCache("pic2",myPic[1]);
+            addBitmapToMemoryCache("pic3",myPic[2]);
+            addBitmapToMemoryCache("pic4",myPic[3]);
+
             if (mFirstTimeCheck) {
 
                 tMaxLeft = 0 + mRadius;
@@ -526,8 +551,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointX[0] =  - ((int) Test[0]);
                 mPointY[0] =  - ((int) Test[1]);
 
-
-                bitmap = Bitmap.createBitmap(myPic[0],0, 0,myPic[0].getWidth(),myPic[0].getHeight(), mMatrix[0] ,false);
+                bitmap = getBitmapFromMemCache("pic4");
+                bitmap = Bitmap.createBitmap(bitmap,0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
 
                 if(sFarme == 3) {
                     Point ImgA[] = {
@@ -641,7 +666,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointX[1] =   ((int) Test[0]);
                 mPointY[1] =  - ((int) Test[1]);
 
-                bitmap = Bitmap.createBitmap(myPic[1], 0, 0,myPic[1].getWidth(),myPic[1].getHeight(), mMatrix[1] ,false);
+                bitmap = getBitmapFromMemCache("pic4");
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
                     Point ImgB[] = {
                             new Point(mRightPoint.x - mPointX[1], mRightPoint.y + mPointY[1]),
@@ -712,7 +738,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 Test = getValueMatrix(mMatrix[2]);
                 mPointX[2] =  - ((int) Test[0]);
                 mPointY[2] =   ((int) Test[1]);
-                bitmap = Bitmap.createBitmap(myPic[2], 0, 0,myPic[2].getWidth(),myPic[2].getHeight(), mMatrix[2] ,false);
+
+                bitmap = getBitmapFromMemCache("pic4");
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
 
                 if(sFarme == 3) {
                     Point ImgC[] = {
@@ -782,7 +810,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 Test = getValueMatrix(mMatrix[3]);
                 mPointX[3] =  ((int) Test[0]);
                 mPointY[3] =  ((int) Test[1]);
-                bitmap = Bitmap.createBitmap(myPic[3], 0, 0,myPic[3].getWidth(),myPic[3].getHeight(), mMatrix[3] ,false);
+                bitmap = getBitmapFromMemCache("pic4");
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
                     new Point(mRightPoint.x - mPointX[3], mRightPoint.y - mPointY[3]),
@@ -923,26 +952,31 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 if (mDistanceCenter <= mRadius && sCenter){
                     mCenterPoint.set(tXPoint,tYPoint);
                     mFrameLayout.setVisibility(View.VISIBLE);
+                    mFrameLayout.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceLeft <= mRadius && sLeft){
                     mLeftPoint.set(tMaxLeft,tYPoint);
                     mFrameLayout.setVisibility(View.VISIBLE);
+                    mFrameLayout.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceRight <= mRadius && sRight){
                     mRightPoint.set(tMaxRight,tYPoint);
                     mFrameLayout.setVisibility(View.VISIBLE);
+                    mFrameLayout.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceTop <= mRadius && sTop){
                     mTopPoint.set(tXPoint,tMaxTop);
                     mFrameLayout.setVisibility(View.VISIBLE);
+                    mFrameLayout.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceBottom <= mRadius && sBottom){
                     mBottomPoint.set(tXPoint,tMaxBottom);
                     mFrameLayout.setVisibility(View.VISIBLE);
+                    mFrameLayout.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 }
@@ -1069,6 +1103,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         private void FindImage(int x, int y) {
             mImage.setImageBitmap(null);
             mFrameLayout.setVisibility(INVISIBLE);
+            mFrameLayout.setEnabled(true);
             if (x > mCenterPoint.x) {
                 //Img B,D
                 if (y > mCenterPoint.y) {
@@ -1311,7 +1346,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         previousButton = (Button) findViewById( R.id.previousButton );
         //KITTI : Link Control
         mBtnColor1 = (ImageButton) findViewById(R.id.imageView2);
+        mBtnColor1.setBackgroundColor(mPaint.getColor());
         mBtnColor2 = (ImageButton) findViewById(R.id.imageView3);
+        mBtnColor2.setBackgroundColor(mPaintInner.getColor());;
         sOuter = (SeekBar) findViewById( R.id.seekBarOuter );
         sInner = (SeekBar) findViewById( R.id.seekBarInner );
         mImage = (RotateZoomImageView) findViewById(R.id.mImage);
@@ -1474,6 +1511,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             }
         }
 
+        bm = scaleDown(bm,mDraw.getWidth(),true);// mDraw.getWidth();
         mImage.setImageBitmap( bm );
         mDraw.myPic[mIndex] = bm;
         draw();
@@ -1817,6 +1855,16 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         fValue[2] = realScale;
         fValue[3] = realAngle;
         return  fValue;
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
     }
 
     //endregion : function
