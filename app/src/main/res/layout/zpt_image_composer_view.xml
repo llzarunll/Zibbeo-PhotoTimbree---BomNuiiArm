@@ -50,102 +50,101 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/mImage" />
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="350dp"
-        android:layout_height="210dp"
-        android:id="@+id/mFrameLayout"
-        android:background="#d1d1d1"
-        android:layout_above="@+id/nextButton"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="true">
-        <HorizontalScrollView android:id="@+id/thumbnails_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:scrollbars="none"
-            android:background="#ca3e3e"
-            android:layout_below="@+id/FrameImageView"
+        <RelativeLayout
+            android:layout_width="350dp"
+            android:layout_height="210dp"
+            android:id="@+id/mFrameLayout"
+            android:background="#d1d1d1"
+            android:layout_alignParentTop="true"
             android:layout_alignParentStart="true">
-            <LinearLayout
-                android:orientation="horizontal"
+            <HorizontalScrollView android:id="@+id/thumbnails_scroll_view"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="#d1d1d1">
-                <ImageButton
-                    android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scrollbars="none"
+                android:background="#ca3e3e"
+                android:layout_below="@+id/FrameImageView"
+                android:layout_alignParentStart="true">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:background="@drawable/f1"
-                    android:id="@+id/farme1"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="60dp" />
-                <ImageButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/f3"
-                    android:id="@+id/farme2"
-                    />
-                <ImageButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/f2"
-                    android:id="@+id/farme3"
-                    />
+                    android:background="#d1d1d1">
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/f1"
+                        android:id="@+id/farme1"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="60dp" />
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/f3"
+                        android:id="@+id/farme2"
+                        />
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/f2"
+                        android:id="@+id/farme3"
+                        />
 
-                <ImageButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/f4"
-                    android:id="@+id/farme4"
-                    />
-                <ImageButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/f5"
-                    android:id="@+id/farme5"
-                    />
-                <ImageButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/f6"
-                    android:id="@+id/farme6"
-                    />
-            </LinearLayout>
-        </HorizontalScrollView>
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBarOuter"
-            android:layout_below="@+id/thumbnails_scroll_view"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="20dp"
-            android:max="20" />
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBarInner"
-            android:max="20"
-            android:layout_below="@+id/seekBarOuter"
-            android:layout_alignEnd="@+id/FrameImageView"
-            android:focusableInTouchMode="false" />
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/f4"
+                        android:id="@+id/farme4"
+                        />
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/f5"
+                        android:id="@+id/farme5"
+                        />
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/f6"
+                        android:id="@+id/farme6"
+                        />
+                </LinearLayout>
+            </HorizontalScrollView>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/seekBarOuter"
+                android:max="20"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/imageView2" />
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/seekBarInner"
+                android:max="20"
+                android:focusableInTouchMode="false"
+                android:layout_alignTop="@+id/imageView3"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/imageView2" />
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageView2"
-            android:background="@color/accent_material_dark"
-            android:layout_marginStart="40dp"
-            android:layout_below="@+id/seekBarInner"
-            android:layout_alignParentStart="true" />
+            <ImageButton
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:id="@+id/imageView2"
+                android:background="@color/accent_material_dark"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageView3"
-            android:background="@color/accent_material_dark"
-            android:layout_alignTop="@+id/imageView2"
-            android:layout_toEndOf="@+id/imageView2"
-            android:layout_marginStart="44dp" />
+            <ImageButton
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:id="@+id/imageView3"
+                android:background="@color/accent_material_dark"
+                android:layout_below="@+id/imageView2"
+                android:layout_alignParentStart="true" />
+        </RelativeLayout>
     </RelativeLayout>
+
 </RelativeLayout>

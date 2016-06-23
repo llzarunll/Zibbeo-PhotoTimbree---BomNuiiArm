@@ -99,6 +99,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     boolean sLeft = true;
     boolean sRight = true;
     Bitmap mPicOriginal[] = new Bitmap[4];
+    ImageButton mBtnColor1,mBtnColor2;
+    private Paint mColorPaint;
 
 
 
@@ -156,7 +158,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 .getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         contentView = inflater.inflate( R.layout.zpt_image_composer_view, null, false );
         mDrawerLayout.addView( contentView, 0 );
-
+        mPaint = new Paint();
+        // on button click
+        //new ColorPickerDialog(this, this, mColorPaint.getColor()).show();
         mDraw = new DrawCanvas(this);
 
         init();
@@ -332,6 +336,38 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mDraw.sFarme = 5;
                 mDraw.setPoint();
                 draw();
+            }
+        });
+
+        mBtnColor1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, 0xFF4488CC, new HSVColorPickerDialog.OnColorSelectedListener() {
+                    @Override
+                    public void colorSelected(Integer color) {
+                        // Do something with the selected color
+                       mPaint.setColor(color);
+                       mBtnColor1.setBackgroundColor(color);
+                    }
+                });
+                cpd.setTitle( "Pick a color" );
+                cpd.show();
+            }
+        });
+
+        mBtnColor2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, 0xFF4488CC, new HSVColorPickerDialog.OnColorSelectedListener() {
+                    @Override
+                    public void colorSelected(Integer color) {
+                        // Do something with the selected color
+                        mPaintInner.setColor(color);
+                        mBtnColor2.setBackgroundColor(color);
+                    }
+                });
+                cpd.setTitle( "Pick a color" );
+                cpd.show();
             }
         });
 
@@ -1274,6 +1310,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         nextButton = (Button) findViewById( R.id.nextButton );
         previousButton = (Button) findViewById( R.id.previousButton );
         //KITTI : Link Control
+        mBtnColor1 = (ImageButton) findViewById(R.id.imageView2);
+        mBtnColor2 = (ImageButton) findViewById(R.id.imageView3);
         sOuter = (SeekBar) findViewById( R.id.seekBarOuter );
         sInner = (SeekBar) findViewById( R.id.seekBarInner );
         mImage = (RotateZoomImageView) findViewById(R.id.mImage);
