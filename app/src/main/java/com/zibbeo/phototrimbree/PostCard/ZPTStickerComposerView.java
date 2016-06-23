@@ -43,31 +43,23 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
     Button nextButton, previousButton;
     FrameLayout canvas;
     LinearLayout StickerBar;
-    int stickerCount = 0;
+    int stickerCount = 0, sID = 0;
     ArrayList<stickerListItem> stickerItems = new ArrayList<stickerListItem>();
-    String Name;
-    ImageView selectStickerImage;
 
-    /*Nuii*/
-    databaseClass mDatabaseClass;
-    String  stickerTemplateID1, stickerTemplateID2, stickerTemplateID3, stickerTemplateID4 ,getImageTemplateID ,imageTemplateID;
-    //ArrayList getST1,getST2,getST3,getST4, stickerValue1,stickerValue2,stickerValue3,stickerValue4,sticker1,sticker2,sticker3,sticker4;
-    byte[] sticker1,sticker2,sticker3,sticker4;
-    float sticker1_x,sticker1_y,sticker2_x,sticker2_y,sticker3_x,sticker3_y,sticker4_x,sticker4_y;
-    String getStID1,getStID2,getStID3,getStID4;
-
+    //region stickerListItem
     public static class stickerListItem {
-        public static String stickerIndex;
-        public Bitmap stickerImage;
+        public static String stickerID;
+        public  Bitmap stickerImage;
         public float rotateX;
         public float rotateY;
         public float scaleX;
         public float scaleY;
         public float moveX;
         public float moveY;
+        public boolean IsDeleted;
 
-        public stickerListItem(String stickerIndex, Bitmap stickerImage, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
-            this.stickerIndex = stickerIndex;
+        public stickerListItem(String stickerID, Bitmap stickerImage, float rotateX, float rotateY, float scaleX, float scaleY, float moveX, float moveY) {
+            this.stickerID = stickerID;
             this.stickerImage = stickerImage;
             this.rotateX = rotateX;
             this.rotateY = rotateY;
@@ -77,6 +69,15 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             this.moveY = moveY;
         }
     }
+    //endregion stickerListItem
+
+    /*Nuii*/
+    databaseClass mDatabaseClass;
+    String  stickerTemplateID1, stickerTemplateID2, stickerTemplateID3, stickerTemplateID4 ,getImageTemplateID ,imageTemplateID;
+    //ArrayList getST1,getST2,getST3,getST4, stickerValue1,stickerValue2,stickerValue3,stickerValue4,sticker1,sticker2,sticker3,sticker4;
+    byte[] sticker1,sticker2,sticker3,sticker4;
+    float sticker1_x,sticker1_y,sticker2_x,sticker2_y,sticker3_x,sticker3_y,sticker4_x,sticker4_y;
+    String getStID1,getStID2,getStID3,getStID4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +87,13 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         mDrawerLayout.addView(contentView, 0);
 
         /*Show Image from Image Composer*/
-        /*Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         ImageView image = (ImageView) findViewById(R.id.imageView);
         bmp = scaleDown(bmp,image.getMaxWidth(),true);
         image.setImageBitmap(bmp);
-*/
         init();
         getSticker();
 
@@ -145,6 +145,8 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                 bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
                 savedImage.destroyDrawingCache();*/
+
+                clearIsDelete();
 
                 /*Nuii*/
                 //region Insert Sticlker image
@@ -217,7 +219,6 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                 }
                 //endregion
 
-
                 Toast.makeText(contentView.getContext(), "Complete", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(contentView.getContext(), ZPTMessageComposerView.class);
                 startActivity(intent);
@@ -239,6 +240,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         StickerBar = (LinearLayout) findViewById(R.id.StickerBar);
     }
 
+    //region getSticker
     private void getSticker() {
 
         /*Get Sticker from Drawable*/
@@ -249,9 +251,9 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             getResources().getDrawable(R.drawable.star),
             getResources().getDrawable(R.drawable.camera),
             getResources().getDrawable(R.drawable.photos),
-            /*getResources().getDrawable(R.drawable.alarm),
+            getResources().getDrawable(R.drawable.alarm),
             getResources().getDrawable(R.drawable.hourglass),
-            getResources().getDrawable(R.drawable.like),*/
+            getResources().getDrawable(R.drawable.like),
             getResources().getDrawable(R.drawable.noimage)
         };
 
@@ -268,22 +270,22 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             ib_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (stickerItems.size() < 4) {
+                    if (stickerCount < 4) {
                         final StickerImageView iv_sticker = new StickerImageView(ZPTStickerComposerView.this);
                         iv_sticker.setImageDrawable(Stickers[v.getId()]);
                         iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                stickerItems.remove(stickerItems.get(Integer.valueOf(Name)-1));
+                                deleteSticker(Integer.valueOf(iv_sticker.owner_id));
                                 canvas.removeView(iv_sticker);
                             }
                         });
 
                         canvas.addView(iv_sticker);
-                        iv_sticker.owner_id = String.valueOf(stickerCount);
+                        iv_sticker.owner_id = String.valueOf(sID);
                         stickerItems.add(new stickerListItem(iv_sticker.owner_id, ((BitmapDrawable) Stickers[v.getId()]).getBitmap(), -1, -1, -1, -1, -1, -1));
                         stickerCount++;
-                        /*iv_sticker.setControlItemsHidden(true);*/
+                        sID++;
                         iv_sticker.setOnTouchListener(new View.OnTouchListener() {
                             @Override
                             public boolean onTouch(View view, MotionEvent event) {
@@ -302,25 +304,8 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                             iv_sticker.move_orgY = event.getRawY();
                                             break;
                                         case MotionEvent.ACTION_UP:
-                                            for(stickerListItem SelectItem : stickerItems){
-                                                if (stickerListItem.stickerIndex.equals (iv_sticker.owner_id)){
-                                                    SelectItem.rotateX = iv_sticker.getRotationX();
-                                                    SelectItem.rotateY = iv_sticker.getRotationY();
-                                                    SelectItem.scaleX = iv_sticker.getScaleX();
-                                                    SelectItem.scaleY = iv_sticker.getScaleY();
-                                                    SelectItem.moveX = iv_sticker.getX();
-                                                    SelectItem.moveY = iv_sticker.getY();
-                                                    break;
-                                                }
-                                            }
+                                            locationSticker(Integer.valueOf(iv_sticker.owner_id), iv_sticker);
                                             break;
-                                        /*case MotionEvent.:
-                                            iv_sticker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                                public void onFocusChange(View view, boolean hasFocus) {
-                                                    iv_sticker.setControlItemsHidden(hasFocus);
-                                                }
-                                            });
-                                            break;*/
                                     }
                                 } else if (view.getTag().equals("iv_scale")) {
                                     switch (event.getAction()) {
@@ -362,9 +347,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                             double length2 = iv_sticker.getLength(iv_sticker.centerX, iv_sticker.centerY, event.getRawX(), event.getRawY());
 
                                             int size = iv_sticker.convertDpToPixel(iv_sticker.SELF_SIZE_DP, iv_sticker.getContext());
-                                            if (length2 > length1
-                                                    && (angle_diff < 25 || Math.abs(angle_diff - 180) < 25)
-                                                    ) {
+                                            if (length2 > length1 && (angle_diff < 25 || Math.abs(angle_diff - 180) < 25)) {
                                                 //scale up
                                                 double offsetX = Math.abs(event.getRawX() - iv_sticker.scale_orgX);
                                                 double offsetY = Math.abs(event.getRawY() - iv_sticker.scale_orgY);
@@ -400,17 +383,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                                             iv_sticker.requestLayout();
                                             break;
                                         case MotionEvent.ACTION_UP:
-                                            for(stickerListItem SelectItem : stickerItems){
-                                                if (stickerListItem.stickerIndex.equals (iv_sticker.owner_id)){
-                                                    SelectItem.rotateX = iv_sticker.getRotationX();
-                                                    SelectItem.rotateY = iv_sticker.getRotationY();
-                                                    SelectItem.scaleX = iv_sticker.getScaleX();
-                                                    SelectItem.scaleY = iv_sticker.getScaleY();
-                                                    SelectItem.moveX = iv_sticker.getX();
-                                                    SelectItem.moveY = iv_sticker.getY();
-                                                    break;
-                                                }
-                                            }
+                                            locationSticker(Integer.valueOf(iv_sticker.owner_id), iv_sticker);
                                             break;
                                     }
                                 }
@@ -425,7 +398,8 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
             StickerBar.addView(ib_view);
         }
     }
-
+    //endregion getSticker
+    //region loadSticker
     private void loadSticker (byte[] sticker, float x, float y)
     {
         Bitmap bmp = BitmapFactory.decodeByteArray(sticker, 0, sticker.length);
@@ -435,7 +409,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         iv_sticker.iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stickerItems.remove(stickerItems.get(Integer.valueOf(Name)-1));
+                stickerItems.remove(stickerItems.get(Integer.valueOf(iv_sticker.owner_id)));
                 canvas.removeView(iv_sticker);
             }
         });
@@ -445,6 +419,35 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         stickerItems.add(new stickerListItem(String.valueOf(stickerItems.size()), bmp, -1, -1, -1, -1, Math.round(x), Math.round(y)));
         canvas.addView(iv_sticker, params1);
     }
+    //endregion loadSticker
+    //region locationSticker
+    private void  locationSticker(Integer Index, StickerImageView st){
+        stickerItems.get(Index).rotateX = st.getRotationX();
+        stickerItems.get(Index).rotateY = st.getRotationY();
+        stickerItems.get(Index).scaleX = st.getScaleX();
+        stickerItems.get(Index).scaleY = st.getScaleY();
+        stickerItems.get(Index).moveX = st.getX();
+        stickerItems.get(Index).moveY = st.getY();
+    }
+    //endregion locationSticker
+    //region deleteSticker
+    private void  deleteSticker(Integer Index) {
+        stickerItems.get(Index).IsDeleted = true;
+        stickerItems.get(Index).stickerImage = null;
+        stickerCount--;
+    }
+    //endregion deleteSticker
+    //region clearIsDelete
+    private void clearIsDelete(){
+        for (int i = 0; i < stickerItems.size(); i++)
+        {
+            if(stickerItems.get(i).IsDeleted){
+                stickerItems.remove(i);
+                i--;
+            }
+        }
+    }
+    //endregion clearIsDelete
 
     //region Get Sticker
     /*Nuii*/
