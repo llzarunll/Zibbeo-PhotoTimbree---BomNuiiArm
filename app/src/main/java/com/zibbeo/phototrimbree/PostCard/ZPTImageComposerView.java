@@ -527,7 +527,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointY[0] =  - ((int) Test[1]);
 
 
-                bitmap = Bitmap.createBitmap(myPic[0],0, 0,myPic[0].getWidth()/2,myPic[0].getHeight()/2, mMatrix[0] ,false);
+                bitmap = Bitmap.createBitmap(myPic[0],0, 0,myPic[0].getWidth(),myPic[0].getHeight(), mMatrix[0] ,false);
 
                 if(sFarme == 3) {
                     Point ImgA[] = {
@@ -641,7 +641,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointX[1] =   ((int) Test[0]);
                 mPointY[1] =  - ((int) Test[1]);
 
-                bitmap = Bitmap.createBitmap(myPic[1], 0, 0,myPic[1].getWidth()/2,myPic[1].getHeight()/2, mMatrix[1] ,false);
+                bitmap = Bitmap.createBitmap(myPic[1], 0, 0,myPic[1].getWidth(),myPic[1].getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
                     Point ImgB[] = {
                             new Point(mRightPoint.x - mPointX[1], mRightPoint.y + mPointY[1]),
@@ -712,7 +712,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 Test = getValueMatrix(mMatrix[2]);
                 mPointX[2] =  - ((int) Test[0]);
                 mPointY[2] =   ((int) Test[1]);
-                bitmap = Bitmap.createBitmap(myPic[2], 0, 0,myPic[2].getWidth()/2,myPic[2].getHeight()/2, mMatrix[2] ,false);
+                bitmap = Bitmap.createBitmap(myPic[2], 0, 0,myPic[2].getWidth(),myPic[2].getHeight(), mMatrix[2] ,false);
 
                 if(sFarme == 3) {
                     Point ImgC[] = {
@@ -782,7 +782,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 Test = getValueMatrix(mMatrix[3]);
                 mPointX[3] =  ((int) Test[0]);
                 mPointY[3] =  ((int) Test[1]);
-                bitmap = Bitmap.createBitmap(myPic[3], 0, 0,myPic[3].getWidth()/2,myPic[3].getHeight()/2, mMatrix[3] ,false);
+                bitmap = Bitmap.createBitmap(myPic[3], 0, 0,myPic[3].getWidth(),myPic[3].getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
                     new Point(mRightPoint.x - mPointX[3], mRightPoint.y - mPointY[3]),
