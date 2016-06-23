@@ -681,7 +681,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 canvas.drawPath(mPath,mPaintInner);
 
                 MaxWidtf[2] = getWidth();
-                bitmap = scaleDown(myPic[2],MaxWidtf[2],true);
+//                bitmap = scaleDown(myPic[2],MaxWidtf[2],true);
 //                bitmap = myPic[2];
                 Test = getValueMatrix(mMatrix[2]);
                 w = bitmap.getWidth();
@@ -749,13 +749,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 canvas.drawPath(mPath,mPaintInner);
 
                 MaxWidtf[3] = getWidth();
-                bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
+//                bitmap = scaleDown(myPic[3],MaxWidtf[3],true);
 //                bitmap = myPic[3];
                 Test = getValueMatrix(mMatrix[3]);
                 w = bitmap.getWidth();
                 mPointX[3] =  ((int) Test[0]);
                 mPointY[3] =  ((int) Test[1]);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
+                bitmap = Bitmap.createBitmap(myPic[3], 0, 0,myPic[3].getWidth(),myPic[3].getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
                     new Point(mRightPoint.x - mPointX[3], mRightPoint.y - mPointY[3]),
@@ -788,9 +788,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 canvas.drawBitmap(roundBitmap, mPointX[3], mPointY[3], null);
                 canvas.drawPath(mPath,mPaintInner);
 
-                if (bitmap != null && !bitmap.isRecycled()) {
-                    bitmap.recycle();
-                }
+//                if (bitmap != null && !bitmap.isRecycled()) {
+//                    bitmap.recycle();
+//                }
 
                 if (roundBitmap != null && !roundBitmap.isRecycled()) {
                     roundBitmap.recycle();
@@ -1005,14 +1005,17 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius , Point point_draw[]) {
 
-            Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                    bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Bitmap finalBitmap;
+            finalBitmap = bitmap;
+
+            Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
+                    finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
 
 
 
             Paint paint = new Paint();
-            final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
 
 
             Path path = new Path();
@@ -1035,12 +1038,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             path.close();
             canvas.drawPath(path, paint);
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, paint);
+            canvas.drawBitmap(finalBitmap, rect, rect, paint);
 
-//            if (bitmap != null && !bitmap.isRecycled()) {
-//                bitmap.recycle();
+//            if (finalBitmap != null && !finalBitmap.isRecycled()) {
+//                finalBitmap.recycle();
 //            }
-
             return output;
         }
 
@@ -1747,10 +1749,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
                                    boolean filter) {
         float ratio = Math.min(
-                (float) maxImageSize / realImage.getWidth(),
-                (float) maxImageSize / realImage.getHeight());
-        int width = Math.round((float) ratio * realImage.getWidth());
-        int height = Math.round((float) ratio * realImage.getHeight());
+                (float) realImage.getWidth() / realImage.getWidth(),
+                (float) realImage.getHeight() / realImage.getHeight());
+        int width = Math.round(ratio * realImage.getWidth());
+        int height = Math.round(ratio * realImage.getHeight());
 
         Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
                 height, filter);
