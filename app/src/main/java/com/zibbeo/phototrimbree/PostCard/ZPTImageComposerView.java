@@ -1005,14 +1005,17 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius , Point point_draw[]) {
 
-            Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                    bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Bitmap finalBitmap;
+            finalBitmap = bitmap;
+
+            Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
+                    finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
 
 
 
             Paint paint = new Paint();
-            final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
 
 
             Path path = new Path();
@@ -1035,8 +1038,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             path.close();
             canvas.drawPath(path, paint);
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, paint);
+            canvas.drawBitmap(finalBitmap, rect, rect, paint);
 
+//            if (finalBitmap != null && !finalBitmap.isRecycled()) {
+//                finalBitmap.recycle();
+//            }
             return output;
         }
 
