@@ -485,7 +485,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
 
                 Bitmap bitmap;
-
                 float Test[] = new float[4];
                 Test = getValueMatrix(mMatrix[0]);
                 mPointX[0] =  - ((int) Test[0]);
@@ -1037,10 +1036,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             if (x > mCenterPoint.x) {
                 //Img B,D
                 if (y > mCenterPoint.y) {
-                    //ImgD
-                    mIndex = 3;
-                    selectImage();
-
+                    if(sFarme == 2){
+                        mIndex = 1;
+                        //ImgB
+                        selectImage();
+                    }else {
+                        //ImgD
+                        mIndex = 3;
+                        selectImage();
+                    }
                 } else {
                     mIndex = 1;
                     //ImgB
@@ -1049,9 +1053,19 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             } else {
                 //Img A,C
                 if (y > mCenterPoint.y) {
-                    //ImgC
-                    mIndex = 2;
-                    selectImage();
+                    if(sFarme == 2){
+                        //ImgA
+                        mIndex = 0;
+                        selectImage();
+                    }else if(sFarme == 3){
+                        //ImgA
+                        mIndex = 0;
+                        selectImage();
+                    }else {
+                        //ImgC
+                        mIndex = 2;
+                        selectImage();
+                    }
                 } else {
                     //ImgA
                     mIndex = 0;
