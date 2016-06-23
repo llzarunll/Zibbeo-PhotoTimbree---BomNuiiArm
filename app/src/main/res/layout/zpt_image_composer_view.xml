@@ -129,5 +129,23 @@
             android:layout_below="@+id/seekBarOuter"
             android:layout_alignEnd="@+id/FrameImageView"
             android:focusableInTouchMode="false" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageView2"
+            android:background="@color/accent_material_dark"
+            android:layout_marginStart="40dp"
+            android:layout_below="@+id/seekBarInner"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageView3"
+            android:background="@color/accent_material_dark"
+            android:layout_alignTop="@+id/imageView2"
+            android:layout_toEndOf="@+id/imageView2"
+            android:layout_marginStart="44dp" />
     </RelativeLayout>
 </RelativeLayout>
