@@ -92,6 +92,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     Point mCenterPoint,mLeftPoint,mRightPoint,mTopPoint,mBottomPoint;
     float mStroke = 5f;
     float mStrokeInner = 6f;
+    float mStrokeSeekbar = 0f;
     float vMatrix[] = new float[4];
     int mRadius = 30;
     boolean sCenter = true;
@@ -218,6 +219,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mRightPoint.y = (int)top_value;
         mLeftPoint.y = (int)top_value;
         mCenterPoint = new Point((int)center_x,(int)center_y);
+        mStrokeSeekbar = 0f;
         mPaint.setStrokeWidth(marge_one_stroke);
         mDraw.sFarme = 0;//template;
         mDraw.setPoint();
@@ -1197,14 +1199,21 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         sInner.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float sizeF = new Float( progress );
+                float sizeF = new Float(progress) / 10;
                 float sizeO = mPaint.getStrokeWidth();
                 float sizeI = mPaintInner.getStrokeWidth();
-                sizeI = sizeI - sizeF;
-                sizeO = sizeO + sizeF;
-                mPaint.setStrokeWidth( sizeO );
-                mPaintInner.setStrokeWidth( sizeI );
+                if(mStrokeSeekbar < progress) {
+                    sizeI = sizeI - sizeF;
+                    sizeO = sizeO + sizeF;
+                } else {
+                    sizeI = sizeI + sizeF;
+                    sizeO = sizeO - sizeF;
+                }
+                mPaint.setStrokeWidth(sizeO);
+                mPaintInner.setStrokeWidth(sizeI);
+
                 draw();
+                mStrokeSeekbar = progress;
             }
 
             @Override
