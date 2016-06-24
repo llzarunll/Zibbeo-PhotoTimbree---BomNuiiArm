@@ -114,7 +114,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
     //Image
     String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
-    int marge_one_color, marge_two_color;
+    String marge_one_color, marge_two_color;
     float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
     int template;
 
@@ -405,12 +405,13 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         int mPointX[] = {0,0,0,0};
         int mPointY[] = {0,0,0,0};
         public float MaxWidtf[] = new float[4];
-        public Bitmap myPic[] =  {
+        public Bitmap myPic[] =  new Bitmap[4];
+                /*{
                 BitmapFactory.decodeResource(getResources(),R.drawable.boston),
                 BitmapFactory.decodeResource(getResources(),R.drawable.carifornia),
                 BitmapFactory.decodeResource(getResources(),R.drawable.dubai),
                 BitmapFactory.decodeResource(getResources(),R.drawable.paris)
-        };
+        };*/
         public Matrix[] mMatrix = new Matrix[4];
         public int sFarme = 1;
         private DrawCanvas(Context mContext) {
@@ -504,11 +505,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             super.onDraw(canvas);
             System.gc();
 
-            addBitmapToMemoryCache("pic1",myPic[0]);
-            addBitmapToMemoryCache("pic2",myPic[1]);
-            addBitmapToMemoryCache("pic3",myPic[2]);
-            addBitmapToMemoryCache("pic4",myPic[3]);
-
             if (mFirstTimeCheck) {
 
                 tMaxLeft = 0 + mRadius;
@@ -551,7 +547,18 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointX[0] =  - ((int) Test[0]);
                 mPointY[0] =  - ((int) Test[1]);
 
-                bitmap = getBitmapFromMemCache("pic4");
+
+                Bitmap image;
+                if (getBitmapFromMemCache("Temp") == null) {
+                    image = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+                    addBitmapToMemoryCache("Temp",image);
+                }
+
+                if(myPic[0] == null) {
+                    bitmap = getBitmapFromMemCache("Temp");
+                } else {
+                    bitmap = myPic[0];
+                }
                 bitmap = Bitmap.createBitmap(bitmap,0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
 
                 if(sFarme == 3) {
@@ -666,7 +673,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointX[1] =   ((int) Test[0]);
                 mPointY[1] =  - ((int) Test[1]);
 
-                bitmap = getBitmapFromMemCache("pic4");
+                if(myPic[1] == null) {
+                    bitmap = getBitmapFromMemCache("Temp");
+                } else {
+                    bitmap = myPic[1];
+                }
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
                     Point ImgB[] = {
@@ -739,7 +750,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointX[2] =  - ((int) Test[0]);
                 mPointY[2] =   ((int) Test[1]);
 
-                bitmap = getBitmapFromMemCache("pic4");
+                if(myPic[2] == null) {
+                    bitmap = getBitmapFromMemCache("Temp");
+                } else {
+                    bitmap = myPic[2];
+                }
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[2] ,false);
 
                 if(sFarme == 3) {
@@ -806,11 +821,14 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
 
                 MaxWidtf[3] = getWidth();
+                if(myPic[3] == null) {
+                    bitmap = getBitmapFromMemCache("Temp");
+                } else {
+                    bitmap = myPic[3];
+                }
 
-                Test = getValueMatrix(mMatrix[3]);
                 mPointX[3] =  ((int) Test[0]);
                 mPointY[3] =  ((int) Test[1]);
-                bitmap = getBitmapFromMemCache("pic4");
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
@@ -1541,9 +1559,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         template = mDraw.sFarme;//1;//Integer : จำนวนเทมเพลต
 
         marge_one_stroke = mPaint.getStrokeWidth();//Float : marge one stroke in purcent
-        marge_one_color =  mPaint.getColor();//String : color in hex
+        marge_one_color =  String.valueOf(mPaint.getColor());//String : color in hex
         marge_two_stroke = mPaintInner.getStrokeWidth();//Float : marge two stroke in purcent
-        marge_two_color = mPaintInner.getColor();//String : color in hex
+        marge_two_color = String.valueOf(mPaintInner.getColor());
         top_value = mTopPoint.x; //0.00f;//Float : position of value top for the line
         bottom_value = mBottomPoint.x;//Float : position of value bottom for the line
         right_value = mRightPoint.y;//Float : position of value right for the line
@@ -1557,7 +1575,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 //        float[] vImgA = new float[9];
 //        mDraw.mMatrix[0].getValues(vImgA);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        mPicOriginal[0] = mDraw.myPic[0];
+        if (mDraw.myPic[0] == null){
+            mPicOriginal[0] = getBitmapFromMemCache("Temp");
+        }else {
+            mPicOriginal[0] = mDraw.myPic[0];
+        }
+
         mPicOriginal[0].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         aurl = byteArray ;//byte[] : image (delete when object is delete)
@@ -1592,7 +1615,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 //        float[] vImgA = new float[9];
 //        mDraw.mMatrix[1].getValues(vImgA);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        mPicOriginal[1] = mDraw.myPic[1];
+        if (mDraw.myPic[1] == null){
+            mPicOriginal[1] = getBitmapFromMemCache("Temp");
+        }else {
+            mPicOriginal[1] = mDraw.myPic[1];
+        }
         mPicOriginal[1].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         burl = byteArray;//"Image".getBytes() ;//byte[] : image (delete when object is delete)
@@ -1626,7 +1653,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 //        float[] vImgA = new float[9];
 //        mDraw.mMatrix[2].getValues(vImgA);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        mPicOriginal[2] = mDraw.myPic[2];
+        if (mDraw.myPic[2] == null){
+            mPicOriginal[2] = getBitmapFromMemCache("Temp");
+        }else {
+            mPicOriginal[2] = mDraw.myPic[2];
+        }
         mPicOriginal[2].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         vMatrix = new float[4];
@@ -1660,7 +1691,11 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 //        float[] vImgA = new float[9];
 //        mDraw.mMatrix[3].getValues(vImgA);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        mPicOriginal[3] = mDraw.myPic[3];
+        if (mDraw.myPic[3] == null){
+            mPicOriginal[3] = getBitmapFromMemCache("Temp");
+        }else {
+            mPicOriginal[3] = mDraw.myPic[3];
+        }
         mPicOriginal[3].compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         curl = byteArray; //"Image".getBytes() ;//byte[] : image (delete when object is delete)
