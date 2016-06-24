@@ -1866,9 +1866,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
                                    boolean filter) {
-        float ratio = Math.min(
-                (float) realImage.getWidth() / realImage.getWidth(),
-                (float) realImage.getHeight() / realImage.getHeight());
+        float ratio = Math.min((float) maxImageSize / realImage.getWidth(), (float) maxImageSize / realImage.getHeight());
         int width = Math.round(ratio * realImage.getWidth());
         int height = Math.round(ratio * realImage.getHeight());
 
