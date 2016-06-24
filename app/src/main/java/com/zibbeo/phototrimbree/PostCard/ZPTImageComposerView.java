@@ -364,7 +364,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mBtnColor1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, mPaint.getColor(), new HSVColorPickerDialog.OnColorSelectedListener() {
+                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this,  0xFF4488CC, new HSVColorPickerDialog.OnColorSelectedListener() {
                     @Override
                     public void colorSelected(Integer color) {
                         // Do something with the selected color
@@ -380,7 +380,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         mBtnColor2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this, mPaintInner.getColor(), new HSVColorPickerDialog.OnColorSelectedListener() {
+                HSVColorPickerDialog cpd = new HSVColorPickerDialog( ZPTImageComposerView.this,  0xFF4488CC, new HSVColorPickerDialog.OnColorSelectedListener() {
                     @Override
                     public void colorSelected(Integer color) {
                         // Do something with the selected color
@@ -695,21 +695,21 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     ImgB[2] = new Point(mRightPoint.x, mRightPoint.y);
                     ImgB[3] = new Point(mRightPoint.x, mRightPoint.y);
                     mPath = new Path();
-                    for(int i = 0; i <= ImgB.length ;i++)
-                    {
-                        if(i == 0)
-                        {
-                            mPath.moveTo(ImgB[i].x  ,ImgB[i].y);
-                        }
-                        else if(i == ImgB.length)
-                        {
-                            mPath.lineTo(ImgB[0].x,ImgB[0].y);
-                        }
-                        else
-                        {
-                            mPath.lineTo(ImgB[i].x,ImgB[i].y);
-                        }
-                    }
+//                    for(int i = 0; i <= ImgB.length ;i++)
+//                    {
+//                        if(i == 0)
+//                        {
+//                            mPath.moveTo(ImgB[i].x  ,ImgB[i].y);
+//                        }
+//                        else if(i == ImgB.length)
+//                        {
+//                            mPath.lineTo(ImgB[0].x,ImgB[0].y);
+//                        }
+//                        else
+//                        {
+//                            mPath.lineTo(ImgB[i].x,ImgB[i].y);
+//                        }
+//                    }
                 }else {
                     Point ImgB[] = {
                             new Point(mTopPoint.x - mPointX[1], mTopPoint.y + mPointY[1]),
@@ -770,21 +770,21 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
 
                     mPath = new Path();
-                    for(int i = 0; i <= ImgC.length ;i++)
-                    {
-                        if(i == 0)
-                        {
-                            mPath.moveTo(ImgC[i].x  ,ImgC[i].y);
-                        }
-                        else if(i == ImgC.length)
-                        {
-                            mPath.lineTo(ImgC[0].x,ImgC[0].y);
-                        }
-                        else
-                        {
-                            mPath.lineTo(ImgC[i].x,ImgC[i].y);
-                        }
-                    }
+//                    for(int i = 0; i <= ImgC.length ;i++)
+//                    {
+//                        if(i == 0)
+//                        {
+//                            mPath.moveTo(ImgC[i].x  ,ImgC[i].y);
+//                        }
+//                        else if(i == ImgC.length)
+//                        {
+//                            mPath.lineTo(ImgC[0].x,ImgC[0].y);
+//                        }
+//                        else
+//                        {
+//                            mPath.lineTo(ImgC[i].x,ImgC[i].y);
+//                        }
+//                    }
                 }else {
                     Point ImgC[] = {
                             new Point(mLeftPoint.x + mPointX[2], mLeftPoint.y - mPointY[2]),
@@ -1199,7 +1199,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         sInner.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float sizeF = new Float(progress) / 10;
+                float sizeF = new Float(progress) / 5;
                 float sizeO = mPaint.getStrokeWidth();
                 float sizeI = mPaintInner.getStrokeWidth();
                 if(mStrokeSeekbar < progress) {
