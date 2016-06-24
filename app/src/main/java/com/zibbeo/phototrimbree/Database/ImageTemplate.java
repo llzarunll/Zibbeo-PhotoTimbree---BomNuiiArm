@@ -4,15 +4,15 @@ package com.zibbeo.phototrimbree.Database;
  * Created by  Nuii on 6/6/2559.
  */
 public class ImageTemplate {
-    private String id,marge_one_color,marge_two_color;
+    private String id;
     private Float marge_one_stroke,marge_two_stroke,top_value,bottom_value,right_value,left_value,center_x,center_y;
     private String image_a,image_b,image_c,image_d;
-    private Integer template;
+    private Integer template,marge_one_color,marge_two_color;
 
     public ImageTemplate() {}
 
     public ImageTemplate(String sid,Integer stemplate,String simage_a,String simage_b,String simage_c,String simage_d
-            ,Float smarge_one_stroke,String smarge_one_color,Float smarge_two_stroke,String smarge_two_color
+            ,Float smarge_one_stroke,Integer smarge_one_color,Float smarge_two_stroke,Integer smarge_two_color
             ,Float stop_value,Float sbottom_value,Float sright_value,Float sleft_value,Float scenter_x,Float scenter_y){
         this.id = sid;
         this.template = stemplate;
@@ -33,7 +33,7 @@ public class ImageTemplate {
     }
 
     public ImageTemplate(Integer stemplate,String simage_a,String simage_b,String simage_c,String simage_d
-            ,Float smarge_one_stroke,String smarge_one_color,Float smarge_two_stroke,String smarge_two_color
+            ,Float smarge_one_stroke,Integer smarge_one_color,Float smarge_two_stroke,Integer smarge_two_color
             ,Float stop_value,Float sbottom_value,Float sright_value,Float sleft_value,Float scenter_x,Float scenter_y){
         this.template = stemplate;
         this.image_a = simage_a;
@@ -77,7 +77,7 @@ public class ImageTemplate {
         this.image_d = image_d;
     }
 
-    public void setMarge_one_color(String marge_one_color) {
+    public void setMarge_one_color(Integer marge_one_color) {
         this.marge_one_color = marge_one_color;
     }
 
@@ -85,7 +85,7 @@ public class ImageTemplate {
         this.marge_one_stroke = marge_one_stroke;
     }
 
-    public void setMarge_two_color(String marge_two_color) {
+    public void setMarge_two_color(Integer marge_two_color) {
         this.marge_two_color = marge_two_color;
     }
 
@@ -125,9 +125,9 @@ public class ImageTemplate {
     public String getImage_b() {return image_b;}
     public String getImage_c() {return image_c;}
     public String getImage_d() {return image_d;}
-    public String getMarge_one_color() {return marge_one_color;}
+    public Integer getMarge_one_color() {return marge_one_color;}
     public Float getMarge_one_stroke() {return marge_one_stroke;}
-    public String getMarge_two_color() {return marge_two_color;}
+    public Integer getMarge_two_color() {return marge_two_color;}
     public Float getMarge_two_stroke() {return marge_two_stroke;}
     public Float getTop_value() {return top_value;}
     public Float getBottom_value() {return bottom_value;}

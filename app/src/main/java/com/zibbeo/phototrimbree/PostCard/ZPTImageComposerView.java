@@ -114,7 +114,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
     //Image
     String TemplateID, image_a, image_b, image_c, image_d,aid,bid,cid,did;
-    String marge_one_color, marge_two_color;
+    int marge_one_color, marge_two_color;
     float marge_one_stroke, marge_two_stroke, top_value, bottom_value, right_value, left_value, center_x, center_y;
     int template;
 
@@ -1541,9 +1541,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         template = mDraw.sFarme;//1;//Integer : จำนวนเทมเพลต
 
         marge_one_stroke = mPaint.getStrokeWidth();//Float : marge one stroke in purcent
-        marge_one_color =  "111111111";//String : color in hex
+        marge_one_color =  mPaint.getColor();//String : color in hex
         marge_two_stroke = mPaintInner.getStrokeWidth();//Float : marge two stroke in purcent
-        marge_two_color = "111111111";//String : color in hex
+        marge_two_color = mPaintInner.getColor();//String : color in hex
         top_value = mTopPoint.x; //0.00f;//Float : position of value top for the line
         bottom_value = mBottomPoint.x;//Float : position of value bottom for the line
         right_value = mRightPoint.y;//Float : position of value right for the line
