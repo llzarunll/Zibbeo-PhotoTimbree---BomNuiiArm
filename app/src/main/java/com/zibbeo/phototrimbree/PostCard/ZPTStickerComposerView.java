@@ -98,6 +98,7 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
         getSticker();
 
         /*Nuii*/
+        mDatabaseClass = new databaseClass( contentView.getContext() );
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             stickerTemplateID1 = bundle.getString( "stickerTemplateID1" );
@@ -154,57 +155,52 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
                     setSticker1();
                     if (stickerTemplateID1 == null) {
                         getStID1 = mDatabaseClass.createID();
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID1, sticker1, sticker1_x, sticker1_y);
+                        mDatabaseClass.insertStickerTemplate(tStickerTemplate);
+                    } else {
+                        getStID1 = stickerTemplateID1;
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID1, sticker1, sticker1_x, sticker1_y);
+                        mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                     }
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID1,sticker1,sticker1_x,sticker1_y);
-                    mDatabaseClass.insertStickerTemplate(tStickerTemplate);
-                }
-                else {
-                    getStID1 = stickerTemplateID1;
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID1,sticker1,sticker1_x,sticker1_y);
-                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                 }
 
                 if(stickerCount>=2) {
                     setSticker2();
                     if (stickerTemplateID2 == null) {
                         getStID2 = mDatabaseClass.createID();
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID2, sticker2, sticker2_x, sticker2_y);
+                        mDatabaseClass.updateStickerTemplate(tStickerTemplate);
+                    } else {
+                        getStID2 = stickerTemplateID2;
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID2, sticker2, sticker2_x, sticker2_y);
+                        mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                     }
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID2,sticker2,sticker2_x,sticker2_y);
-                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
-                }
-                else {
-                    getStID2 = stickerTemplateID2;
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID2,sticker2,sticker2_x,sticker2_y);
-                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                 }
 
                 if(stickerCount>=3) {
                     setSticker3();
                     if (stickerTemplateID3 == null) {
                         getStID3 = mDatabaseClass.createID();
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID3, sticker3, sticker3_x, sticker3_y);
+                        mDatabaseClass.updateStickerTemplate(tStickerTemplate);
+                    } else {
+                        getStID3 = stickerTemplateID3;
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID3, sticker3, sticker3_x, sticker3_y);
+                        mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                     }
-
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID3,sticker3,sticker3_x,sticker3_y);
-                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
-                }
-                else {
-                    getStID3 = stickerTemplateID3;
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID3,sticker3,sticker3_x,sticker3_y);
-                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                 }
 
                 if(stickerCount==4) {
                     setSticker4();
                     if (stickerTemplateID4 == null) {
                         getStID4 = mDatabaseClass.createID();
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID4, sticker4, sticker4_x, sticker4_y);
+                        mDatabaseClass.updateStickerTemplate(tStickerTemplate);
+                    } else {
+                        getStID4 = stickerTemplateID4;
+                        StickerTemplate tStickerTemplate = new StickerTemplate(getStID4, sticker4, sticker4_x, sticker4_y);
+                        mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                     }
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID4,sticker4,sticker4_x,sticker4_y);
-                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
-                }
-                else {
-                    getStID4 = stickerTemplateID4;
-                    StickerTemplate tStickerTemplate = new StickerTemplate(getStID4,sticker4,sticker4_x,sticker4_y);
-                    mDatabaseClass.updateStickerTemplate(tStickerTemplate);
                 }
 
                 //insert image composer
@@ -245,17 +241,17 @@ public class ZPTStickerComposerView extends BaseNavigationDrawer {
 
         /*Get Sticker from Drawable*/
         final Drawable Stickers[] =
-        {
-            getResources().getDrawable(R.drawable.cloud),
-            getResources().getDrawable(R.drawable.idea),
-            getResources().getDrawable(R.drawable.star),
-            getResources().getDrawable(R.drawable.camera),
-            getResources().getDrawable(R.drawable.photos),
-            getResources().getDrawable(R.drawable.alarm),
-            getResources().getDrawable(R.drawable.hourglass),
-            getResources().getDrawable(R.drawable.like),
-            getResources().getDrawable(R.drawable.noimage)
-        };
+                {
+                        getResources().getDrawable(R.drawable.cloud),
+                        getResources().getDrawable(R.drawable.idea),
+                        getResources().getDrawable(R.drawable.star),
+                        getResources().getDrawable(R.drawable.camera),
+                        getResources().getDrawable(R.drawable.photos),
+                        getResources().getDrawable(R.drawable.alarm),
+                        getResources().getDrawable(R.drawable.hourglass),
+                        getResources().getDrawable(R.drawable.like),
+                        getResources().getDrawable(R.drawable.noimage)
+                };
 
         /*Add Stickers to Sticker Bar*/
         for (int i = 0; i < Stickers.length; i++) {
