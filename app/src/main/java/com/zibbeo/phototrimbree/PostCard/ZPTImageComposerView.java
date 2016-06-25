@@ -746,7 +746,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     }
                 }
                 canvas.drawBitmap(bitmap, + mPointX[1], - mPointY[1], null);
-                canvas.drawPath(mPath,mPaintInner);
+                if(sFarme != 0 && sFarme != 1) {
+                    canvas.drawPath(mPath, mPaintInner);
+                }
 
 
                 if (bitmap != null && !bitmap.isRecycled()) {
@@ -776,21 +778,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
 
                     mPath = new Path();
-//                    for(int i = 0; i <= ImgC.length ;i++)
-//                    {
-//                        if(i == 0)
-//                        {
-//                            mPath.moveTo(ImgC[i].x  ,ImgC[i].y);
-//                        }
-//                        else if(i == ImgC.length)
-//                        {
-//                            mPath.lineTo(ImgC[0].x,ImgC[0].y);
-//                        }
-//                        else
-//                        {
-//                            mPath.lineTo(ImgC[i].x,ImgC[i].y);
-//                        }
-//                    }
                 }else {
                     Point ImgC[] = {
                             new Point(mLeftPoint.x + mPointX[2], mLeftPoint.y - mPointY[2]),
@@ -822,7 +809,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     }
                 }
                 canvas.drawBitmap(bitmap, - mPointX[2], + mPointY[2], null);
-                canvas.drawPath(mPath,mPaintInner);
+                if(sFarme != 0 && sFarme != 2) {
+                    canvas.drawPath(mPath, mPaintInner);
+                }
 
 
                 if (bitmap != null && !bitmap.isRecycled()) {
@@ -871,8 +860,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     }
                 }
                 canvas.drawBitmap(bitmap, mPointX[3], mPointY[3], null);
-                canvas.drawPath(mPath,mPaintInner);
-
+                if(sFarme != 0 && sFarme != 1 && sFarme != 2) {
+                    canvas.drawPath(mPath, mPaintInner);
+                }
                 if (bitmap != null && !bitmap.isRecycled()) {
                     bitmap.recycle();
                 }

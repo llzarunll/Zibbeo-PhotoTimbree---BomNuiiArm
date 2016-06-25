@@ -167,7 +167,8 @@ public class RotateZoomImageView extends ImageView {
                         float sx = values[0];
                         float xc = (getWidth() / 2) * sx;
                         float yc = (getHeight() / 2) * sx;
-                        mImageMatrix.postRotate(r, tx + xc, ty + yc);
+//                        mImageMatrix.postRotate(r,/* tx + */xc, /*ty + */yc);
+                        mImageMatrix.postRotate(r,mPivotX, mPivotY);
                     }
                 }
                 break;
@@ -196,7 +197,7 @@ public class RotateZoomImageView extends ImageView {
         double delta_x = (event.getX(0) - event.getX(1));
         double delta_y = (event.getY(0) - event.getY(1));
         double radians = Math.atan2(delta_y, delta_x);
-        return (float) Math.toDegrees(radians);
+        return (float) (radians * 180 / Math.PI);
     }
 
     /**
