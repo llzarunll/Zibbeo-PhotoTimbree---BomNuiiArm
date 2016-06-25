@@ -299,7 +299,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP)
                 {
-                    mDraw.mMatrix[mIndex] = mImage.getMatrix();
+                    mDraw.mMatrix[mIndex].set(mImage.getMatrixValue());
                     draw();
                 }
                 return false;
@@ -544,23 +544,23 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
 
                 Bitmap bitmap;
-                float Test[] = new float[4];
-
+                float TestA[] = new float[4];
                 Bitmap image;
                 if (getBitmapFromMemCache("Temp") == null) {
                     image = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
                     addBitmapToMemoryCache("Temp",image);
                 }
 
+
+
+                TestA = getValueMatrix(mMatrix[0]);
+                mPointX[0] =  - ((int) TestA[0]);
+                mPointY[0] =  - ((int) TestA[1]);
                 if(myPic[0] == null) {
                     bitmap = getBitmapFromMemCache("Temp");
                 } else {
                     bitmap = myPic[0];
                 }
-
-                Test = getValueMatrix(mMatrix[0]);
-                mPointX[0] =  - ((int) Test[0]);
-                mPointY[0] =  - ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap,0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
 
                 if(sFarme == 3) {
@@ -667,19 +667,23 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
                 canvas.drawBitmap(bitmap, -mPointX[0],-mPointY[0],null);
                 canvas.drawPath(mPath, mPaintInner);
+
+
                 if (bitmap != null && !bitmap.isRecycled()) {
                     bitmap.recycle();
                 }
+
+                bitmap = myPic[1];
+                float TestB[] = new float[4];
+                TestB = getValueMatrix(mMatrix[1]);
+                mPointX[1] =   ((int) TestB[0]);
+                mPointY[1] =  - ((int) TestB[1]);
 
                 if(myPic[1] == null) {
                     bitmap = getBitmapFromMemCache("Temp");
                 } else {
                     bitmap = myPic[1];
                 }
-
-                Test = getValueMatrix(mMatrix[1]);
-                mPointX[1] =   ((int) Test[0]);
-                mPointY[1] =  - ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
                     Point ImgB[] = {
@@ -743,14 +747,16 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
                 canvas.drawBitmap(bitmap, + mPointX[1], - mPointY[1], null);
                 canvas.drawPath(mPath,mPaintInner);
+
+
                 if (bitmap != null && !bitmap.isRecycled()) {
                     bitmap.recycle();
                 }
-
                 MaxWidtf[2] = getWidth();
-                Test = getValueMatrix(mMatrix[2]);
-                mPointX[2] =  - ((int) Test[0]);
-                mPointY[2] =   ((int) Test[1]);
+                float TestC[] = new float[4];
+                TestC = getValueMatrix(mMatrix[2]);
+                mPointX[2] =  - ((int) TestC[0]);
+                mPointY[2] =   ((int) TestC[1]);
 
                 if(myPic[2] == null) {
                     bitmap = getBitmapFromMemCache("Temp");
@@ -817,11 +823,12 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
                 canvas.drawBitmap(bitmap, - mPointX[2], + mPointY[2], null);
                 canvas.drawPath(mPath,mPaintInner);
+
+
                 if (bitmap != null && !bitmap.isRecycled()) {
 
                     bitmap.recycle();
                 }
-
                 MaxWidtf[3] = getWidth();
                 if(myPic[3] == null) {
                     bitmap = getBitmapFromMemCache("Temp");
@@ -829,9 +836,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     bitmap = myPic[3];
                 }
 
-                Test = getValueMatrix(mMatrix[3]);
-                mPointX[3] =  ((int) Test[0]);
-                mPointY[3] =  ((int) Test[1]);
+                float TestD[] = new float[4];
+                TestD = getValueMatrix(mMatrix[3]);
+                mPointX[3] =  ((int) TestD[0]);
+                mPointY[3] =  ((int) TestD[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
                     new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
@@ -1476,7 +1484,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     userChoosenTask = "Choose from Library";
                     if (result)
                         galleryIntent();
-
+                    mImage.setMatrix(mDraw.mMatrix[mIndex]);
                 } else if (items[item].equals( "Cancel" )) {
                     mImage.setImageBitmap(mDraw.myPic[mIndex]);
                     mImage.setMatrix(mDraw.mMatrix[mIndex]);

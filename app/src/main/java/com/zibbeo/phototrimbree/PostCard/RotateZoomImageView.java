@@ -63,7 +63,7 @@ public class RotateZoomImageView extends ImageView {
         mImageMatrix = new Matrix();
     }
 
-    public Matrix getMatrix()
+    public Matrix getMatrixValue()
     {
         return mImageMatrix;
     }
@@ -81,25 +81,25 @@ public class RotateZoomImageView extends ImageView {
      * The view has no size during init(), so we must wait for this
      * callback.
      */
-//    @Override
-//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-//        if (w != oldw || h != oldh) {
-//            if(getDrawable() != null) {
-//                //Shift the image to the center of the view
-//                int translateX = (w - getDrawable().getIntrinsicWidth()) / 2;
-//                int translateY = (h - getDrawable().getIntrinsicHeight()) / 2;
-//                mImageMatrix.setTranslate(translateX, translateY);
-//                setImageMatrix(mImageMatrix);
-//                //Get the center point for future scale and rotate transforms
-//                mPivotX = w / 2;
-//                mPivotY = h / 2;
-//            }
-//            else {
-//                mPivotX = w / 2;
-//                mPivotY = h / 2;
-//            }
-//        }
-//    }
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (w != oldw || h != oldh) {
+            if(getDrawable() != null) {
+                //Shift the image to the center of the view
+                int translateX = (w - getDrawable().getIntrinsicWidth()) / 2;
+                int translateY = (h - getDrawable().getIntrinsicHeight()) / 2;
+                mImageMatrix.setTranslate(translateX, translateY);
+                setImageMatrix(mImageMatrix);
+                //Get the center point for future scale and rotate transforms
+                mPivotX = w / 2;
+                mPivotY = h / 2;
+            }
+            else {
+                mPivotX = w / 2;
+                mPivotY = h / 2;
+            }
+        }
+    }
 
     private ScaleGestureDetector.SimpleOnScaleGestureListener mScaleListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
         @Override
