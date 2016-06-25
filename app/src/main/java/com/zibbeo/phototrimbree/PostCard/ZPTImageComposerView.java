@@ -545,10 +545,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 Bitmap bitmap;
                 float Test[] = new float[4];
-                Test = getValueMatrix(mMatrix[0]);
-                mPointX[0] =  - ((int) Test[0]);
-                mPointY[0] =  - ((int) Test[1]);
-
 
                 Bitmap image;
                 if (getBitmapFromMemCache("Temp") == null) {
@@ -561,6 +557,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 } else {
                     bitmap = myPic[0];
                 }
+
+                Test = getValueMatrix(mMatrix[0]);
+                mPointX[0] =  - ((int) Test[0]);
+                mPointY[0] =  - ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap,0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[0] ,false);
 
                 if(sFarme == 3) {
@@ -671,15 +671,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     bitmap.recycle();
                 }
 
-                Test = getValueMatrix(mMatrix[1]);
-                mPointX[1] =   ((int) Test[0]);
-                mPointY[1] =  - ((int) Test[1]);
-
                 if(myPic[1] == null) {
                     bitmap = getBitmapFromMemCache("Temp");
                 } else {
                     bitmap = myPic[1];
                 }
+
+                Test = getValueMatrix(mMatrix[1]);
+                mPointX[1] =   ((int) Test[0]);
+                mPointY[1] =  - ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[1] ,false);
                 if(sFarme == 4) {
                     Point ImgB[] = {
@@ -817,8 +817,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }
                 canvas.drawBitmap(bitmap, - mPointX[2], + mPointY[2], null);
                 canvas.drawPath(mPath,mPaintInner);
-
                 if (bitmap != null && !bitmap.isRecycled()) {
+
                     bitmap.recycle();
                 }
 
@@ -829,6 +829,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     bitmap = myPic[3];
                 }
 
+                Test = getValueMatrix(mMatrix[3]);
                 mPointX[3] =  ((int) Test[0]);
                 mPointY[3] =  ((int) Test[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
@@ -1137,9 +1138,15 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                         selectImage();
                     }
                 } else {
-                    mIndex = 1;
-                    //ImgB
-                    selectImage();
+                    if(sFarme == 4){
+                        //ImgA
+                        mIndex = 0;
+                        selectImage();
+                    } else {
+                        mIndex = 1;
+                        //ImgB
+                        selectImage();
+                    }
                 }
             } else {
                 //Img A,C
