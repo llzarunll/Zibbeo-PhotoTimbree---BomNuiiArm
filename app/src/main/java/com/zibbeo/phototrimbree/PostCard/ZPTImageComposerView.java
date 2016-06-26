@@ -84,6 +84,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     Paint mPaint3,mPaint4,mPaint5,mPaint6;
     ViewGroup mLayout;
     ViewGroup.LayoutParams mLayoutParams;
+    FrameLayout.LayoutParams mParams;
     boolean touch_state = false;
     boolean next_state = false;
     boolean mFirstTimeCheck = true;
@@ -1199,7 +1200,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                mFrameLayout.setEnabled(false);
+                mImage.setEnabled(false);
             }
 
             @Override
@@ -1229,7 +1231,8 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                mFrameLayout.setEnabled(false);
+                mImage.setEnabled(false);
             }
 
             @Override
