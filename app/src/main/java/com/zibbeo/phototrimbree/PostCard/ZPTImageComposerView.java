@@ -261,6 +261,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
         mFrameLayout.setVisibility(View.VISIBLE);
         mFrameLayout.setEnabled(false);
+        mImage.setEnabled(false);
 
        
         //Get Image Template
@@ -972,30 +973,35 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     mCenterPoint.set(tXPoint,tYPoint);
                     mFrameLayout.setVisibility(View.VISIBLE);
                     mFrameLayout.setEnabled(false);
+                    mImage.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceLeft <= mRadius && sLeft){
                     mLeftPoint.set(tMaxLeft,tYPoint);
                     mFrameLayout.setVisibility(View.VISIBLE);
                     mFrameLayout.setEnabled(false);
+                    mImage.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceRight <= mRadius && sRight){
                     mRightPoint.set(tMaxRight,tYPoint);
                     mFrameLayout.setVisibility(View.VISIBLE);
                     mFrameLayout.setEnabled(false);
+                    mImage.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceTop <= mRadius && sTop){
                     mTopPoint.set(tXPoint,tMaxTop);
                     mFrameLayout.setVisibility(View.VISIBLE);
                     mFrameLayout.setEnabled(false);
+                    mImage.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 } else if (mDistanceBottom <= mRadius && sBottom){
                     mBottomPoint.set(tXPoint,tMaxBottom);
                     mFrameLayout.setVisibility(View.VISIBLE);
                     mFrameLayout.setEnabled(false);
+                    mImage.setEnabled(false);
                     invalidate();
                     touch_state = true;
                 }
@@ -1245,7 +1251,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 next_state = true;
                 Bitmap bmp = savedImage.getDrawingCache();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                bmp.compress( Bitmap.CompressFormat.JPEG, 100, stream );
                 byte[] byteArray = stream.toByteArray();
                 savedImage.destroyDrawingCache();
 
@@ -1470,14 +1476,24 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     if (result)
                         cameraIntent();
                 } else */
+                mImage.setImageBitmap(mDraw.myPic[mIndex]);
+                mImage.setMatrix(mDraw.mMatrix[mIndex]);
+
                 if (items[item].equals( "Choose from Library" )) {
                     userChoosenTask = "Choose from Library";
                     if (result)
                         galleryIntent();
                     mImage.setMatrix(mDraw.mMatrix[mIndex]);
+                    mFrameLayout.setEnabled(true);
+                    mImage.setEnabled(true);
                 } else if (items[item].equals( "Cancel" )) {
                     mImage.setImageBitmap(mDraw.myPic[mIndex]);
                     mImage.setMatrix(mDraw.mMatrix[mIndex]);
+                    mFrameLayout.setEnabled(true);
+                    mImage.setEnabled(true);
+                    dialog.dismiss();
+                } else {
+                    mFrameLayout.setEnabled(false);
                     dialog.dismiss();
                 }
             }
@@ -1915,5 +1931,9 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     }
 
     //endregion : function
+    @Override
+    public void onBackPressed(){
+        mImage.setMatrix(mDraw.mMatrix[mIndex]);
+    }
 
 }
