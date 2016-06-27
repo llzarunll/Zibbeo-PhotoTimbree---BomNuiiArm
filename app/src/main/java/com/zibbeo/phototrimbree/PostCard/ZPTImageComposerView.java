@@ -106,10 +106,6 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
     private Paint mColorPaint;
     private LruCache<String, Bitmap> mMemoryCache;
 
-
-
-
-
     /*Nuii*/
     String stickerTemplateID1, stickerTemplateID2, stickerTemplateID3, stickerTemplateID4 ;
     String getTpID, getImageTemplateID,imageTemplateID;
@@ -216,12 +212,27 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
         }
 
         mTopPoint.x = (int)top_value;
-        mBottomPoint.x = (int)top_value;
-        mRightPoint.y = (int)top_value;
-        mLeftPoint.y = (int)top_value;
+        mBottomPoint.x = (int)bottom_value;
+        mRightPoint.y = (int)right_value;
+        mLeftPoint.y = (int)left_value;
         mCenterPoint = new Point((int)center_x,(int)center_y);
         mStrokeSeekbar = 0f;
         mPaint.setStrokeWidth(marge_one_stroke);
+        mPaintInner.setStrokeWidth(marge_two_stroke);
+        if(marge_one_color != null) {
+            mPaint.setColor(Integer.getInteger(marge_one_color));
+            mBtnColor1.setBackgroundColor(Integer.getInteger(marge_one_color));
+        } else {
+            mPaint.setColor(Color.BLACK);
+            mBtnColor1.setBackgroundColor(Color.BLACK);
+        }
+        if(marge_one_color != null) {
+            mPaintInner.setColor(Integer.getInteger(marge_two_color));
+            mBtnColor2.setBackgroundColor(Integer.getInteger(marge_one_color));
+        }else {
+            mPaintInner.setColor(Color.WHITE);
+            mBtnColor2.setBackgroundColor(Color.WHITE);
+        }
         mDraw.sFarme = 0;//template;
         mDraw.setPoint();
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -567,12 +578,18 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
 
                 if(sFarme == 3) {
                     Point ImgA[] = {
-                            new Point(mLeftPoint.x+ mPointX[0], mTopPoint.y+ mPointY[0]),
-                            new Point(mTopPoint.x+ mPointX[0], mTopPoint.y+ mPointY[0]),
-                            new Point(mCenterPoint.x+ mPointX[0], mCenterPoint.y+ mPointY[0]),
-                            new Point(mBottomPoint.x+ mPointX[0], mBottomPoint.y+ mPointY[0]),
-                            new Point(mLeftPoint.x+ mPointX[0], mBottomPoint.y+ mPointY[0]),
-                            new Point(mLeftPoint.x+ mPointX[0], mLeftPoint.y+ mPointY[0])
+                            new Point((mLeftPoint.x - mRadius) + mPointX[0],
+                                    (mTopPoint.y - mRadius) + mPointY[0]),
+                            new Point((mTopPoint.x - mRadius) + mPointX[0],
+                                    (mTopPoint.y - mRadius) + mPointY[0]),
+                            new Point((mCenterPoint.x - mRadius) + mPointX[0],
+                                    (mCenterPoint.y - mRadius) + mPointY[0]),
+                            new Point((mBottomPoint.x - mRadius) + mPointX[0],
+                                    (mBottomPoint.y - mRadius) + mPointY[0]),
+                            new Point((mLeftPoint.x - mRadius) + mPointX[0],
+                                    (mBottomPoint.y - mRadius) + mPointY[0]),
+                            new Point((mLeftPoint.x - mRadius) + mPointX[0],
+                                    (mLeftPoint.y - mRadius) + mPointY[0])
                     };
                     bitmap = getRoundedCroppedBitmap(bitmap, ImgA);
 
@@ -601,12 +618,18 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 }else if(sFarme == 4)
                 {
                     Point ImgA[] = {
-                            new Point(mLeftPoint.x+ mPointX[0], mTopPoint.y+ mPointY[0]),
-                            new Point(mTopPoint.x+ mPointX[0], mTopPoint.y+ mPointY[0]),
-                            new Point(mRightPoint.x+ mPointX[0], mTopPoint.y+ mPointY[0]),
-                            new Point(mRightPoint.x+ mPointX[0], mRightPoint.y+ mPointY[0]),
-                            new Point(mCenterPoint.x+ mPointX[0], mCenterPoint.y+ mPointY[0]),
-                            new Point(mLeftPoint.x+ mPointX[0], mLeftPoint.y+ mPointY[0])
+                            new Point((mLeftPoint.x - mRadius) + mPointX[0],
+                                    (mTopPoint.y - mRadius)+ mPointY[0]),
+                            new Point((mTopPoint.x - mRadius) + mPointX[0],
+                                    (mTopPoint.y - mRadius)+ mPointY[0]),
+                            new Point((mRightPoint.x - mRadius) + mPointX[0],
+                                    (mTopPoint.y - mRadius)+ mPointY[0]),
+                            new Point((mRightPoint.x - mRadius) + mPointX[0],
+                                    (mRightPoint.y - mRadius)+ mPointY[0]),
+                            new Point((mCenterPoint.x - mRadius) + mPointX[0],
+                                    (mCenterPoint.y - mRadius)+ mPointY[0]),
+                            new Point((mLeftPoint.x - mRadius) + mPointX[0],
+                                    (mLeftPoint.y - mRadius)+ mPointY[0])
                     };
                     bitmap = getRoundedCroppedBitmap(bitmap, ImgA);
                         ImgA[0] = new Point(mLeftPoint.x + mPoint, mTopPoint.y + mPoint);
@@ -635,10 +658,10 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 else {
 
                     Point ImgA[] = {
-                            new Point(mLeftPoint.x + mPointX[0], mTopPoint.y + mPointY[0]),
-                            new Point(mTopPoint.x + mPointX[0] , mTopPoint.y + mPointY[0]),
-                            new Point(mCenterPoint.x +mPointX[0] , mCenterPoint.y+ mPointY[0]),
-                            new Point(mLeftPoint.x+mPointX[0] , mLeftPoint.y+mPointY[0])
+                            new Point((mLeftPoint.x - mRadius) + mPointX[0], (mTopPoint.y - mRadius) + mPointY[0]),
+                            new Point((mTopPoint.x - mRadius) + mPointX[0] , (mTopPoint.y - mRadius) + mPointY[0]),
+                            new Point((mCenterPoint.x - mRadius) + mPointX[0] , (mCenterPoint.y - mRadius) + mPointY[0]),
+                            new Point((mLeftPoint.x - mRadius)+ mPointX[0] , (mLeftPoint.y - mRadius) + mPointY[0])
                     };
 
                     bitmap = getRoundedCroppedBitmap(bitmap, ImgA);
@@ -667,7 +690,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     }
 
                 }
-                canvas.drawBitmap(bitmap, -mPointX[0],-mPointY[0],null);
+                canvas.drawBitmap(bitmap, ((-mPointX[0]) + mRadius),((-mPointY[0]) + mRadius),null);
                 canvas.drawPath(mPath, mPaintInner);
 
 
@@ -701,27 +724,16 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     ImgB[2] = new Point(mRightPoint.x, mRightPoint.y);
                     ImgB[3] = new Point(mRightPoint.x, mRightPoint.y);
                     mPath = new Path();
-//                    for(int i = 0; i <= ImgB.length ;i++)
-//                    {
-//                        if(i == 0)
-//                        {
-//                            mPath.moveTo(ImgB[i].x  ,ImgB[i].y);
-//                        }
-//                        else if(i == ImgB.length)
-//                        {
-//                            mPath.lineTo(ImgB[0].x,ImgB[0].y);
-//                        }
-//                        else
-//                        {
-//                            mPath.lineTo(ImgB[i].x,ImgB[i].y);
-//                        }
-//                    }
                 }else {
                     Point ImgB[] = {
-                            new Point(mTopPoint.x - mPointX[1], mTopPoint.y + mPointY[1]),
-                            new Point(mRightPoint.x - mPointX[1], mTopPoint.y + mPointY[1]),
-                            new Point(mRightPoint.x - mPointX[1], mRightPoint.y + mPointY[1]),
-                            new Point(mCenterPoint.x - mPointX[1], mCenterPoint.y + mPointY[1])
+                            new Point((mTopPoint.x  - ((mTopPoint.x - mLeftPoint.x) + mRadius)) - mPointX[1],
+                                    (mTopPoint.y-mRadius) + mPointY[1]),
+                            new Point((mRightPoint.x - ((mTopPoint.x - mLeftPoint.x) + mRadius)) - mPointX[1],
+                                    (mTopPoint.y-mRadius) + mPointY[1]),
+                            new Point((mRightPoint.x - ((mCenterPoint.x - mLeftPoint.x) + mRadius)) - mPointX[1],
+                                    (mRightPoint.y-mRadius) + mPointY[1]),
+                            new Point((mCenterPoint.x - ((mCenterPoint.x - mLeftPoint.x) + mRadius)) - mPointX[1],
+                                    (mCenterPoint.y-mRadius) + mPointY[1])
                     };
                     bitmap = getRoundedCroppedBitmap(bitmap, ImgB);
 
@@ -747,7 +759,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                         }
                     }
                 }
-                canvas.drawBitmap(bitmap, + mPointX[1], - mPointY[1], null);
+                canvas.drawBitmap(bitmap, mPointX[1] + ((mTopPoint.x - mLeftPoint.x)+mRadius), (- mPointY[1])+mRadius , null);
                 if(sFarme != 0 && sFarme != 1) {
                     canvas.drawPath(mPath, mPaintInner);
                 }
@@ -782,10 +794,14 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                     mPath = new Path();
                 }else {
                     Point ImgC[] = {
-                            new Point(mLeftPoint.x + mPointX[2], mLeftPoint.y - mPointY[2]),
-                            new Point(mCenterPoint.x + mPointX[2], mCenterPoint.y - mPointY[2]),
-                            new Point(mBottomPoint.x + mPointX[2], mBottomPoint.y - mPointY[2]),
-                            new Point(mLeftPoint.x + mPointX[2], mBottomPoint.y - mPointY[2]),
+                            new Point((mLeftPoint.x-mRadius) + mPointX[2],
+                                    (mLeftPoint.y - ((mLeftPoint.y - mTopPoint.y) + mRadius)) - mPointY[2]),
+                            new Point((mCenterPoint.x-mRadius) + mPointX[2],
+                                    (mCenterPoint.y - ((mCenterPoint.y - mTopPoint.y) + mRadius)) - mPointY[2]),
+                            new Point((mBottomPoint.x-mRadius) + mPointX[2],
+                                    (mBottomPoint.y - ((mLeftPoint.y - mTopPoint.y) + mRadius)) -mPointY[2]),
+                            new Point((mLeftPoint.x-mRadius) + mPointX[2],
+                                    (mBottomPoint.y - ((mCenterPoint.y - mTopPoint.y) + mRadius)) - mPointY[2]),
                     };
                     bitmap = getRoundedCroppedBitmap(bitmap, ImgC);
 
@@ -810,7 +826,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                         }
                     }
                 }
-                canvas.drawBitmap(bitmap, - mPointX[2], + mPointY[2], null);
+                canvas.drawBitmap(bitmap, (- mPointX[2])+mRadius, + mPointY[2] + ((mLeftPoint.y - mTopPoint.y) + mRadius), null);
                 if(sFarme != 0 && sFarme != 2) {
                     canvas.drawPath(mPath, mPaintInner);
                 }
@@ -833,10 +849,14 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                 mPointY[3] =  ((int) TestD[1]);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mMatrix[3] ,false);
                 Point ImgD[] = {
-                    new Point(mCenterPoint.x - mPointX[3], mCenterPoint.y - mPointY[3]),
-                    new Point(mRightPoint.x - mPointX[3], mRightPoint.y - mPointY[3]),
-                    new Point(mRightPoint.x - mPointX[3], mBottomPoint.y - mPointY[3]),
-                    new Point(mBottomPoint.x - mPointX[3], mBottomPoint.y - mPointY[3])
+                    new Point((mCenterPoint.x - ((mCenterPoint.x - mLeftPoint.x) + mRadius)) - mPointX[3],
+                            (mCenterPoint.y - ((mCenterPoint.y - mTopPoint.y) + mRadius)) - mPointY[3]),
+                    new Point((mRightPoint.x - ((mCenterPoint.x - mLeftPoint.x) + mRadius)) - mPointX[3],
+                            (mRightPoint.y - ((mCenterPoint.y - mTopPoint.y) + mRadius)) - mPointY[3]),
+                    new Point((mRightPoint.x - ((mBottomPoint.x - mLeftPoint.x) + mRadius)) - mPointX[3],
+                            (mBottomPoint.y - ((mRightPoint.y - mTopPoint.y) + mRadius)) - mPointY[3]),
+                    new Point((mBottomPoint.x - ((mBottomPoint.x - mLeftPoint.x) + mRadius)) - mPointX[3],
+                            (mBottomPoint.y - ((mRightPoint.y - mTopPoint.y) + mRadius)) - mPointY[3])
                 };
                 bitmap = getRoundedCroppedBitmap(bitmap, ImgD);
 
@@ -861,7 +881,7 @@ public class ZPTImageComposerView extends BaseNavigationDrawer {
                         mPath.lineTo(ImgD[i].x,ImgD[i].y);
                     }
                 }
-                canvas.drawBitmap(bitmap, mPointX[3], mPointY[3], null);
+                canvas.drawBitmap(bitmap, mPointX[3] + ((mCenterPoint.x - mLeftPoint.x) + mRadius), mPointY[3] + ((mRightPoint.y - mTopPoint.y) + mRadius), null);
                 if(sFarme != 0 && sFarme != 1 && sFarme != 2) {
                     canvas.drawPath(mPath, mPaintInner);
                 }
